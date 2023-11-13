@@ -53,4 +53,20 @@ public record UserData(Date birth, BigDecimal weight, Integer height,
     public UserData(UserData data) {
         this(data.birth, data.weight, data.height, data.heartRate);
     }
+
+    public UserData (UserData data, Date birth) {
+      this (birth, data.weight, data.height, data.heartRate);
+    }
+
+    public UserData (UserData data, BigDecimal weight) {
+        this (data.birth, weight, data.height, data.heartRate);
+    }
+
+    public UserData (UserData data, Integer height) {
+        this (data.birth, data.weight, height, data.heartRate);
+    }
+
+    public UserData (UserData data, Pair<Integer, Integer []> heartRate) {
+        this (data.birth, data.weight, data.height, heartRate);
+    }
 }

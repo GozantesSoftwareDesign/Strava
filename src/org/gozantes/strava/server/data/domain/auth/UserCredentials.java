@@ -1,12 +1,12 @@
 package org.gozantes.strava.server.data.domain.auth;
 
+import javax.persistence.Id;
 import java.util.Objects;
 
-public record UserCredentials(CredType type, String id, String passwd) {
+public record UserCredentials(CredType type, @Id String id, String passwd) {
     public UserCredentials(CredType type, String id, String passwd) {
         Objects.requireNonNull(type);
         Objects.requireNonNull(id);
-        Objects.requireNonNull(passwd);
 
         this.type = type;
         this.id = id;

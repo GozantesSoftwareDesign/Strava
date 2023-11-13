@@ -75,21 +75,13 @@
     </target>
 
     <target name="4.server" depends="3.sign" description="Runs the Server">
-        <parallel>
-            <!--            <exec executable="rmiregistry">-->
-            <!--                <arg value="-J-Djava.rmi.server.useCodebaseOnly=false"/>-->
-
-            <!--                <classpath refid="classpath" />-->
-            <!--            </exec>-->
-
             <java jar="${dist.dir}/${export.file}" fork="true">
-                <jvmarg value="-Djava.rmi.server.hostname=${service.ip} ${service.name}"/>
+                <jvmarg value="-Djava.rmi.server.hostname=${registry.ip} ${service.name}"/>
                 <jvmarg value="-Djava.security.policy=${policy.file}"/>
 
                 <arg value="${service.name}"/>
                 <arg value="${registry.ip}"/>
                 <arg value="${registry.port}"/>
             </java>
-        </parallel>
     </target>
 </project>

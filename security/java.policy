@@ -1,0 +1,16 @@
+grant codeBase "file:../-" {
+    permission java.net.SocketPermission "*:1024-", "connect,accept";
+};
+
+grant codeBase "file:${user.dir}/-" {
+    permission java.util.PropertyPermission "user.dir", "read";
+    permission java.io.FilePermission "file:${user.dir}", "read, write";
+};
+
+grant {
+    permission java.util.logging.LoggingPermission "control";
+};
+
+grant {
+    permission java.security.AllPermission;
+};

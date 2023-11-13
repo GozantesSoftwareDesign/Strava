@@ -30,6 +30,10 @@ public final class User implements Mergeable {
         return this.creds;
     }
 
+    public UserData getData () {
+        return this.data;
+    }
+
     public String getId () {
         return this.creds.id ();
     }

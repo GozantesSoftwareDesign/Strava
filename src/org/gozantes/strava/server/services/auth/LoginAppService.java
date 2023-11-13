@@ -1,9 +1,14 @@
 package org.gozantes.strava.server.services.auth;
 
-import org.gozantes.strava.internals.hash.SHA1Hasher;
+import org.gozantes.strava.internals.types.Pair;
 import org.gozantes.strava.server.data.dao.UserDAO;
 import org.gozantes.strava.server.data.domain.auth.User;
 import org.gozantes.strava.server.data.domain.auth.UserCredentials;
+import org.gozantes.strava.server.data.domain.auth.UserData;
+
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
+import java.util.Calendar;
 
 public final class LoginAppService {
     private static LoginAppService instance;
@@ -17,12 +22,17 @@ public final class LoginAppService {
         return LoginAppService.instance;
     }
 
-    public User login(UserCredentials creds) {
-        User u = UserDAO.getInstance().find(creds.id());
+    public Pair<String, User> login(UserCredentials creds) throws NoSuchAlgorithmException, InvalidKeySpecException {
+        String token = CredsValidationAppService.getInstance().validate(creds);
 
-        if (u == null || !u.getPassword().equals(SHA1Hasher.hash(creds.passwd())))
+        if (token == null)
             return null;
 
-        return u;
+        Calendar birth = Calendar.getInstance();
+        birth.set(2003, 21, 02);
+
+        User u = false ? UserDAO.getInstance().find(creds.id()) : new User(creds, new UserData(null, birth.getTime()));
+
+        return u == null ? null : new Pair<String, User>(token, u);
     }
 }

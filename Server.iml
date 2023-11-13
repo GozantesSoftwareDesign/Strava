@@ -15,5 +15,7 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" exported="" name="bcpkix-jdk15to18-1.76" level="project" />
     <orderEntry type="library" name="Java EE 6-Java EE 6" level="project" />
+    <orderEntry type="library" name="google-oauth-client-1.34.1" level="project" />
+    <orderEntry type="library" name="auth0.java.jwt" level="project" />
   </component>
 </module>

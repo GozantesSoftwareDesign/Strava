@@ -5,6 +5,7 @@ import org.gozantes.strava.internals.logging.Logger;
 import org.gozantes.strava.server.ServerParams;
 import org.gozantes.strava.server.data.domain.auth.User;
 import org.gozantes.strava.server.data.domain.auth.UserCredentials;
+import org.gozantes.strava.server.data.domain.auth.UserData;
 import org.gozantes.strava.server.data.domain.session.Session;
 import org.gozantes.strava.server.data.domain.session.SessionFilters;
 
@@ -33,15 +34,18 @@ public final class RemoteFacade extends UnicastRemoteObject implements IRemoteFa
     public synchronized String login(UserCredentials creds) throws RemoteException {
         final User user = null;
 
-        if (user == null)
+        if (user == null) {
             Logger.getLogger().warning(new RemoteException("Unsuccessful login for " + creds.id() + "(" + creds.type().toString() + " account)."));
+
+            return null;
+        }
 
 
         if (this.state.values().contains(user)) {
             Logger.getLogger().info(new RemoteException(creds.id() + "(" + creds.type().toString() + " account)" + " is already logged in."));
         }
 
-        String token = SHA1Hasher.hash(user, System.currentTimeMillis());
+        final String token = SHA1Hasher.hash(user, System.currentTimeMillis());
         state.put(token, user);
 
         Logger.getLogger().info("User " + creds.id() + "(" + creds.type().toString() + " account) sucessfully logged in.");
@@ -49,14 +53,31 @@ public final class RemoteFacade extends UnicastRemoteObject implements IRemoteFa
         return token;
     }
 
+    public synchronized String signup(UserCredentials creds, UserData data) {
+        User user = null;
+
+        try {
+            user = new User(creds, data);
+        } catch (Exception e) {
+            Logger.getLogger().severe(String.format("Could not create the user object: %s", e.getMessage()), e);
+        }
+
+
+
+        String token = SHA1Hasher.hash(user, System.currentTimeMillis());
+        state.put(token, user);
+
+        return token;
+    }
+
+
     @Override
     public synchronized void logout(String token) throws RemoteException {
         if (this.state.containsKey(token)) {
             this.state.remove(token);
 
             Logger.getLogger().info("Logout successful for token " + token + ".");
-        } else
-            Logger.getLogger().warning(new RemoteException("Token " + token + " belongs to no logged users."));
+        } else Logger.getLogger().warning(new RemoteException("Token " + token + " belongs to no logged users."));
     }
 
     @Override

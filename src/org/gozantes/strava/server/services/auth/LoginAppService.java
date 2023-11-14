@@ -14,6 +14,7 @@ public final class LoginAppService {
     private static LoginAppService instance;
 
     private LoginAppService() {
+        super();
     }
 
     public static LoginAppService getInstance() {

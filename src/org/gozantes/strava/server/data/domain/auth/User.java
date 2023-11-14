@@ -1,7 +1,7 @@
 package org.gozantes.strava.server.data.domain.auth;
 
-import org.gozantes.strava.server.data.domain.Mergeable;
 import org.gozantes.strava.internals.types.Pair;
+import org.gozantes.strava.server.data.domain.Mergeable;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -12,8 +12,8 @@ public final class User implements Mergeable {
     private UserData data;
 
 
-    public User (UserCredentials creds, UserData data) {
-        super ();
+    public User(UserCredentials creds, UserData data) {
+        super();
 
         Objects.requireNonNull(creds);
         Objects.requireNonNull(data);
@@ -22,51 +22,56 @@ public final class User implements Mergeable {
         this.data = data;
     }
 
-    public User (User user) {
-        this (user == null ? null : user.creds, user == null ? null : user.data);
+    public User(User user) {
+        this(user == null ? null : user.creds, user == null ? null : user.data);
     }
 
-    public UserCredentials getCredentials () {
+    public UserCredentials getCredentials() {
         return this.creds;
     }
 
-    public UserData getData () {
+    public String getId() {
+        return this.creds.id();
+    }
+
+    public CredType getType() {
+        return this.creds.type();
+    }
+
+    public UserData getData() {
         return this.data;
     }
 
-    public String getId () {
-        return this.creds.id ();
-    }
 
-    public Date getBirthDate () {
+    public Date getBirthDate() {
         return this.data.birth();
     }
 
-    public void setBirthDate (Date birth) {
-        this.data = new UserData (this.data, birth);
+    public void setBirthDate(Date birth) {
+        this.data = new UserData(this.data, birth);
     }
 
-    public BigDecimal getWeight () {
-        return this.data.weight ();
+    public BigDecimal getWeight() {
+        return this.data.weight();
     }
 
-    public void setWeight (BigDecimal weight) {
-        this.data = new UserData (this.data, weight);
+    public void setWeight(BigDecimal weight) {
+        this.data = new UserData(this.data, weight);
     }
 
-    public Integer getHeight () {
-        return this.data.height ();
+    public Integer getHeight() {
+        return this.data.height();
     }
 
-    public void setHeight (Integer height) {
-        this.data = new UserData (this.data);
+    public void setHeight(Integer height) {
+        this.data = new UserData(this.data);
     }
 
-    public Pair<Integer, Integer[]> getHeartRate () {
+    public Pair<Integer, Integer[]> getHeartRate() {
         return this.data.heartRate();
     }
 
-    public void setHeartRate (Pair <Integer, Integer []> heartRate) {
-        this.data = new UserData (this.data, heartRate);
+    public void setHeartRate(Pair<Integer, Integer[]> heartRate) {
+        this.data = new UserData(this.data, heartRate);
     }
 }

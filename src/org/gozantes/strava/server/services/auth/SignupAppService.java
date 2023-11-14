@@ -14,6 +14,7 @@ public final class SignupAppService {
     private static SignupAppService instance;
 
     private SignupAppService() {
+        super();
     }
 
     public static SignupAppService getInstance() {

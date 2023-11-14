@@ -1,24 +1,30 @@
 package org.gozantes.strava.server.remote;
 
-import org.gozantes.strava.internals.hash.SHA1Hasher;
 import org.gozantes.strava.internals.logging.Logger;
+import org.gozantes.strava.internals.types.Pair;
 import org.gozantes.strava.server.ServerParams;
 import org.gozantes.strava.server.data.domain.auth.User;
 import org.gozantes.strava.server.data.domain.auth.UserCredentials;
 import org.gozantes.strava.server.data.domain.auth.UserData;
 import org.gozantes.strava.server.data.domain.session.Session;
+import org.gozantes.strava.server.data.domain.session.SessionData;
 import org.gozantes.strava.server.data.domain.session.SessionFilters;
+import org.gozantes.strava.server.services.auth.LoginAppService;
+import org.gozantes.strava.server.services.auth.SignupAppService;
+import org.gozantes.strava.server.services.session.SessionAppService;
 
 import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.HashMap;
 import java.util.Map;
 
 public final class RemoteFacade extends UnicastRemoteObject implements IRemoteFacade {
     public final Map<String, User> state = new HashMap<String, User>();
-    private ServerParams params;
+    final private ServerParams params;
 
     public RemoteFacade(ServerParams params) throws RemoteException, MalformedURLException {
         super();
@@ -31,8 +37,8 @@ public final class RemoteFacade extends UnicastRemoteObject implements IRemoteFa
     }
 
     @Override
-    public synchronized String login(UserCredentials creds) throws RemoteException {
-        final User user = null;
+    public synchronized String login(UserCredentials creds) throws RemoteException, NoSuchAlgorithmException, InvalidKeySpecException {
+        final Pair<String, User> user = LoginAppService.getInstance().login(creds);
 
         if (user == null) {
             Logger.getLogger().warning(new RemoteException("Unsuccessful login for " + creds.id() + "(" + creds.type().toString() + " account)."));
@@ -40,34 +46,30 @@ public final class RemoteFacade extends UnicastRemoteObject implements IRemoteFa
             return null;
         }
 
-
-        if (this.state.values().contains(user)) {
+        if (this.state.values().stream().anyMatch((u) -> u.getType() == user.y().getType() && u.getId().equals(user.y().getId()))) {
             Logger.getLogger().info(new RemoteException(creds.id() + "(" + creds.type().toString() + " account)" + " is already logged in."));
         }
 
-        final String token = SHA1Hasher.hash(user, System.currentTimeMillis());
-        state.put(token, user);
+        state.put(user.x(), user.y());
 
         Logger.getLogger().info("User " + creds.id() + "(" + creds.type().toString() + " account) sucessfully logged in.");
 
-        return token;
+        return user.x();
     }
 
     public synchronized String signup(UserCredentials creds, UserData data) {
-        User user = null;
+        Pair<String, User> user = null;
 
         try {
-            user = new User(creds, data);
+            user = SignupAppService.getInstance().signup(creds, data);
         } catch (Exception e) {
             Logger.getLogger().severe(String.format("Could not create the user object: %s", e.getMessage()), e);
         }
 
+        assert user != null;
+        state.put(user.x(), user.y());
 
-
-        String token = SHA1Hasher.hash(user, System.currentTimeMillis());
-        state.put(token, user);
-
-        return token;
+        return user.x();
     }
 
 
@@ -81,27 +83,38 @@ public final class RemoteFacade extends UnicastRemoteObject implements IRemoteFa
     }
 
     @Override
-    public Map<Long, Session> searchSessions(SessionFilters filters) throws RemoteException {
+    public synchronized long createSession(String token, SessionData data) throws RemoteException {
+        if (!this.state.containsKey(token))
+            Logger.getLogger().severe(new RemoteException("The user trying to create the session is not logged in."));
+
+        return SessionAppService.getInstance().create(data).getId();
+    }
+
+    @Override
+    public synchronized Map<Long, Session> searchSessions(SessionFilters filters) throws RemoteException {
+        if (filters != null)
+            filters = new SessionFilters(null, filters.title(), filters.sport(), filters.distance(), filters.duration());
+
+        return SessionAppService.getInstance().getSessions(filters);
+    }
+
+    @Override
+    public synchronized Map<Long, Session> getSessions(String token) throws RemoteException {
         return null;
     }
 
     @Override
-    public Map<Long, Session> getSessions(String token) throws RemoteException {
-        return null;
-    }
-
-    @Override
-    public void setSessionState(String token, long session) throws RemoteException {
+    public synchronized void setSessionState(String token, long session) throws RemoteException {
 
     }
 
     @Override
-    public void createChallenge(String token) {
+    public synchronized void createChallenge(String token) {
 
     }
 
     @Override
-    public void getActiveChallenges(String token) {
+    public synchronized void getActiveChallenges(String token) {
 
     }
 }

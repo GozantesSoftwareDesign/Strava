@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project basedir="." default="4.client" name="Strava client">
+    <target name="1.build" description="Builds and runs the project">
+        <delete dir="${build.dir}"/>
+        <mkdir dir="${build.dir}"/>
+
+        <javac
+                srcdir="${source.dir}"
+                destdir="${build.dir}"
+                deprecation="false"
+                fork="true"
+                includeAntRuntime="no"
+        >
+            <classpath refid="classpath"/>
+
+            <compilerarg value="-Xlint:-deprecation"/>
+
+            <include name="org/gozantes/strava/internals/logging/**/*.java"/>
+            <include name="org/gozantes/strava/internals/swing/**/*.java"/>
+            <include name="org/gozantes/strava/internals/types/**/*.java"/>
+
+            <include name="org/gozantes/strava/client/**/*.java"/>
+        </javac>
+    </target>
+
+    <target name="2.export" depends="1.build" description="Export the project into a .jar file">
+        <delete dir="${dist.dir}"/>
+        <mkdir dir="${dist.dir}"/>
+
+        <manifestclasspath property="jar.classpath" jarfile="${dist.dir}/${export.file}">
+            <classpath>
+                <path refid="classpath"/>
+                <path location="${dist.dir}/${export.file}"/>
+            </classpath>
+        </manifestclasspath>
+
+        <jar destfile="${dist.dir}/${export.file}" basedir="${build.dir}">
+            <manifest>
+                <attribute name="Main-Class" value="org.gozantes.strava.client.Main"/>
+                <attribute name="Class-Path" value="${jar.classpath}"/>
+            </manifest>
+        </jar>
+    </target>
+
+    <target name="3.sign" depends="2.export">
+        <signjar
+                jar="${dist.dir}/${export.file}"
+                alias="${alias}"
+                keystore="${keystore.location}"
+                storepass="${keystore.password}"
+                keypass="${key.password}"
+        />
+    </target>
+
+    <target name="4.client" depends="3.sign" description="Runs the client">
+        <java jar="${dist.dir}/${export.file}" fork="true">
+            <jvmarg value="-Djava.security.policy=${policy.file}"/>
+
+            <arg value="${service.name}"/>
+            <arg value="${registry.ip}"/>
+            <arg value="${registry.port}"/>
+        </java>
+    </target>
+</project>

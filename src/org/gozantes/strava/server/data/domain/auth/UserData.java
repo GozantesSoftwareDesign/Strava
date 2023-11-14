@@ -1,7 +1,6 @@
 package org.gozantes.strava.server.data.domain.auth;
 
 import org.gozantes.strava.internals.types.Pair;
-import org.w3c.dom.ranges.RangeException;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
@@ -32,17 +31,17 @@ public record UserData(Date birth, BigDecimal weight, Integer height,
             throw new DateTimeException("Users born after today's date are not allowed.");
 
         if (weight != null && weight.compareTo(BigDecimal.ZERO) <= 0)
-            throw new RangeException(RangeException.BAD_BOUNDARYPOINTS_ERR, "Weight must be a positive number.");
+            throw new RuntimeException("Weight must be a positive number.");
 
         if (height != null && height <= 0)
-            throw new RangeException(RangeException.BAD_BOUNDARYPOINTS_ERR, "Height must be a positive number.");
+            throw new RuntimeException("Height must be a positive number.");
 
         if (heartRate == null)
             heartRate = new Pair<Integer, Integer[]>(null, null);
 
         for (Integer i : List.of(heartRate.y() == null ? new Integer[0] : heartRate.y()))
             if (i == null || i <= 0)
-                throw new RangeException(RangeException.BAD_BOUNDARYPOINTS_ERR, "Heart rates must be positive.");
+                throw new RuntimeException("Heart rates must be positive.");
 
         this.birth = birth;
         this.weight = weight;

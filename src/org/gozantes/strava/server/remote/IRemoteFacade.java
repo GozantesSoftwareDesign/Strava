@@ -1,5 +1,8 @@
 package org.gozantes.strava.server.remote;
 
+import org.gozantes.strava.internals.types.Pair;
+import org.gozantes.strava.internals.types.Triplet;
+import org.gozantes.strava.server.data.domain.Sport;
 import org.gozantes.strava.server.data.domain.auth.UserCredentials;
 import org.gozantes.strava.server.data.domain.auth.UserData;
 import org.gozantes.strava.server.data.domain.session.SessionData;
@@ -8,17 +11,19 @@ import org.gozantes.strava.server.data.domain.session.SessionState;
 import org.gozantes.strava.server.data.dto.ChallengeDTO;
 import org.gozantes.strava.server.data.dto.SessionDTO;
 
+import java.math.BigDecimal;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.List;
+import java.util.Map;
 
 public interface IRemoteFacade extends Remote {
     public String login (UserCredentials creds)
             throws RemoteException, NoSuchAlgorithmException, InvalidKeySpecException;
 
-    public String signup(UserCredentials creds, UserData data) throws RemoteException;
+    public String signup (UserCredentials creds, UserData data) throws RemoteException;
 
     public void logout (String token) throws RemoteException;
 
@@ -32,7 +37,10 @@ public interface IRemoteFacade extends Remote {
 
     public void createChallenge (String token) throws RemoteException;
 
-    public List<ChallengeDTO> getActiveChallenges (String token) throws RemoteException;
+    public List <ChallengeDTO> getActiveChallenges (String token) throws RemoteException;
 
     public void acceptChallenge (String token, long challenge) throws RemoteException;
+
+    public Map <ChallengeDTO, Pair <Triplet <Object, Object, BigDecimal>, Map <Sport, List <SessionDTO>>>> getActiveChallengeStatus (
+            String token) throws RemoteException
 }

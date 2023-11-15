@@ -2,10 +2,13 @@ package org.gozantes.strava.server.remote;
 
 import org.gozantes.strava.internals.logging.Logger;
 import org.gozantes.strava.internals.types.Pair;
+import org.gozantes.strava.internals.types.Triplet;
 import org.gozantes.strava.server.ServerParams;
+import org.gozantes.strava.server.data.domain.Sport;
 import org.gozantes.strava.server.data.domain.auth.User;
 import org.gozantes.strava.server.data.domain.auth.UserCredentials;
 import org.gozantes.strava.server.data.domain.auth.UserData;
+import org.gozantes.strava.server.data.domain.challenge.Challenge;
 import org.gozantes.strava.server.data.domain.session.SessionData;
 import org.gozantes.strava.server.data.domain.session.SessionFilters;
 import org.gozantes.strava.server.data.domain.session.SessionState;
@@ -15,12 +18,15 @@ import org.gozantes.strava.server.data.dto.SessionDTO;
 import org.gozantes.strava.server.services.AuthAppService;
 import org.gozantes.strava.server.services.SessionAppService;
 
+import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
+import java.time.Duration;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -139,4 +145,69 @@ public final class RemoteFacade extends UnicastRemoteObject implements IRemoteFa
     public List <ChallengeDTO> getActiveChallenges (String token) throws RemoteException {
         return null;
     }
-}
+
+    @Override
+    public Map <ChallengeDTO, Pair <Triplet <Object, Object, BigDecimal>, Map <Sport, List <SessionDTO>>>> getActiveChallengeStatus (
+            String token) throws RemoteException {
+        Map <Challenge, List <SessionDTO>> sessions;
+
+        {
+            List <SessionDTO> sessionTotal = this.getSessions (token);
+
+            sessions = Map.ofEntries ((Map.Entry[]) List.of ((ChallengeDTO) null).stream ().map ((c) -> Map.entry (c,
+                            sessionTotal.stream ()
+                                    .filter ((s) -> c.sport () == null || c.sport ().equals (s.data ().sport ()))))
+                    .toArray ());
+        }
+
+        Map <ChallengeDTO, Pair <Triplet <Object, Object, BigDecimal>, Map <Sport, List <SessionDTO>>>> map =
+                new HashMap <> ();
+
+        ChallengeDTO k;
+        List <SessionDTO> v;
+        Object[] ret;
+        for (Map.Entry <ChallengeDTO, List <SessionDTO>> x : (Map.Entry[]) sessions.entrySet ().toArray ()) {
+            k = x.getKey ();
+            v = x.getValue ();
+
+            Map <Sport, List <SessionDTO>> m = Map.of (Sport.Cyclism, new ArrayList <SessionDTO> (), Sport.Running,
+                    new ArrayList <SessionDTO> ());
+
+            ret = new Object[3];
+
+            if (k.isTimed ()) {
+                Duration t[] = new Duration[] { Duration.ofMinutes (0), Duration.ofMinutes (0) };
+
+                v.forEach ((y) -> {
+                    m.get (y.data ().sport ()).add (y);
+
+                    if (y.state ().equals (SessionState.COMPLETED))
+                        t[0] = t[0].plus (y.data ().duration ());
+
+                    t[1] = t[1].plus (y.data ().duration ());
+                });
+
+                ret[2] = (BigDecimal.valueOf ((Long) (ret[0] = (Long) t[0].toMinutes ()))).divide (
+                        BigDecimal.valueOf ((Long) (ret[1] = (Long) t[1].toMinutes ())));
+            }
+
+            else {
+                BigDecimal d[] = new BigDecimal[] { BigDecimal.valueOf (0), BigDecimal.valueOf (0) };
+
+                v.forEach ((y) -> {
+                    m.get (y.data ().sport ()).add (y);
+
+                    if (y.state ().equals (SessionState.COMPLETED))
+                        d[0] = d[0].add (y.data ().distance ());
+
+                    d[1] = d[1].add (y.data ().distance ());
+                });
+
+                ret[2] = ((BigDecimal) (ret[0] = d[0])).divide ((BigDecimal) (ret[1] = d[1]));
+            }
+
+            map.put (k, new Pair <> (new Triplet <> (ret[0], ret[1], (BigDecimal) ret[2]), m));
+        }
+
+        return map;
+    }

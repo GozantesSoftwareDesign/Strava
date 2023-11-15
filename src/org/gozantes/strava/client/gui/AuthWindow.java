@@ -1,9 +1,10 @@
-package gui;
-
-import internals.swing.ImageDisplayer;
+package org.gozantes.strava.client.gui;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+
+import org.gozantes.strava.internals.swing.*;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -11,11 +12,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class VentanaPrincipal extends JFrame {
+public class AuthWindow extends JFrame {
 
     private static final long serialVersionUID = 1L;
     private JFrame frame = new JFrame("STRAVA");
-    ;
     private JPanel panelPrincipal = new JPanel(new GridLayout(4, 1));
     private JPanel panelUser = new JPanel(new FlowLayout(FlowLayout.CENTER));
     private JPanel panelPassword = new JPanel(new FlowLayout(FlowLayout.CENTER));
@@ -27,6 +27,7 @@ public class VentanaPrincipal extends JFrame {
     private JPanel panelRestingHeartRate = new JPanel(new FlowLayout(FlowLayout.CENTER));
     private JPanel panelBotonesLogin = new JPanel(new FlowLayout(FlowLayout.CENTER));
     private JPanel panelBotonesSignUp = new JPanel(new FlowLayout(FlowLayout.CENTER));
+    
     private JLabel userLabel = new JLabel("Email");
     private JTextField userText = new JTextField(20);
     private JLabel passwordLabel = new JLabel("Password");
@@ -43,16 +44,18 @@ public class VentanaPrincipal extends JFrame {
     private JTextField maximunHeartRateText = new JTextField(20);
     private JLabel restingHeartRateLabel = new JLabel("RestingHeartRate(Optional)");
     private JTextField restingHeartRateText = new JTextField(20);
+    
     private JButton login = new JButton("Login");
     private JButton loginFacebook = new JButton("Login with Facebook");
     private JButton loginGoogle = new JButton("Login with Google");
     private JButton signUp = new JButton("Sign up");
     private JButton signUpFacebook = new JButton("Sign up with Facebook");
     private JButton signUpGoogle = new JButton("Sign up with Google");
+    
     private ImageDisplayer iconoGoogle;
     private ImageDisplayer iconoFacebook;
 
-    public VentanaPrincipal() {
+    public AuthWindow() {
         frame.setSize(700, 500);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
@@ -203,6 +206,7 @@ public class VentanaPrincipal extends JFrame {
     }
 
     void inicializarVentana() {
+    	
         userLabel.setPreferredSize(new Dimension(75, 25));
         userText.setPreferredSize(new Dimension(50, 25));
         passwordLabel.setPreferredSize(new Dimension(75, 25));

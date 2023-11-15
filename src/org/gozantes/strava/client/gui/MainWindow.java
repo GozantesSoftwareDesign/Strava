@@ -20,10 +20,8 @@ import javax.swing.JTextField;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import domain.Challenge;
-import domain.Sesion;
-import domain.Sport;
-import domain.User;
+import org.gozantes.strava.server.data.domain.auth.User;
+import org.gozantes.strava.server.data.domain.challenge.Challenge;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -35,7 +33,7 @@ import java.util.Date;
 import java.util.List;
 import java.awt.event.ActionEvent;
 
-public class VentanaSecundaria extends JFrame{
+public class MainWindow extends JFrame{
     private JPanel pArriba = new JPanel(new GridLayout(2,1));
     private JPanel pTodo= new JPanel();
     private JPanel pNorte= new JPanel();
@@ -49,10 +47,10 @@ public class VentanaSecundaria extends JFrame{
 
     private Challenge cselected;
     private List<Challenge> acceptedChallenges = new ArrayList<Challenge>();
-    private List<Sesion> acceptedSesionThem = new ArrayList<Sesion>();
-    private List<Sesion> acceptedSesion = new ArrayList<Sesion>();
+    private List<Session> acceptedSesionThem = new ArrayList<Sesion>();
+    private List<Session> acceptedSesion = new ArrayList<Sesion>();
 
-    public VentanaSecundaria(User user){
+    public MainWindow(User user){
         super();
         setBounds(300, 100, 600, 400);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -96,7 +94,7 @@ public class VentanaSecundaria extends JFrame{
         logout.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new VentanaPrincipal();
+                new AuthWindow();
                 dispose();
             }
         });

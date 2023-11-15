@@ -1,6 +1,6 @@
 package org.gozantes.strava.server.data.domain.challenge;
 
-public enum StateActivity {
-	COMPLETADO,
-	NOCOMPLETADO;
+public enum ChallengeState {
+    IN_PROGRESS,
+    COMPLETED;
 }

@@ -6,7 +6,7 @@ grant codeBase "file:${user.dir}/-" {
     permission java.util.PropertyPermission "user.dir", "read";
     permission java.io.FilePermission "file:${user.dir}", "read, write";
     permission java.io.FilePermission "log/", "read, write";
-    permission java.io.FilePermission "log/*", "read, write";
+    permission java.io.FilePermission "log/*", "read, write, delete";
 };
 
 grant {

@@ -1,28 +1,28 @@
 package org.gozantes.strava.server.data.dto;
 
-import java.util.Objects;
-
 import org.gozantes.strava.server.data.domain.session.SessionData;
 import org.gozantes.strava.server.data.domain.session.SessionState;
 
+import java.util.Objects;
+
 public record SessionDTO(long id, SessionState state, SessionData data) {
-	public SessionDTO(long id, SessionState state, SessionData data) {
-		Objects.requireNonNull(id);
-		
-		this.id = id;
-		this.state = state;
-		this.data = data;
-	}
+    public SessionDTO (long id, SessionState state, SessionData data) {
+        Objects.requireNonNull (id);
 
-	public long id() {
-		return id;
-	}
+        this.id = id;
+        this.state = state;
+        this.data = data;
+    }
 
-	public SessionState state() {
-		return state;
-	}
+    public long id () {
+        return id;
+    }
 
-	public SessionData data() {
-		return data;
-	}
+    public SessionState state () {
+        return state;
+    }
+
+    public SessionData data () {
+        return data;
+    }
 }

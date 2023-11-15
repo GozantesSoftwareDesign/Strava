@@ -16,7 +16,7 @@ public record UserData(String name, Date birth, BigDecimal weight, Integer heigh
         Objects.requireNonNull (name);
         Objects.requireNonNull (birth);
 
-        if (name.isEmpty ())
+        if (name.isBlank ())
             throw new RuntimeException ("Names must not be empty strings");
 
         Calendar cal = Calendar.getInstance ();

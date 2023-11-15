@@ -20,8 +20,10 @@ import javax.swing.JTextField;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import org.gozantes.strava.server.data.domain.Sport;
 import org.gozantes.strava.server.data.domain.auth.User;
 import org.gozantes.strava.server.data.domain.challenge.Challenge;
+import org.gozantes.strava.server.data.domain.session.Session;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -41,14 +43,14 @@ public class MainWindow extends JFrame{
     private JPanel pLogout= new JPanel(new FlowLayout(FlowLayout.LEFT));
 
     private JButton botonChallenge = new JButton("Challenge");
-    private JButton botonSesion = new JButton("Sesi�n");
+    private JButton botonSession = new JButton("Sesi�n");
     private JButton logout = new JButton("Logout");
     private JScrollPane jsp = new JScrollPane();
 
     private Challenge cselected;
     private List<Challenge> acceptedChallenges = new ArrayList<Challenge>();
-    private List<Session> acceptedSesionThem = new ArrayList<Sesion>();
-    private List<Session> acceptedSesion = new ArrayList<Sesion>();
+    private List<Session> acceptedSessionThem = new ArrayList<Session>();
+    private List<Session> acceptedSession = new ArrayList<Session>();
 
     public MainWindow(User user){
         super();
@@ -70,13 +72,13 @@ public class MainWindow extends JFrame{
         pArriba.add(pLogout);
         pArriba.add(pNorte);
 
-        pNorte.add(botonSesion);
-        botonSesion.setFont(new Font("Tahoma", Font.BOLD, 10));
+        pNorte.add(botonSession);
+        botonSession.setFont(new Font("Tahoma", Font.BOLD, 10));
         pTodo.add(pCentro2, BorderLayout.CENTER);
         pTodo.add(pSur, BorderLayout.SOUTH);
 
         botonChallenge.setPreferredSize(new Dimension(150, 25));
-        botonSesion.setPreferredSize(new Dimension(150, 25));
+        botonSession.setPreferredSize(new Dimension(150, 25));
 
         botonChallenge.addActionListener(new ActionListener() {
             @Override
@@ -85,7 +87,7 @@ public class MainWindow extends JFrame{
             }
         });
 
-        botonSesion.addActionListener(new ActionListener() {
+        botonSession.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 paintVentana(1);
@@ -169,7 +171,7 @@ public class MainWindow extends JFrame{
 
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        consultarSesion(jp6, jsp, boton3, boton4);
+                        consultarSession(jp6, jsp, boton3, boton4);
                     }
                 });
 
@@ -183,7 +185,7 @@ public class MainWindow extends JFrame{
                     Sport sp=(Sport)campoTexto2.getSelectedItem();
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        acceptedSesion.add(new Sesion(campoTexto1.getText(),sp,Double.parseDouble(campoTexto5.getText()),new Date(campoTexto6.getText()),new Time(Long.parseLong(campoTexto4.getText())),Integer.parseInt(etiqueta3.getText())));
+                        //acceptedSession.add(new Session(campoTexto1.getText(),sp,Double.parseDouble(campoTexto5.getText()),new Date(campoTexto6.getText()),new Time(Long.parseLong(campoTexto4.getText())),Integer.parseInt(etiqueta3.getText())));
                         paintVentana(1);
                     }
                 });
@@ -226,10 +228,10 @@ public class MainWindow extends JFrame{
                 Sport[] sports=new Sport[2];
                 sports[1]=(Sport) abelTexto5.getSelectedItem();
                 if(kmorseg.getSelectedItem().equals("Distancia(km)")) {
-                    Challenge ch=new Challenge(abelTexto1.getText(), new Date(abelTexto2.getText()), new Date(abelTexto3.getText()), Integer.parseInt(abelTexto4.getText()),sports );
+                    //Challenge ch=new Challenge(abelTexto1.getText(), new Date(abelTexto2.getText()), new Date(abelTexto3.getText()), Integer.parseInt(abelTexto4.getText()),sports );
                 }
                 if(kmorseg.getSelectedItem().equals("Tiempo(sec)")) {
-                    Challenge ch=new Challenge(abelTexto1.getText(), new Date(abelTexto2.getText()), new Date(abelTexto3.getText()), Double.parseDouble(abelTexto4.getText()),sports );
+                    //Challenge ch=new Challenge(abelTexto1.getText(), new Date(abelTexto2.getText()), new Date(abelTexto3.getText()), Double.parseDouble(abelTexto4.getText()),sports );
                 }
             }
         });
@@ -351,15 +353,15 @@ public class MainWindow extends JFrame{
         pSur.repaint();
     }
 
-    public void consultarSesion(JPanel jp,JScrollPane jsp,JButton boton3,JButton boton4) {
+    public void consultarSession(JPanel jp,JScrollPane jsp,JButton boton3,JButton boton4) {
 
-        List<Sesion> sesiones = new ArrayList<>();
+        List<Session> Sessiones = new ArrayList<>();
 
         pCentro2.removeAll();
         pSur.removeAll();
 
-        DefaultListModel<Sesion>dlm2=new DefaultListModel<Sesion>();
-        for (Sesion s : acceptedSesion) {
+        DefaultListModel<Session>dlm2=new DefaultListModel<Session>();
+        for (Session s : acceptedSession) {
             dlm2.addElement(s);
         }
 
@@ -370,7 +372,7 @@ public class MainWindow extends JFrame{
 
 
 
-        JList<Sesion>lista=new JList<>(dlm2);
+        JList<Session>lista=new JList<>(dlm2);
         jsp=new JScrollPane(lista);
         pCentro2.add(comboBox);
         pCentro2.add(jsp);
@@ -382,11 +384,11 @@ public class MainWindow extends JFrame{
                 if (e.getStateChange() == ItemEvent.SELECTED) {
                     String selectedOption = (String) comboBox.getSelectedItem();
                     if(selectedOption.equals("Tu Usuario")) {
-                        mySesion(dlm2,comboBox);
+                        mySession(dlm2,comboBox);
 
                     }
                     if(selectedOption.equals("Otros usuarios")) {
-                        theirSesion(dlm2,comboBox);
+                        theirSession(dlm2,comboBox);
 
                     }
                 }
@@ -399,26 +401,26 @@ public class MainWindow extends JFrame{
         pSur.revalidate();
         pSur.repaint();
     }
-    public void mySesion(DefaultListModel<Sesion> dlm2,JComboBox<String> comboBox) {
+    public void mySession(DefaultListModel<Session> dlm2,JComboBox<String> comboBox) {
         pCentro2.removeAll();
         dlm2.clear();
-        for (Sesion s : acceptedSesion) {
+        for (Session s : acceptedSession) {
             dlm2.addElement(s);
         }
-        JList<Sesion>lista=new JList<>(dlm2);
+        JList<Session>lista=new JList<>(dlm2);
         pCentro2.add(comboBox);
         jsp=new JScrollPane(lista);
         pCentro2.add(jsp);
         pCentro2.revalidate();
         pCentro2.repaint();
     }
-    public void theirSesion(DefaultListModel<Sesion> dlm2,JComboBox<String> comboBox) {
+    public void theirSession(DefaultListModel<Session> dlm2,JComboBox<String> comboBox) {
         pCentro2.removeAll();
         dlm2.clear();
-        for (Sesion s : acceptedSesionThem) {
+        for (Session s : acceptedSessionThem) {
             dlm2.addElement(s);
         }
-        JList<Sesion>lista=new JList<>(dlm2);
+        JList<Session>lista=new JList<>(dlm2);
         pCentro2.add(comboBox);
         jsp=new JScrollPane(lista);
         pCentro2.add(jsp);

@@ -28,6 +28,11 @@ public class AuthWindow extends JFrame {
     private JPanel panelBotonesLogin = new JPanel(new FlowLayout(FlowLayout.CENTER));
     private JPanel panelBotonesSignUp = new JPanel(new FlowLayout(FlowLayout.CENTER));
     
+    private SpinnerModel weightSpinnerM = new SpinnerNumberModel(0, 0, 300, 1);
+    private SpinnerModel heightSpinnerM = new SpinnerNumberModel(0, 0, 250, 1);
+    private SpinnerModel maximunHeartRateSpinnerM = new SpinnerNumberModel(0, 0, 300, 1);
+    private SpinnerModel restingHeartRateSpinnerM = new SpinnerNumberModel(0, 0, 300, 1);
+    
     private JLabel userLabel = new JLabel("Email");
     private JTextField userText = new JTextField(20);
     private JLabel passwordLabel = new JLabel("Password");
@@ -37,13 +42,13 @@ public class AuthWindow extends JFrame {
     private JLabel birthDateLabel = new JLabel("BirthDate");
     private JTextField birthDateText = new JTextField(20);
     private JLabel weightLabel = new JLabel("Weight(Optional)");
-    private JTextField weightText = new JTextField(20);
+    private JSpinner weightSpinner = new JSpinner(weightSpinnerM);
     private JLabel heightLabel = new JLabel("Height(Optional)");
-    private JTextField heightText = new JTextField(20);
+    private JSpinner heightSpinner = new JSpinner(heightSpinnerM);
     private JLabel maximunHeartRateLabel = new JLabel("MaximunHeartRate(Optional)");
-    private JTextField maximunHeartRateText = new JTextField(20);
+    private JSpinner maximunHeartRateSpinner = new JSpinner(maximunHeartRateSpinnerM);
     private JLabel restingHeartRateLabel = new JLabel("RestingHeartRate(Optional)");
-    private JTextField restingHeartRateText = new JTextField(20);
+    private JSpinner restingHeartRateSpinner = new JSpinner(restingHeartRateSpinnerM);
     
     private JButton login = new JButton("Login");
     private JButton loginFacebook = new JButton("Login with Facebook");
@@ -89,7 +94,7 @@ public class AuthWindow extends JFrame {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-
+            	
             }
 
         });
@@ -216,13 +221,13 @@ public class AuthWindow extends JFrame {
         birthDateLabel.setPreferredSize(new Dimension(75, 25));
         birthDateText.setPreferredSize(new Dimension(50, 25));
         weightLabel.setPreferredSize(new Dimension(175, 25));
-        weightText.setPreferredSize(new Dimension(50, 25));
+        weightSpinner.setPreferredSize(new Dimension(50, 25));
         heightLabel.setPreferredSize(new Dimension(175, 25));
-        heightText.setPreferredSize(new Dimension(50, 25));
+        heightSpinner.setPreferredSize(new Dimension(50, 25));
         maximunHeartRateLabel.setPreferredSize(new Dimension(175, 25));
-        maximunHeartRateText.setPreferredSize(new Dimension(50, 25));
+        maximunHeartRateSpinner.setPreferredSize(new Dimension(50, 25));
         restingHeartRateLabel.setPreferredSize(new Dimension(175, 25));
-        restingHeartRateText.setPreferredSize(new Dimension(50, 25));
+        restingHeartRateSpinner.setPreferredSize(new Dimension(50, 25));
 
         login.setPreferredSize(new Dimension(150, 25));
         loginFacebook.setPreferredSize(new Dimension(150, 25));
@@ -238,15 +243,18 @@ public class AuthWindow extends JFrame {
         panelBirthDate.add(birthDateLabel);
         panelBirthDate.add(birthDateText);
         panelWeight.add(weightLabel);
-        panelWeight.add(weightText);
+        panelWeight.add(weightSpinner);
         panelHeight.add(heightLabel);
-        panelHeight.add(heightText);
+        panelHeight.add(heightSpinner);
         panelMaximunHeartRate.add(maximunHeartRateLabel);
-        panelMaximunHeartRate.add(maximunHeartRateText);
+        panelMaximunHeartRate.add(maximunHeartRateSpinner);
         panelRestingHeartRate.add(restingHeartRateLabel);
-        panelRestingHeartRate.add(restingHeartRateText);
+        panelRestingHeartRate.add(restingHeartRateSpinner);
         panelPassword.add(passwordLabel);
         panelPassword.add(passwordText);
+    }
+    void signUp() {
+    	//User user = new User();
     }
 
     JScrollPane generateScrollPane(JScrollPane scroll, ArrayList<JPanel> arrayDePaneles, JPanel panel) {

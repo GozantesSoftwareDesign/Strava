@@ -1,6 +1,7 @@
 package org.gozantes.strava.server.remote;
 
 import org.gozantes.strava.server.data.domain.auth.UserCredentials;
+import org.gozantes.strava.server.data.domain.auth.UserData;
 import org.gozantes.strava.server.data.domain.session.Session;
 import org.gozantes.strava.server.data.domain.session.SessionData;
 import org.gozantes.strava.server.data.domain.session.SessionFilters;
@@ -15,6 +16,8 @@ public interface IRemoteFacade extends Remote {
     public String login(UserCredentials creds) throws RemoteException, NoSuchAlgorithmException, InvalidKeySpecException;
 
     public void logout(String token) throws RemoteException;
+    
+    public String signup(UserCredentials creds, UserData data) throws RemoteException;
 
     public long createSession(String token, SessionData data) throws RemoteException;
 

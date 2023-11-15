@@ -1,4 +1,4 @@
-package internals.swing;
+package org.gozantes.strava.internals.swing;
 
 import javax.swing.*;
 import java.awt.*;

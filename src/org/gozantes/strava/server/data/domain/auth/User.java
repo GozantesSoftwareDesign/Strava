@@ -67,11 +67,11 @@ public final class User implements Mergeable {
         this.data = new UserData(this.data);
     }
 
-    public Pair<Integer, Integer[]> getHeartRate() {
+    public Pair<Integer, Integer> getHeartRate() {
         return this.data.heartRate();
     }
 
-    public void setHeartRate(Pair<Integer, Integer[]> heartRate) {
+    public void setHeartRate(Pair<Integer, Integer> heartRate) {
         this.data = new UserData(this.data, heartRate);
     }
 }

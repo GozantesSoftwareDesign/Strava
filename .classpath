@@ -11,6 +11,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/bcprov-jdk15to18-1.76.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/bcutil-jdk15to18-1.76.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/javax.persistence.jar"/>
-	<classpathentry kind="lib" path="lib/el-api-2.2.1-b04.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/el-api-2.2.1-b04.jar"/>
 	<classpathentry kind="output" path="out/production/Server"/>
 </classpath>

@@ -29,7 +29,7 @@ public final class SessionAppService {
         return new Session(SessionAppService.counter++, data);
     }
 
-    public Map<Long, Session> getSessions (SessionFilters filters) {
+    public Map<Long, Session> getSessions(SessionFilters filters) {
         return null;
     }
 }

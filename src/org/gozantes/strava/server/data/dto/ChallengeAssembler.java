@@ -20,17 +20,17 @@ public class ChallengeAssembler {
         return instance;
     }
 
-    public ChallengeDTO ChallengeToDTOPersonal (Challenge challenge) {
+    public ChallengeDTO ChallengeToDTO (Challenge challenge) {
         ChallengeDTO challengeDTO = new ChallengeDTO (challenge.getName (), challenge.getLapse (),
                 challenge.getSport (), challenge.isTimed () ? ((TimeChallenge) challenge).getGoal () :
                 ((DistanceChallenge) challenge).getGoal (), challenge.getId());
         return challengeDTO;
     }
-    public List <ChallengeDTO> ChallengesToDTOPersonal (List <Challenge> challenges) {
+    public List <ChallengeDTO> ChallengesToDTO (List <Challenge> challenges) {
         List <ChallengeDTO> dtos = new ArrayList <> ();
 
         for (Challenge challenge : challenges) {
-            dtos.add (this.ChallengeToDTOPersonal (challenge));
+            dtos.add (this.ChallengeToDTO (challenge));
         }
 
         return dtos;

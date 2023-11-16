@@ -9,9 +9,11 @@ import org.gozantes.strava.server.data.domain.auth.User;
 import org.gozantes.strava.server.data.domain.auth.UserCredentials;
 import org.gozantes.strava.server.data.domain.auth.UserData;
 import org.gozantes.strava.server.data.domain.challenge.Challenge;
+import org.gozantes.strava.server.data.domain.challenge.ChallengeFilters;
 import org.gozantes.strava.server.data.domain.session.SessionData;
 import org.gozantes.strava.server.data.domain.session.SessionFilters;
 import org.gozantes.strava.server.data.domain.session.SessionState;
+import org.gozantes.strava.server.data.dto.ChallengeAssembler;
 import org.gozantes.strava.server.data.dto.ChallengeDTO;
 import org.gozantes.strava.server.data.dto.SessionAssembler;
 import org.gozantes.strava.server.data.dto.SessionDTO;
@@ -141,6 +143,16 @@ public final class RemoteFacade extends UnicastRemoteObject implements IRemoteFa
         catch (Exception e) {
             Logger.getLogger ().severe (e);
         }
+    }
+
+    @Override
+    public List <ChallengeDTO> searchChallenges (ChallengeFilters filters) throws RemoteException {
+        if (filters != null)
+            filters = new ChallengeFilters (null, filters.title (), filters.lapse (), filters.sport (),
+                    filters.distance (), filters.duration ());
+
+        return ChallengeAssembler.getInstance ()
+                .ChallengesToDTOGlobal (ChallengeAppService.getInstance ().getChallenges (filters));
     }
 
     @Override

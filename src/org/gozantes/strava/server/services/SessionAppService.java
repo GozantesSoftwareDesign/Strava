@@ -98,7 +98,7 @@ public final class SessionAppService {
         Optional<Session> s =
                 SessionAppService.sessions.stream ().filter ((x) -> x.getId () == session).findFirst ();
 
-        if (s.isBlank ())
+        if (!s.isPresent())
             throw new RemoteException (String.format ("No such session (%s)", session));
 
         if (!(s.get ().getParent ().type ().equals (creds.type ()) && s.get ().getParent ().id ().equals (creds.id ())))

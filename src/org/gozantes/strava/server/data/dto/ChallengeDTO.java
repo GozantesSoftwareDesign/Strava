@@ -1,41 +1,45 @@
 package org.gozantes.strava.server.data.dto;
 
-import org.gozantes.strava.server.data.domain.challenge.activity.Activity;
-import org.gozantes.strava.server.data.domain.challenge.ChallengeState;
+import org.gozantes.strava.server.data.domain.Sport;
 
 import java.util.Date;
 import java.util.Objects;
 
-public record ChallengeDTO(String name, Date startDate, Date endDate, ChallengeState estado, Activity[] activities) {
-    public ChallengeDTO (String name, Date startDate, Date endDate, ChallengeState estado, Activity[] activities) {
+public record ChallengeDTO(String name, Date startDate, Date endDate, Sport sport) {
+    public ChallengeDTO (String name, Date startDate, Date endDate, Sport sport) {
         Objects.requireNonNull (name);
-        Objects.requireNonNull (activities);
+        Objects.requireNonNull (sport);
 
         this.name = name;
         this.startDate = startDate;
-        this.endDate = endDate;
-        this.estado = estado;
-        this.activities = activities;
+        this.endDate = endDate;       
+        this.sport = sport;
 
     }
 
-    public Date startDate () {
+    public Date getStartDate () {
         return startDate;
     }
 
-    public Date endDate () {
+    public Date getEndDate () {
         return endDate;
     }
 
-    public ChallengeState estado () {
-        return estado;
-    }
-
-    public String name () {
+    
+    public String getName () {
         return name;
     }
 
-    public Activity[] activities () {
-        return activities;
+    public Sport getSport () {
+        return sport;
     }
+
+	public boolean isTimed() {
+		Date fechaActual = new Date();
+		if(fechaActual.before(endDate)&&fechaActual.after(startDate)) {
+			return true;
+		}else {
+			return false;
+		}
+	}
 }

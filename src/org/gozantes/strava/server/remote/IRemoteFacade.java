@@ -42,5 +42,5 @@ public interface IRemoteFacade extends Remote {
     public void acceptChallenge (String token, long challenge) throws RemoteException;
 
     public Map <ChallengeDTO, Pair <Triplet <Object, Object, BigDecimal>, Map <Sport, List <SessionDTO>>>> getActiveChallengeStatus (
-            String token) throws RemoteException
+            String token) throws RemoteException;
 }

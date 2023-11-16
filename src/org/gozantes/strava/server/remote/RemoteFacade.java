@@ -211,3 +211,16 @@ public final class RemoteFacade extends UnicastRemoteObject implements IRemoteFa
 
         return map;
     }
+
+	@Override
+	public void createChallenge(String token) throws RemoteException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void acceptChallenge(String token, long challenge) throws RemoteException {
+		// TODO Auto-generated method stub
+		
+	}
+}

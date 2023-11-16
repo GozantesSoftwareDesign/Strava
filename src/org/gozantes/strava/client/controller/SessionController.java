@@ -8,6 +8,7 @@ import org.gozantes.strava.client.remote.ServiceLocator;
 import org.gozantes.strava.server.data.domain.session.Session;
 import org.gozantes.strava.server.data.domain.session.SessionData;
 import org.gozantes.strava.server.data.domain.session.SessionFilters;
+import org.gozantes.strava.server.data.domain.session.SessionState;
 import org.gozantes.strava.server.data.dto.SessionDTO;
 
 public class SessionController {
@@ -23,7 +24,7 @@ public class SessionController {
 			System.out.println("Error al crear reto "+e);
 		}
 	}
-	public Map<Long, SessionDTO> getSessions(String token){
+	public List<SessionDTO> getSessions(String token){
 		try {
 			return this.serviceLocator.getService().getSessions(token);
 		} catch (RemoteException e) {
@@ -31,7 +32,7 @@ public class SessionController {
 			return null;
 		}
 	}
-	public Map<Long, SessionDTO> searchSessions(SessionFilters filters){
+	public List<SessionDTO> searchSessions(SessionFilters filters){
 		try {
 			return this.serviceLocator.getService().searchSessions(filters);
 		} catch (RemoteException e) {
@@ -39,9 +40,9 @@ public class SessionController {
 			return null;
 		}
 	}
-	public void setSessionState(String token, long session) {
+	public void setSessionState(String token, long session, SessionState state) {
 		try {
-			this.serviceLocator.getService().setSessionState(token, session);
+			this.serviceLocator.getService().setSessionState(token, session,state);
 		} catch (Exception e) {
 			System.out.println("Error al establecer estado de la sesion "+e);
 		}

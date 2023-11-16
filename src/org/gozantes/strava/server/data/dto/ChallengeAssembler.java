@@ -19,14 +19,14 @@ public class ChallengeAssembler {
     }
 
     public ChallengeDTO ChallengeToDTOPrivate (Challenge challenge) {
-        ChallengeDTO challengeDTO = new ChallengeDTO (challenge.getName (), challenge.getStartDate (),
-                challenge.getEndDate (), challenge.getEstado (), challenge.getActivities ());
+        ChallengeDTO challengeDTO = new ChallengeDTO (challenge.getName (), challenge.getStart (),
+                challenge.getEnd(), challenge.getSport());
         return challengeDTO;
     }
 
     public ChallengeDTO ChallengeToDTOPublic (Challenge challenge) {
-        ChallengeDTO challengeDTO = new ChallengeDTO (challenge.getName (), null, null, null,
-                challenge.getActivities ());
+        ChallengeDTO challengeDTO = new ChallengeDTO (challenge.getName (), null, null,
+                challenge.getSport());
         return challengeDTO;
     }
 

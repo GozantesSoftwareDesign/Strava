@@ -37,7 +37,7 @@ public class AuthController {
         }
         catch (RemoteException e) {
             // TODO Auto-generated catch block
-            Logger.getLogger ().severe (String.format ("Could not log out the user", e.getMessage ()));
+            Logger.getLogger ().severe (String.format ("Could not log out the user: %s", e.getMessage ()));
         }
     }
 
@@ -48,7 +48,7 @@ public class AuthController {
         }
         catch (RemoteException e) {
             token = null;
-            Logger.getLogger ().severe (String.format ("Could not sign in the user", e.getMessage ()));
+            Logger.getLogger ().severe (String.format ("Could not sign in the user: %s", e.getMessage()));
             return false;
         }
     }

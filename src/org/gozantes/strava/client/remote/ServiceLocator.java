@@ -1,5 +1,6 @@
 package org.gozantes.strava.client.remote;
 
+import org.gozantes.strava.server.ServerParams;
 import org.gozantes.strava.server.remote.IRemoteFacade;
 
 import java.rmi.Naming;
@@ -11,16 +12,15 @@ public class ServiceLocator {
     private IRemoteFacade service;
 
     @SuppressWarnings ({ "removal", "deprecation" })
-    public void setService (String ip, String port, String serviceName) {
+    public void setService (ServerParams sp) {
         //Activate Security Manager. It is needed for RMI.
         if (System.getSecurityManager () == null) {
             System.setSecurityManager (new SecurityManager ());
         }
-
+        System.out.println(sp.fullName());
         //Get Remote Facade reference using RMIRegistry (IP + Port) and the service name.
         try {
-            String URL = "//" + ip + ":" + port + "/" + serviceName;
-            this.service = (IRemoteFacade) Naming.lookup (URL);
+            this.service = (IRemoteFacade) Naming.lookup ("rmi://" + sp.ip().getHostAddress() + ":" + sp.port() + "/" + sp.name());
         }
         catch (Exception ex) {
             System.err.println ("# Error locating remote facade: " + ex);

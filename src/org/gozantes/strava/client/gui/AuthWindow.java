@@ -1,6 +1,11 @@
 package org.gozantes.strava.client.gui;
 
+import org.gozantes.strava.client.controller.AuthController;
+import org.gozantes.strava.internals.logging.Logger;
 import org.gozantes.strava.internals.swing.ImageDisplayer;
+import org.gozantes.strava.internals.types.Pair;
+import org.gozantes.strava.internals.types.TextPrompt;
+import org.gozantes.strava.server.data.domain.auth.*;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -8,12 +13,19 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Objects;
 
 public class AuthWindow extends JFrame {
 
     private static final long serialVersionUID = 1L;
+    private AuthController controller;	
+    
     private JFrame frame = new JFrame ("STRAVA");
     private JPanel panelPrincipal = new JPanel (new GridLayout (4, 1));
     private JPanel panelUser = new JPanel (new FlowLayout (FlowLayout.CENTER));
@@ -27,10 +39,12 @@ public class AuthWindow extends JFrame {
     private JPanel panelBotonesLogin = new JPanel (new FlowLayout (FlowLayout.CENTER));
     private JPanel panelBotonesSignUp = new JPanel (new FlowLayout (FlowLayout.CENTER));
 
-    private SpinnerModel weightSpinnerM = new SpinnerNumberModel (0, 0, 300, 1);
-    private SpinnerModel heightSpinnerM = new SpinnerNumberModel (0, 0, 250, 1);
-    private SpinnerModel maximunHeartRateSpinnerM = new SpinnerNumberModel (0, 0, 300, 1);
-    private SpinnerModel restingHeartRateSpinnerM = new SpinnerNumberModel (0, 0, 300, 1);
+    private SpinnerNumberModel weightSpinnerM = new SpinnerNumberModel (0, 0, 300, 1);
+    private SpinnerNumberModel heightSpinnerM = new SpinnerNumberModel (0, 0, 250, 1);
+    private SpinnerNumberModel maximunHeartRateSpinnerM = new SpinnerNumberModel (0, 0, 300, 1);
+    private SpinnerNumberModel restingHeartRateSpinnerM = new SpinnerNumberModel (0, 0, 300, 1);
+    
+    private DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
 
     private JLabel userLabel = new JLabel ("Email");
     private JTextField userText = new JTextField (20);
@@ -39,7 +53,7 @@ public class AuthWindow extends JFrame {
     private JLabel nameLabel = new JLabel ("Name");
     private JTextField nameText = new JTextField (20);
     private JLabel birthDateLabel = new JLabel ("BirthDate");
-    private JTextField birthDateText = new JTextField (20);
+    private JTextField birthDateText = new JTextField ();
     private JLabel weightLabel = new JLabel ("Weight(Optional)");
     private JSpinner weightSpinner = new JSpinner (weightSpinnerM);
     private JLabel heightLabel = new JLabel ("Height(Optional)");
@@ -48,18 +62,22 @@ public class AuthWindow extends JFrame {
     private JSpinner maximunHeartRateSpinner = new JSpinner (maximunHeartRateSpinnerM);
     private JLabel restingHeartRateLabel = new JLabel ("RestingHeartRate(Optional)");
     private JSpinner restingHeartRateSpinner = new JSpinner (restingHeartRateSpinnerM);
-
+    
+	//private TextPrompt placeholder = new TextPrompt("dd/MM/yyyy", birthDateText);
+    
     private JButton login = new JButton ("Login");
-    private JButton loginFacebook = new JButton ("Login with Facebook");
+    private JButton loginMeta = new JButton ("Login with Meta");
     private JButton loginGoogle = new JButton ("Login with Google");
     private JButton signUp = new JButton ("Sign up");
-    private JButton signUpFacebook = new JButton ("Sign up with Facebook");
+    private JButton signUpMeta = new JButton ("Sign up with Meta");
     private JButton signUpGoogle = new JButton ("Sign up with Google");
 
     private ImageDisplayer iconoGoogle;
-    private ImageDisplayer iconoFacebook;
+    private ImageDisplayer iconoMeta;
 
-    public AuthWindow () {
+    public AuthWindow (AuthController controller) {
+    	
+    	this.controller = controller;
         frame.setSize (700, 500);
         frame.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
         frame.setVisible (true);
@@ -74,8 +92,8 @@ public class AuthWindow extends JFrame {
             e.printStackTrace ();
         }
         try {
-            iconoFacebook = new ImageDisplayer (ImageIO.read (
-                    Objects.requireNonNull (this.getClass ().getClassLoader ().getResource ("Facebook.png"))), 25, 25);
+            iconoMeta = new ImageDisplayer (ImageIO.read (
+                    Objects.requireNonNull (this.getClass ().getClassLoader ().getResource ("Meta.png"))), 25, 25);
         }
         catch (IOException e) {
             e.printStackTrace ();
@@ -97,15 +115,15 @@ public class AuthWindow extends JFrame {
 
             @Override
             public void actionPerformed (ActionEvent e) {
-
+            	signUp(CredType.Google);
             }
 
         });
-        signUpFacebook.addActionListener (new ActionListener () {
+        signUpMeta.addActionListener (new ActionListener () {
 
             @Override
             public void actionPerformed (ActionEvent e) {
-
+            	signUp(CredType.Meta);
             }
 
         });
@@ -121,15 +139,15 @@ public class AuthWindow extends JFrame {
 
             @Override
             public void actionPerformed (ActionEvent e) {
-
+            	login(CredType.Google);
             }
 
         });
-        loginFacebook.addActionListener (new ActionListener () {
+        loginMeta.addActionListener (new ActionListener () {
 
             @Override
             public void actionPerformed (ActionEvent e) {
-
+            	login(CredType.Meta);
             }
 
         });
@@ -157,8 +175,8 @@ public class AuthWindow extends JFrame {
         switch (estado) {
             case 0:
 
-                panelBotonesLogin.add (loginFacebook);
-                panelBotonesLogin.add (iconoFacebook);
+                panelBotonesLogin.add (loginMeta);
+                panelBotonesLogin.add (iconoMeta);
                 panelBotonesLogin.add (loginGoogle);
                 panelBotonesLogin.add (iconoGoogle);
                 panelBotonesSignUp.add (signUp);
@@ -186,8 +204,8 @@ public class AuthWindow extends JFrame {
                 break;
             case 1:
 
-                panelBotonesLogin.add (signUpFacebook);
-                panelBotonesLogin.add (iconoFacebook);
+                panelBotonesLogin.add (signUpMeta);
+                panelBotonesLogin.add (iconoMeta);
                 panelBotonesLogin.add (signUpGoogle);
                 panelBotonesLogin.add (iconoGoogle);
                 panelBotonesSignUp.add (login);
@@ -226,7 +244,7 @@ public class AuthWindow extends JFrame {
         nameLabel.setPreferredSize (new Dimension (75, 25));
         nameText.setPreferredSize (new Dimension (50, 25));
         birthDateLabel.setPreferredSize (new Dimension (75, 25));
-        birthDateText.setPreferredSize (new Dimension (50, 25));
+        birthDateText.setPreferredSize (new Dimension (100, 25));
         weightLabel.setPreferredSize (new Dimension (175, 25));
         weightSpinner.setPreferredSize (new Dimension (50, 25));
         heightLabel.setPreferredSize (new Dimension (175, 25));
@@ -237,14 +255,16 @@ public class AuthWindow extends JFrame {
         restingHeartRateSpinner.setPreferredSize (new Dimension (50, 25));
 
         login.setPreferredSize (new Dimension (150, 25));
-        loginFacebook.setPreferredSize (new Dimension (150, 25));
+        loginMeta.setPreferredSize (new Dimension (150, 25));
         loginGoogle.setPreferredSize (new Dimension (150, 25));
         signUp.setPreferredSize (new Dimension (150, 25));
-        signUpFacebook.setPreferredSize (new Dimension (170, 25));
+        signUpMeta.setPreferredSize (new Dimension (170, 25));
         signUpGoogle.setPreferredSize (new Dimension (150, 25));
 
         panelUser.add (userLabel);
         panelUser.add (userText);
+        panelPassword.add (passwordLabel);
+        panelPassword.add (passwordText);
         panelName.add (nameLabel);
         panelName.add (nameText);
         panelBirthDate.add (birthDateLabel);
@@ -257,14 +277,40 @@ public class AuthWindow extends JFrame {
         panelMaximunHeartRate.add (maximunHeartRateSpinner);
         panelRestingHeartRate.add (restingHeartRateLabel);
         panelRestingHeartRate.add (restingHeartRateSpinner);
-        panelPassword.add (passwordLabel);
-        panelPassword.add (passwordText);
     }
 
-    void signUp () {
-        //User user = new User();
+    void signUp (CredType type) {
+    	Pair <Integer, Integer> HeartRate = new Pair<>((Integer)maximunHeartRateSpinner.getValue(),(Integer) restingHeartRateSpinner.getValue());
+    	UserData data = null;
+    	BigDecimal w;
+    	Integer h;
+    	if ((Integer)weightSpinner.getValue() == 0) {
+    		w = null;
+    	} else {
+    		w = BigDecimal.valueOf((long) weightSpinner.getValue());
+    	}
+    	if ((Integer) heightSpinner.getValue() == 0) {
+    		h = null;
+    	} else {
+    		h = (Integer) heightSpinner.getValue();
+    	}
+    	System.out.println(birthDateText.getText());
+    	try {
+    		Date birth = formatter.parse(birthDateText.getText());
+    		
+			data = new UserData(userText.getText(), birth, w, h, HeartRate);
+		} catch (ParseException e) {
+			Logger.getLogger().severe("Birthdate cant be parse: " + e.getMessage());
+		}
+    	UserCredentials creds = new UserCredentials(type, userText.getText(),new String(passwordText.getPassword()));
+        boolean res = this.controller.signUp(creds, data);
+        Logger.getLogger().info("sign up result: " + res);
     }
-
+    void login(CredType type) {
+    	UserCredentials creds = new UserCredentials(type, userText.getText(),new String(passwordText.getPassword()));
+    	boolean res = this.controller.login(creds);
+    	Logger.getLogger().info("login result: " + res);
+    }
     JScrollPane generateScrollPane (JScrollPane scroll, ArrayList <JPanel> arrayDePaneles, JPanel panel) {
         scroll.setViewportView (panel);
         arrayDePaneles.get (0).setBounds (scroll.getX (), scroll.getY (), scroll.getWidth () - 50, 50);

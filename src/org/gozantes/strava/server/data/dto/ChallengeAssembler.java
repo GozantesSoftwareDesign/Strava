@@ -20,34 +20,34 @@ public class ChallengeAssembler {
         return instance;
     }
 
-    public ChallengeDTO ChallengeToDTOPrivate (Challenge challenge) {
+    public ChallengeDTO ChallengeToDTOPersonal (Challenge challenge) {
         ChallengeDTO challengeDTO = new ChallengeDTO (challenge.getName (), challenge.getLapse (),
                 challenge.getSport (), challenge.isTimed () ? ((TimeChallenge) challenge).getGoal () :
-                ((DistanceChallenge) challenge).getGoal ());
+                ((DistanceChallenge) challenge).getGoal (), challenge.getId());
         return challengeDTO;
     }
 
-    public ChallengeDTO ChallengeToDTOPublic (Challenge challenge) {
+    public ChallengeDTO ChallengeToDTOGlobal (Challenge challenge) {
         ChallengeDTO challengeDTO = new ChallengeDTO (challenge.getName (), null, null,
-                challenge.getSport ());
+                challenge.getSport (), challenge.getId());
         return challengeDTO;
     }
 
-    public List <ChallengeDTO> ChallengesToDTOPrivate (List <Challenge> challenges) {
+    public List <ChallengeDTO> ChallengesToDTOPersonal (List <Challenge> challenges) {
         List <ChallengeDTO> dtos = new ArrayList <> ();
 
         for (Challenge challenge : challenges) {
-            dtos.add (this.ChallengeToDTOPrivate (challenge));
+            dtos.add (this.ChallengeToDTOPersonal (challenge));
         }
 
         return dtos;
     }
 
-    public List <ChallengeDTO> ChallengesToDTOPublic (List <Challenge> challenges) {
+    public List <ChallengeDTO> ChallengesToDTOGlobal (List <Challenge> challenges) {
         List <ChallengeDTO> dtos = new ArrayList <> ();
 
         for (Challenge challenge : challenges) {
-            dtos.add (this.ChallengeToDTOPublic (challenge));
+            dtos.add (this.ChallengeToDTOGlobal (challenge));
         }
 
         return dtos;

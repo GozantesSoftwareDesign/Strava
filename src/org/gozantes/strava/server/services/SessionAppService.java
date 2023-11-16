@@ -74,13 +74,13 @@ public final class SessionAppService {
                 ? SessionAppService.sessions.stream ().filter (
                 (x) -> (filters.user () == null || (filters.user ().id ().equals (x.getParent ().id ())
                         && filters.user ().type ().equals (filters.user ().type ()))) && x.getTitle ().toLowerCase ()
-                        .contains ((filters.title () == null ? filters.title () : "").toLowerCase ()) && (
+                        .contains (((filters.title () == null ? filters.title () : "").strip ()).toLowerCase ()) && (
                         filters.sport () == null || x.getSport ().equals (filters.sport ())) && (
                         filters.distance () == null || filters.distance ().x () == null
                                 || filters.distance ().x ().compareTo (x.getDistance ()) <= 0) && (
                         filters.distance () == null || filters.distance ().y () == null
                                 || filters.distance ().y ().compareTo (x.getDistance ()) >= 0) && (
-                        filters.duration () == null || filters.distance ().x () == null
+                        filters.duration () == null || filters.duration ().x () == null
                                 || filters.duration ().x ().compareTo (x.getDuration ()) <= 0) && (
                         filters.duration () == null || filters.duration ().y () == null
                                 || filters.duration ().y ().compareTo (x.getDuration ()) >= 0)).toList ()
@@ -94,8 +94,7 @@ public final class SessionAppService {
         if (state == null)
             throw new RemoteException ("The state cannot be null.");
 
-        Optional <Session> s =
-                SessionAppService.sessions.stream ().filter ((x) -> x.getId () == session).findFirst ();
+        Optional <Session> s = SessionAppService.sessions.stream ().filter ((x) -> x.getId () == session).findFirst ();
 
         if (!s.isPresent ())
             throw new RemoteException (String.format ("No such session (%s)", session));

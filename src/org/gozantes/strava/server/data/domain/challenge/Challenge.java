@@ -24,6 +24,8 @@ public abstract class Challenge {
 
         Objects.requireNonNull (name);
         Objects.requireNonNull (lapse);
+        Objects.requireNonNull (lapse.x ());
+        Objects.requireNonNull (lapse.y ());
         Objects.requireNonNull (parent);
 
         if (name.isBlank ())

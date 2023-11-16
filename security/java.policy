@@ -12,4 +12,6 @@ grant codeBase "file:${user.dir}/-" {
 
 grant {
     permission java.util.logging.LoggingPermission "control";
+    permission java.util.logging.PropertyPermission "os.name", "read";
+    permission java.io.FilePermission "file:/usr/bin", "execute";
 };

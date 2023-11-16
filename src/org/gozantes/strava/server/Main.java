@@ -5,13 +5,14 @@ import org.gozantes.strava.internals.security.Security;
 import org.gozantes.strava.server.remote.IRemoteFacade;
 import org.gozantes.strava.server.remote.RemoteFacade;
 
+import java.io.IOException;
 import java.net.URISyntaxException;
-import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.security.NoSuchAlgorithmException;
 
 public class Main {
-    public static void main (String[] args) throws RemoteException, URISyntaxException, NoSuchAlgorithmException {
+    public static void main (String[] args)
+            throws IOException, URISyntaxException, NoSuchAlgorithmException {
         Security.init ();
 
         try {

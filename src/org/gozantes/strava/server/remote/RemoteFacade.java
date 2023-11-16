@@ -9,13 +9,16 @@ import org.gozantes.strava.server.data.domain.auth.User;
 import org.gozantes.strava.server.data.domain.auth.UserCredentials;
 import org.gozantes.strava.server.data.domain.auth.UserData;
 import org.gozantes.strava.server.data.domain.challenge.Challenge;
+import org.gozantes.strava.server.data.domain.challenge.ChallengeFilters;
 import org.gozantes.strava.server.data.domain.session.SessionData;
 import org.gozantes.strava.server.data.domain.session.SessionFilters;
 import org.gozantes.strava.server.data.domain.session.SessionState;
+import org.gozantes.strava.server.data.dto.ChallengeAssembler;
 import org.gozantes.strava.server.data.dto.ChallengeDTO;
 import org.gozantes.strava.server.data.dto.SessionAssembler;
 import org.gozantes.strava.server.data.dto.SessionDTO;
 import org.gozantes.strava.server.services.AuthAppService;
+import org.gozantes.strava.server.services.ChallengeAppService;
 import org.gozantes.strava.server.services.SessionAppService;
 
 import java.math.BigDecimal;
@@ -93,6 +96,7 @@ public final class RemoteFacade extends UnicastRemoteObject implements IRemoteFa
 
             Logger.getLogger ().info ("Logout successful for token " + token + ".");
         }
+
         else
             Logger.getLogger ().warning (new RemoteException ("Token " + token + " belongs to no logged users."));
     }
@@ -142,10 +146,50 @@ public final class RemoteFacade extends UnicastRemoteObject implements IRemoteFa
     }
 
     @Override
+    public List <ChallengeDTO> searchChallenges (ChallengeFilters filters) throws RemoteException {
+        if (filters != null)
+            filters = new ChallengeFilters (null, filters.title (), filters.lapse (), filters.sport (),
+                    filters.distance (), filters.duration ());
+
+        return ChallengeAssembler.getInstance ()
+                .ChallengesToDTOGlobal (ChallengeAppService.getInstance ().getChallenges (filters));
+    }
+
+    @Override
     public List <ChallengeDTO> getActiveChallenges (String token) throws RemoteException {
         return null;
     }
 
+    @Override
+    public boolean createChallenge (String token, Challenge data) throws RemoteException {
+        if (!this.state.containsKey (token))
+            Logger.getLogger ()
+                    .severe (new RemoteException ("The user trying to create the challenge is not logged in."));
+
+        ChallengeAppService.getInstance ().create (this.state.get (token).getCredentials (), data);
+
+        return true;
+    }
+
+    @Override
+    public void acceptChallenge (String token, long challenge) throws RemoteException {
+        // TODO Auto-generated method stub
+    }
+
+    /*
+     * The layout of the return type consists of a map:
+     * - (Key) A challenge express as a Data Transfer Object
+     * - (Value) A pair of:
+     *   - A triplet containing:
+     *     - An Object that might be:
+     *       - An instance of Duration representing the time completed by the user
+     *       - An instance of BigDecimal representing the amount of kilometers the user has run
+     *     - An object that might be:
+     *       - An instance of Duration representing the total challenge time
+     *       - An instance of BigDecimal
+     *     - The completion rate (0 <= r <= 1, either t / tT or d / dT) as BigDecimal
+     *   - The sessions, mapped by sport
+     * */
     @Override
     public Map <ChallengeDTO, Pair <Triplet <Object, Object, BigDecimal>, Map <Sport, List <SessionDTO>>>> getActiveChallengeStatus (
             String token) throws RemoteException {
@@ -155,9 +199,8 @@ public final class RemoteFacade extends UnicastRemoteObject implements IRemoteFa
             List <SessionDTO> sessionTotal = this.getSessions (token);
 
             sessions = Map.ofEntries ((Map.Entry[]) List.of ((ChallengeDTO) null).stream ().map ((c) -> Map.entry (c,
-                            sessionTotal.stream ()
-                                    .filter ((s) -> c.sport () == null || c.sport ().equals (s.data ().sport ()))))
-                    .toArray ());
+                    sessionTotal.stream ()
+                            .filter ((s) -> c.sport () == null || c.sport ().equals (s.data ().sport ())))).toArray ());
         }
 
         Map <ChallengeDTO, Pair <Triplet <Object, Object, BigDecimal>, Map <Sport, List <SessionDTO>>>> map =
@@ -206,21 +249,9 @@ public final class RemoteFacade extends UnicastRemoteObject implements IRemoteFa
                 ret[2] = ((BigDecimal) (ret[0] = d[0])).divide ((BigDecimal) (ret[1] = d[1]));
             }
 
-            map.put (k, new Pair <> (new Triplet <> (ret[0], ret[1], (BigDecimal) ret[2]), m));
+            map.put (k, new Pair <> (new Triplet <> (ret[0], ret[1], ((BigDecimal) ret[2]).setScale (2)), m));
         }
 
         return map;
-    }
-
-    @Override
-    public void createChallenge (String token) throws RemoteException {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void acceptChallenge (String token, long challenge) throws RemoteException {
-        // TODO Auto-generated method stub
-
     }
 }

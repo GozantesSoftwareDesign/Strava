@@ -30,16 +30,7 @@ public class AuthController {
         }
     }
 
-    public void logout () {
-        try {
-            this.serviceLocator.getService ().logout (this.token);
-            token = null;
-        }
-        catch (RemoteException e) {
-            // TODO Auto-generated catch block
-            Logger.getLogger ().severe (String.format ("Could not log out the user: %s", e.getMessage ()));
-        }
-    }
+    
 
     public Boolean signUp (UserCredentials creds, UserData data) {
         try {

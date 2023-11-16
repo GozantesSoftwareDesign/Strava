@@ -8,8 +8,8 @@ import java.time.Duration;
 import java.util.Date;
 import java.util.Objects;
 
-public record ChallengeDTO(String name, Pair <Date, Date> lapse, Sport sport, Object goal) {
-    public ChallengeDTO (String name, Pair <Date, Date> lapse, Sport sport, Object goal) {
+public record ChallengeDTO(String name, Pair <Date, Date> lapse, Sport sport, Object goal, long id) {
+    public ChallengeDTO (String name, Pair <Date, Date> lapse, Sport sport, Object goal, long id) {
         Objects.requireNonNull (name);
         Objects.requireNonNull (lapse);
         Objects.requireNonNull (goal);
@@ -29,6 +29,7 @@ public record ChallengeDTO(String name, Pair <Date, Date> lapse, Sport sport, Ob
         this.lapse = lapse;
         this.sport = sport;
         this.goal = goal;
+        this.id = id;
     }
 
     public Pair <Date, Date> lapse () {

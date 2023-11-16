@@ -63,7 +63,7 @@ public class AuthWindow extends JFrame {
     private JLabel restingHeartRateLabel = new JLabel ("RestingHeartRate(Optional)");
     private JSpinner restingHeartRateSpinner = new JSpinner (restingHeartRateSpinnerM);
     
-	//private TextPrompt placeholder = new TextPrompt("dd/MM/yyyy", birthDateText);
+	private TextPrompt placeholder = new TextPrompt("dd/MM/yyyy", birthDateText);
     
     private JButton login = new JButton ("Login");
     private JButton loginMeta = new JButton ("Login with Meta");

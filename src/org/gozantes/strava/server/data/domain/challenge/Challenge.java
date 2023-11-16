@@ -4,15 +4,19 @@ import org.gozantes.strava.internals.types.Pair;
 import org.gozantes.strava.server.data.domain.Sport;
 import org.gozantes.strava.server.data.domain.auth.UserCredentials;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 public abstract class Challenge {
     protected final String name;
     protected final Pair <Date, Date> lapse;
     protected final Sport sport;
-    protected final UserCredentials parent;
+
     protected Long id;
+    protected final UserCredentials parent;
+    protected final List <UserCredentials> participants = new ArrayList <UserCredentials> ();
 
     protected Challenge (String name, Pair <Date, Date> lapse, Sport sport, UserCredentials parent) throws Exception {
         this (null, name, lapse, sport, parent);
@@ -75,5 +79,9 @@ public abstract class Challenge {
 
     public final boolean isTimed () {
         return this instanceof TimeChallenge;
+    }
+
+    public final List<UserCredentials> getParticipants () {
+        return this.participants;
     }
 }

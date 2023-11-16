@@ -79,6 +79,7 @@ public final class RemoteFacade extends UnicastRemoteObject implements IRemoteFa
         try {
             user = AuthAppService.getInstance ().signup (creds, data);
         }
+
         catch (Exception e) {
             Logger.getLogger ().severe (String.format ("Could not create the user object: %s", e.getMessage ()), e);
         }
@@ -151,13 +152,35 @@ public final class RemoteFacade extends UnicastRemoteObject implements IRemoteFa
             filters = new ChallengeFilters (null, filters.title (), filters.lapse (), filters.sport (),
                     filters.distance (), filters.duration ());
 
-        return ChallengeAssembler.getInstance ()
-                .ChallengesToDTOGlobal (ChallengeAppService.getInstance ().getChallenges (filters));
+        List <ChallengeDTO> c = null;
+
+        try {
+            c = ChallengeAssembler.getInstance ()
+                    .ChallengesToDTO (ChallengeAppService.getInstance ().getChallenges (filters));
+        }
+        catch (Exception e) {
+            Logger.getLogger ().severe (e);
+        }
+
+        return c;
     }
 
     @Override
     public List <ChallengeDTO> getActiveChallenges (String token) throws RemoteException {
-        return null;
+        if (!this.state.containsKey (token))
+            Logger.getLogger ().severe (new RemoteException (
+                    "The user trying to get their active challenges is not " + "currently logged in."));
+
+        List <ChallengeDTO> c = null;
+        try {
+            c = ChallengeAssembler.getInstance ().ChallengesToDTO (ChallengeAppService.getInstance ()
+                    .getChallenges (new ChallengeFilters (this.state.get (token).getCredentials ())));
+        }
+        catch (Exception e) {
+            Logger.getLogger ().severe (e);
+        }
+
+        return c;
     }
 
     @Override
@@ -166,14 +189,25 @@ public final class RemoteFacade extends UnicastRemoteObject implements IRemoteFa
             Logger.getLogger ()
                     .severe (new RemoteException ("The user trying to create the challenge is not logged in."));
 
-        ChallengeAppService.getInstance ().create (this.state.get (token).getCredentials (), data);
+        try {
+            ChallengeAppService.getInstance ().create (this.state.get (token).getCredentials (), data);
+        }
+        catch (Exception e) {
+            Logger.getLogger ().severe ("Could not create challenge: " + e.getMessage ());
+
+            return false;
+        }
 
         return true;
     }
 
     @Override
     public void acceptChallenge (String token, long challenge) throws RemoteException {
-        // TODO Auto-generated method stub
+        if (!this.state.containsKey (token))
+            Logger.getLogger ()
+                    .severe (new RemoteException ("The user trying to create the challenge is not logged in."));
+
+        ChallengeAppService.getInstance ().accept (this.state.get (token).getCredentials (), challenge);
     }
 
     /*

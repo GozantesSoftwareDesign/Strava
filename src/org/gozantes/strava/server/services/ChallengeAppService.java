@@ -96,4 +96,20 @@ public final class ChallengeAppService {
                                         && filters.duration ().y ().compareTo (((TimeChallenge) x).getGoal ()) >= 0)))
                         .toList ();
     }
+
+    public void accept (UserCredentials creds, long challenge) throws RemoteException {
+        final Optional <Challenge> c = ChallengeAppService.challenges.stream ()
+                .filter ((x) -> x.getId ().equals (challenge)).findFirst ();
+
+        if (c.isEmpty ())
+            throw new RemoteException (String.format ("No challenges with ID %ld could be found."));
+
+        if (c.get ().getParticipants ().stream ()
+                .anyMatch ((x) -> x.type ().equals (creds.type ()) && x.id ().equals (creds.id ())))
+            throw new RemoteException (
+                    String.format ("User %s (%s) has already accepted challenge %ld", creds.id (), creds.type (),
+                            challenge));
+
+        c.get ().getParticipants ().add (creds);
+    }
 }

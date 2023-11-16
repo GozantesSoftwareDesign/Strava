@@ -26,28 +26,11 @@ public class ChallengeAssembler {
                 ((DistanceChallenge) challenge).getGoal (), challenge.getId());
         return challengeDTO;
     }
-
-    public ChallengeDTO ChallengeToDTOGlobal (Challenge challenge) {
-        ChallengeDTO challengeDTO = new ChallengeDTO (challenge.getName (), null, null,
-                challenge.getSport (), challenge.getId());
-        return challengeDTO;
-    }
-
     public List <ChallengeDTO> ChallengesToDTOPersonal (List <Challenge> challenges) {
         List <ChallengeDTO> dtos = new ArrayList <> ();
 
         for (Challenge challenge : challenges) {
             dtos.add (this.ChallengeToDTOPersonal (challenge));
-        }
-
-        return dtos;
-    }
-
-    public List <ChallengeDTO> ChallengesToDTOGlobal (List <Challenge> challenges) {
-        List <ChallengeDTO> dtos = new ArrayList <> ();
-
-        for (Challenge challenge : challenges) {
-            dtos.add (this.ChallengeToDTOGlobal (challenge));
         }
 
         return dtos;

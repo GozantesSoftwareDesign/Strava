@@ -7,9 +7,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class AuthWindow extends JFrame {
 
@@ -67,13 +67,15 @@ public class AuthWindow extends JFrame {
         frame.setLayout (null);
 
         try {
-            iconoGoogle = new ImageDisplayer (ImageIO.read (new File ("img/Google.png")), 25, 25);
+            iconoGoogle = new ImageDisplayer (ImageIO.read (
+                    Objects.requireNonNull (this.getClass ().getClassLoader ().getResource ("Google.png"))), 25, 25);
         }
         catch (IOException e) {
             e.printStackTrace ();
         }
         try {
-            iconoFacebook = new ImageDisplayer (ImageIO.read (new File ("img/Facebook.png")), 25, 25);
+            iconoFacebook = new ImageDisplayer (ImageIO.read (
+                    Objects.requireNonNull (this.getClass ().getClassLoader ().getResource ("Facebook.png"))), 25, 25);
         }
         catch (IOException e) {
             e.printStackTrace ();

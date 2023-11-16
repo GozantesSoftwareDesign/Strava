@@ -1,15 +1,19 @@
 package org.gozantes.strava.client.gui;
 
+import java.time.Duration;
 import org.gozantes.strava.client.controller.AuthController;
-import org.gozantes.strava.client.controller.ChallengeController;
 import org.gozantes.strava.client.controller.MainController;
-import org.gozantes.strava.client.controller.SessionController;
 import org.gozantes.strava.client.remote.ServiceLocator;
+import org.gozantes.strava.internals.logging.Logger;
+import org.gozantes.strava.internals.types.Pair;
 import org.gozantes.strava.server.data.domain.Sport;
 import org.gozantes.strava.server.data.domain.auth.User;
 import org.gozantes.strava.server.data.domain.auth.UserCredentials;
 import org.gozantes.strava.server.data.domain.challenge.Challenge;
+import org.gozantes.strava.server.data.domain.challenge.DistanceChallenge;
+import org.gozantes.strava.server.data.domain.challenge.TimeChallenge;
 import org.gozantes.strava.server.data.domain.session.Session;
+import org.gozantes.strava.server.data.domain.session.SessionData;
 import org.gozantes.strava.server.data.domain.session.SessionFilters;
 import org.gozantes.strava.server.data.dto.ChallengeDTO;
 import org.gozantes.strava.server.data.dto.SessionDTO;
@@ -22,7 +26,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class MainWindow extends JFrame {
@@ -35,8 +41,13 @@ public class MainWindow extends JFrame {
     private JButton botonChallenge = new JButton ("Challenge");
     private JButton botonSession = new JButton ("Sesi�n");
     private JButton logout = new JButton ("Logout");
+    
     private JScrollPane jsp = new JScrollPane ();
+    
+    private JComboBox <Sport> abelTexto5 = new JComboBox <> ();
+    private JComboBox <String> kmorseg = new JComboBox <> ();
 
+    private UserCredentials userCredentials;
     private ServiceLocator serviceLocator;
     private MainController mainController;
     private ChallengeDTO cselected;
@@ -44,12 +55,13 @@ public class MainWindow extends JFrame {
     private List <SessionDTO> acceptedSessionThem = mainController.searchSessions(new SessionFilters(new UserCredentials(null)));
     private List <SessionDTO> acceptedSession = mainController.getSessions();
 
-    public MainWindow (ServiceLocator serviceLocator,MainController mainController) {
+    public MainWindow (UserCredentials userCredentials, ServiceLocator serviceLocator,MainController mainController) {
         super ();
         setBounds (300, 100, 600, 400);
         setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
         this.mainController=mainController;
         this.serviceLocator=serviceLocator;
+        this.userCredentials=userCredentials;
 
         pTodo = new JPanel (new BorderLayout (0, 1));
         pNorte.setBackground (new Color (255, 255, 255));
@@ -133,7 +145,7 @@ public class MainWindow extends JFrame {
                 JLabel etiqueta5 = new JLabel ("Hora de inicio:");
                 JTextField campoTexto5 = new JTextField (15);
 
-                JLabel etiqueta6 = new JLabel ("Duraci�n:");
+                JLabel etiqueta6 = new JLabel ("Duracion:");
                 JTextField campoTexto6 = new JTextField (15);
 
                 JButton boton1 = new JButton ("Crear");
@@ -196,6 +208,22 @@ public class MainWindow extends JFrame {
                         //acceptedSession.add(new Session(campoTexto1.getText(),sp,Double.parseDouble(campoTexto5
                         // .getText()),new Date(campoTexto6.getText()),new Time(Long.parseLong(campoTexto4.getText())
                         // ),Integer.parseInt(etiqueta3.getText())));
+                    	String st=campoTexto1.getText();
+                    	Sport sp=(Sport) campoTexto2.getSelectedItem();
+                    	BigDecimal bd=new BigDecimal(campoTexto3.getText());
+                    	Date dt=new Date(campoTexto4.getText());
+                    	
+                    	Duration dr = null;
+                    	
+                    	try {
+                    		dr = Duration.ofMinutes ( Long.parseLong (campoTexto5.getText()));
+                    		
+                    		
+                    	} catch (Exception ex) {
+                    		Logger.getLogger ().warning (ex);
+                    	}                    	                    
+                    	SessionData sessionData=new SessionData(st,sp, bd, dt, dr);
+                    	mainController.createSession(sessionData);
                         paintVentana (1);
                     }
                 });
@@ -222,29 +250,59 @@ public class MainWindow extends JFrame {
         JLabel abel3 = new JLabel ("Fecha Final:");
         JTextField abelTexto3 = new JTextField (15);
         JLabel jlkm = new JLabel ("Elija unidad");
-        JComboBox <String> kmorseg = new JComboBox <> ();
+        
         kmorseg.addItem ("Distancia(km)");
         kmorseg.addItem ("Tiempo(sec)");
         JLabel abel4 = new JLabel ("Objetivo(km or s):");
         JTextField abelTexto4 = new JTextField (15);
-        JLabel abel5 = new JLabel ("Deporte:");
-        JComboBox <Sport> abelTexto5 = new JComboBox <> ();
+        JLabel abel5 = new JLabel ("Deporte:");        
         abelTexto5.addItem (Sport.Cyclism);
         abelTexto5.addItem (Sport.Running);
         JButton bunda = new JButton ("Crear");
         bunda.addActionListener (new ActionListener () {
 
             @Override
-            public void actionPerformed (ActionEvent e) {
-                Sport[] sports = new Sport[2];
-                sports[1] = (Sport) abelTexto5.getSelectedItem ();
+            public void actionPerformed (ActionEvent e) {                
                 if (kmorseg.getSelectedItem ().equals ("Distancia(km)")) {
-                    //Challenge ch=new Challenge(abelTexto1.getText(), new Date(abelTexto2.getText()), new Date
-                    // (abelTexto3.getText()), Integer.parseInt(abelTexto4.getText()),sports );
+                	String nom=abel1.getText();
+                	Date date=new Date(abelTexto2.getText());
+                	Date date2=new Date(abelTexto3.getText());
+                	Pair pa=new Pair<Date, Date>(date, date2);
+                	Sport sport=(Sport)abelTexto5.getSelectedItem();
+                	BigDecimal bd=new BigDecimal(abel4.getText());                	
+                    DistanceChallenge ch=null;
+					try {
+						ch = new DistanceChallenge(nom,pa,sport,userCredentials,bd);
+					} catch (Exception e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+                	mainController.createChallenge(ch);
                 }
                 if (kmorseg.getSelectedItem ().equals ("Tiempo(sec)")) {
                     //Challenge ch=new Challenge(abelTexto1.getText(), new Date(abelTexto2.getText()), new Date
                     // (abelTexto3.getText()), Double.parseDouble(abelTexto4.getText()),sports );
+                	String nom=abel1.getText();
+                	Date date=new Date(abelTexto2.getText());
+                	Date date2=new Date(abelTexto3.getText());
+                	Pair pa=new Pair<Date, Date>(date, date2);
+                	Sport sport=(Sport)abelTexto5.getSelectedItem();
+                	BigDecimal bd=new BigDecimal(abel4.getText());
+                	Duration dr = null;
+                	
+                	try {
+                		dr = Duration.ofMinutes ( Long.parseLong (abel4.getText()));                		
+                	} catch (Exception ex) {
+                		Logger.getLogger ().warning (ex);
+                	} 
+                    TimeChallenge ch=null;
+					try {
+						ch = new TimeChallenge(nom,pa,sport,userCredentials,dr);
+					} catch (Exception e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+                	mainController.createChallenge(ch);
                 }
             }
         });
@@ -311,7 +369,8 @@ public class MainWindow extends JFrame {
         boton6.addActionListener (new ActionListener () {
             @Override
             public void actionPerformed (ActionEvent e) {
-                activeChallenges.add (cselected);
+            	
+                mainController.acceptChallenge(cselected.id());
             }
         });
         boton7.addActionListener (new ActionListener () {
@@ -330,7 +389,7 @@ public class MainWindow extends JFrame {
     public void ventanaGetChallenges (JPanel jpan, JScrollPane jsp2, JButton boton2, JButton boton5, JButton boton6,
             JButton boton7) {
 
-        List <ChallengeDTO> activeChallenges = new ArrayList <ChallengeDTO> ();
+        List <ChallengeDTO> activeChallenges = mainController.getActiveChallenges();
         pCentro2.removeAll ();
         pSur.removeAll ();
 
@@ -362,7 +421,7 @@ public class MainWindow extends JFrame {
     }
 
     public void ventanaAcceptedChallenges (JPanel jpan, JScrollPane jsp2, JButton boton2, JButton boton5,
-            JButton boton6, JButton boton7) {
+        JButton boton6, JButton boton7) {
 
         pCentro2.removeAll ();
         pSur.removeAll ();
@@ -410,7 +469,7 @@ public class MainWindow extends JFrame {
                 if (e.getStateChange () == ItemEvent.SELECTED) {
                     String selectedOption = (String) comboBox.getSelectedItem ();
                     if (selectedOption.equals ("Tu Usuario")) {
-                        mySession (dlm2, comboBox);
+                        mySession(dlm2, comboBox);
 
                     }
                     if (selectedOption.equals ("Otros usuarios")) {
@@ -429,7 +488,7 @@ public class MainWindow extends JFrame {
         pSur.repaint ();
     }
 
-    public void mySession (DefaultListModel <SessionDTO> dlm2, JComboBox <String> comboBox) {
+    public void mySession (DefaultListModel<SessionDTO> dlm2, JComboBox<String> comboBox) {
         pCentro2.removeAll ();
         dlm2.clear ();
         for (SessionDTO s : acceptedSession) {
@@ -443,13 +502,13 @@ public class MainWindow extends JFrame {
         pCentro2.repaint ();
     }
 
-    public void theirSession (DefaultListModel <SessionDTO> dlm2, JComboBox <String> comboBox) {
+    public void theirSession (DefaultListModel<SessionDTO> dlm2, JComboBox<String> comboBox) {
         pCentro2.removeAll ();
         dlm2.clear ();
         for (SessionDTO s : acceptedSessionThem) {
             dlm2.addElement (s);
         }
-        JList <SessionDTO> lista = new JList <> (dlm2);
+        JList<SessionDTO> lista = new JList <> (dlm2);
         pCentro2.add (comboBox);
         jsp = new JScrollPane (lista);
         pCentro2.add (jsp);

@@ -10,6 +10,7 @@ import org.gozantes.strava.internals.logging.Logger;
 import org.gozantes.strava.internals.types.Pair;
 import org.gozantes.strava.internals.types.Triplet;
 import org.gozantes.strava.server.data.domain.Sport;
+import org.gozantes.strava.server.data.domain.challenge.Challenge;
 import org.gozantes.strava.server.data.domain.session.SessionData;
 import org.gozantes.strava.server.data.domain.session.SessionFilters;
 import org.gozantes.strava.server.data.domain.session.SessionState;
@@ -64,9 +65,9 @@ public class MainController {
 	            System.out.println ("Error al establecer estado de la sesion " + e);
 	        }
 	    }
-	    public void createChallenge () {
+	    public void createChallenge (Challenge challenge) {
 	        try {
-	            this.serviceLocator.getService ().createChallenge (token);
+	            this.serviceLocator.getService ().createChallenge (token, challenge);
 	        }
 	        catch (RemoteException e) {
 	            System.out.println ("Error al crear reto " + e);

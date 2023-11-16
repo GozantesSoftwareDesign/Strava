@@ -1,9 +1,5 @@
 package org.gozantes.strava.server.data.domain.session;
 
-import org.w3c.dom.ranges.RangeException;
-
-import java.util.Arrays;
-
 public enum SessionState {
     CANCELLED ("Cancelled"),
     IN_PROGRESS ("In progress"),

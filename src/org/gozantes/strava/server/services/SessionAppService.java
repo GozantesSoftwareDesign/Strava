@@ -14,9 +14,8 @@ import java.time.Duration;
 import java.util.*;
 
 public final class SessionAppService {
-    private static SessionAppService instance;
-
     private final static List <Session> sessions;
+    private static SessionAppService instance;
     private static long counter;
 
     static {
@@ -95,15 +94,15 @@ public final class SessionAppService {
         if (state == null)
             throw new RemoteException ("The state cannot be null.");
 
-        Optional<Session> s =
+        Optional <Session> s =
                 SessionAppService.sessions.stream ().filter ((x) -> x.getId () == session).findFirst ();
 
-        if (!s.isPresent())
+        if (!s.isPresent ())
             throw new RemoteException (String.format ("No such session (%s)", session));
 
         if (!(s.get ().getParent ().type ().equals (creds.type ()) && s.get ().getParent ().id ().equals (creds.id ())))
             throw new RemoteException ("The requestor is not the same as the session's parent.");
 
-        sessions.get (sessions.indexOf(s.get ())).setState (state);
+        sessions.get (sessions.indexOf (s.get ())).setState (state);
     }
 }

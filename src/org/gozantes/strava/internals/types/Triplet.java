@@ -1,8 +1,13 @@
 package org.gozantes.strava.internals.types;
 
 public record Triplet <X, Y, Z>(X x, Y y, Z z) {
+    public Triplet (Triplet <X, Y, Z> triplet) {
+        this (triplet.x, triplet.y, triplet.z);
+    }
+
     public boolean equals (Object o) {
-        return o instanceof Triplet && this.x.equals (((Triplet <?, ?, ?>) o).x) && this.y.equals (((Triplet <?, ?, ?>) o).y) && this.z.equals (((Triplet <?, ?, ?>) o).z);
+        return o instanceof Triplet && this.x.equals (((Triplet <?, ?, ?>) o).x) && this.y.equals (
+                ((Triplet <?, ?, ?>) o).y) && this.z.equals (((Triplet <?, ?, ?>) o).z);
     }
 
     public X x () {

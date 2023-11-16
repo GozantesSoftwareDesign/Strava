@@ -12,11 +12,10 @@ import java.util.List;
 import java.util.Objects;
 
 public final class User implements Mergeable {
-    private UserCredentials creds;
-    private UserData data;
-
     private final List <Session> sessions = new ArrayList <Session> ();
     private final List <Challenge> challenges = new ArrayList <Challenge> ();
+    private UserCredentials creds;
+    private UserData data;
 
     public User (UserCredentials creds, UserData data) {
         super ();
@@ -80,7 +79,7 @@ public final class User implements Mergeable {
         this.data = new UserData (this.data, heartRate);
     }
 
-    public List<Session> getSessions () {
+    public List <Session> getSessions () {
         return new ArrayList (this.sessions);
     }
 

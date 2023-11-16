@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <project basedir="." default="4.client" name="Strava client">
+    <property name="img.dir" location="img"/>
+
     <target name="1.build" description="Builds and runs the project">
         <delete dir="${build.dir}"/>
         <mkdir dir="${build.dir}"/>
+
+        <copy todir="${build.dir}">
+            <fileset dir="${img.dir}"/>
+        </copy>
 
         <javac
                 srcdir="${source.dir}"

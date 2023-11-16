@@ -1,6 +1,10 @@
 package org.gozantes.strava.internals.types;
 
 public record Pair <X, Y>(X x, Y y) {
+    public Pair (Pair <X, Y> pair) {
+        this (pair.x, pair.y);
+    }
+
     public boolean equals (Object o) {
         return o instanceof Pair && this.x.equals (((Pair <?, ?>) o).x) && this.y.equals (((Pair <?, ?>) o).y);
     }

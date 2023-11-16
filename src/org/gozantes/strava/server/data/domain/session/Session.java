@@ -9,9 +9,8 @@ import java.util.Date;
 import java.util.Objects;
 
 public final class Session {
-    private long id;
     private final UserCredentials parent;
-
+    private long id;
     private SessionState state;
 
     private SessionData data;

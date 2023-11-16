@@ -8,12 +8,11 @@ import java.util.Date;
 import java.util.Objects;
 
 public abstract class Challenge {
-    protected Long id;
     protected final String name;
     protected final Pair <Date, Date> lapse;
     protected final Sport sport;
-
     protected final UserCredentials parent;
+    protected Long id;
 
     protected Challenge (String name, Pair <Date, Date> lapse, Sport sport, UserCredentials parent) throws Exception {
         this (null, name, lapse, sport, parent);

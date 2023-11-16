@@ -175,7 +175,7 @@ public final class RemoteFacade extends UnicastRemoteObject implements IRemoteFa
 
             ret = new Object[3];
 
-            if (k.isTimed ()) {
+            if (k.goal () instanceof  Duration) {
                 Duration t[] = new Duration[] { Duration.ofMinutes (0), Duration.ofMinutes (0) };
 
                 v.forEach ((y) -> {
@@ -212,15 +212,15 @@ public final class RemoteFacade extends UnicastRemoteObject implements IRemoteFa
         return map;
     }
 
-	@Override
-	public void createChallenge(String token) throws RemoteException {
-		// TODO Auto-generated method stub
-		
-	}
+    @Override
+    public void createChallenge (String token) throws RemoteException {
+        // TODO Auto-generated method stub
 
-	@Override
-	public void acceptChallenge(String token, long challenge) throws RemoteException {
-		// TODO Auto-generated method stub
-		
-	}
+    }
+
+    @Override
+    public void acceptChallenge (String token, long challenge) throws RemoteException {
+        // TODO Auto-generated method stub
+
+    }
 }

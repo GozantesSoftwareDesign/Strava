@@ -7,7 +7,6 @@ import java.text.SimpleDateFormat;
 import java.time.DateTimeException;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import java.util.Objects;
 
 public record UserData(String name, Date birth, BigDecimal weight, Integer height,

@@ -6,6 +6,7 @@ import org.gozantes.strava.server.data.domain.Sport;
 import org.gozantes.strava.server.data.domain.auth.UserCredentials;
 import org.gozantes.strava.server.data.domain.auth.UserData;
 import org.gozantes.strava.server.data.domain.challenge.Challenge;
+import org.gozantes.strava.server.data.domain.challenge.ChallengeFilters;
 import org.gozantes.strava.server.data.domain.session.SessionData;
 import org.gozantes.strava.server.data.domain.session.SessionFilters;
 import org.gozantes.strava.server.data.domain.session.SessionState;
@@ -37,6 +38,8 @@ public interface IRemoteFacade extends Remote {
     public void setSessionState (String token, long session, SessionState state) throws RemoteException;
 
     public boolean createChallenge (String token, Challenge data) throws RemoteException;
+
+    public List <ChallengeDTO> searchChallenges (ChallengeFilters filters) throws RemoteException;
 
     public List <ChallengeDTO> getActiveChallenges (String token) throws RemoteException;
 

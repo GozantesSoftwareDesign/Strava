@@ -1,9 +1,18 @@
 package org.gozantes.strava.client.gui;
 
+import org.gozantes.strava.client.controller.AuthController;
+import org.gozantes.strava.client.controller.ChallengeController;
+import org.gozantes.strava.client.controller.MainController;
+import org.gozantes.strava.client.controller.SessionController;
+import org.gozantes.strava.client.remote.ServiceLocator;
 import org.gozantes.strava.server.data.domain.Sport;
 import org.gozantes.strava.server.data.domain.auth.User;
+import org.gozantes.strava.server.data.domain.auth.UserCredentials;
 import org.gozantes.strava.server.data.domain.challenge.Challenge;
 import org.gozantes.strava.server.data.domain.session.Session;
+import org.gozantes.strava.server.data.domain.session.SessionFilters;
+import org.gozantes.strava.server.data.dto.ChallengeDTO;
+import org.gozantes.strava.server.data.dto.SessionDTO;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -28,15 +37,19 @@ public class MainWindow extends JFrame {
     private JButton logout = new JButton ("Logout");
     private JScrollPane jsp = new JScrollPane ();
 
-    private Challenge cselected;
-    private List <Challenge> acceptedChallenges = new ArrayList <Challenge> ();
-    private List <Session> acceptedSessionThem = new ArrayList <Session> ();
-    private List <Session> acceptedSession = new ArrayList <Session> ();
+    private ServiceLocator serviceLocator;
+    private MainController mainController;
+    private ChallengeDTO cselected;
+    private List <ChallengeDTO> activeChallenges = mainController.getActiveChallenges();
+    private List <SessionDTO> acceptedSessionThem = mainController.searchSessions(new SessionFilters(new UserCredentials(null)));
+    private List <SessionDTO> acceptedSession = mainController.getSessions();
 
-    public MainWindow (User user) {
+    public MainWindow (ServiceLocator serviceLocator,MainController mainController) {
         super ();
         setBounds (300, 100, 600, 400);
         setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
+        this.mainController=mainController;
+        this.serviceLocator=serviceLocator;
 
         pTodo = new JPanel (new BorderLayout (0, 1));
         pNorte.setBackground (new Color (255, 255, 255));
@@ -77,7 +90,8 @@ public class MainWindow extends JFrame {
         logout.addActionListener (new ActionListener () {
             @Override
             public void actionPerformed (ActionEvent e) {
-                new AuthWindow ();
+                new AuthWindow (new AuthController(serviceLocator));
+                mainController.logout();
                 dispose ();
             }
         });
@@ -297,7 +311,7 @@ public class MainWindow extends JFrame {
         boton6.addActionListener (new ActionListener () {
             @Override
             public void actionPerformed (ActionEvent e) {
-                acceptedChallenges.add (cselected);
+                activeChallenges.add (cselected);
             }
         });
         boton7.addActionListener (new ActionListener () {
@@ -316,18 +330,18 @@ public class MainWindow extends JFrame {
     public void ventanaGetChallenges (JPanel jpan, JScrollPane jsp2, JButton boton2, JButton boton5, JButton boton6,
             JButton boton7) {
 
-        List <Challenge> activeChallenges = new ArrayList <Challenge> ();
+        List <ChallengeDTO> activeChallenges = new ArrayList <ChallengeDTO> ();
         pCentro2.removeAll ();
         pSur.removeAll ();
 
-        JList <Challenge> lista = new JList <> ();
+        JList <ChallengeDTO> lista = new JList <> ();
         jsp2 = new JScrollPane (lista);
 
         lista.addListSelectionListener (new ListSelectionListener () {
             @Override
             public void valueChanged (ListSelectionEvent e) {
                 if (!e.getValueIsAdjusting ()) {
-                    Challenge sChallenge = lista.getSelectedValue ();
+                    ChallengeDTO sChallenge = lista.getSelectedValue ();
                     if (sChallenge != null) {
                         cselected = sChallenge;
                     }
@@ -352,11 +366,11 @@ public class MainWindow extends JFrame {
 
         pCentro2.removeAll ();
         pSur.removeAll ();
-        DefaultListModel <Challenge> lmd = new DefaultListModel <> ();
-        for (Challenge c : acceptedChallenges) {
+        DefaultListModel <ChallengeDTO> lmd = new DefaultListModel <> ();
+        for (ChallengeDTO c : activeChallenges) {
             lmd.addElement (c);
         }
-        JList <Challenge> lista = new JList <> (lmd);
+        JList <ChallengeDTO> lista = new JList <> (lmd);
 
         jsp2 = new JScrollPane (lista);
 
@@ -372,14 +386,11 @@ public class MainWindow extends JFrame {
     }
 
     public void consultarSession (JPanel jp, JScrollPane jsp, JButton boton3, JButton boton4) {
-
-        List <Session> Sessiones = new ArrayList <> ();
-
-        pCentro2.removeAll ();
+    	pCentro2.removeAll ();
         pSur.removeAll ();
 
-        DefaultListModel <Session> dlm2 = new DefaultListModel <Session> ();
-        for (Session s : acceptedSession) {
+        DefaultListModel <SessionDTO> dlm2 = new DefaultListModel <SessionDTO> ();
+        for (SessionDTO s : acceptedSession) {
             dlm2.addElement (s);
         }
 
@@ -387,7 +398,7 @@ public class MainWindow extends JFrame {
         comboBox.addItem ("Tu Usuario");
         comboBox.addItem ("Otros usuarios");
 
-        JList <Session> lista = new JList <> (dlm2);
+        JList <SessionDTO> lista = new JList <> (dlm2);
         jsp = new JScrollPane (lista);
         pCentro2.add (comboBox);
         pCentro2.add (jsp);
@@ -418,13 +429,13 @@ public class MainWindow extends JFrame {
         pSur.repaint ();
     }
 
-    public void mySession (DefaultListModel <Session> dlm2, JComboBox <String> comboBox) {
+    public void mySession (DefaultListModel <SessionDTO> dlm2, JComboBox <String> comboBox) {
         pCentro2.removeAll ();
         dlm2.clear ();
-        for (Session s : acceptedSession) {
-            dlm2.addElement (s);
+        for (SessionDTO s : acceptedSession) {
+            dlm2.addElement(s);
         }
-        JList <Session> lista = new JList <> (dlm2);
+        JList <SessionDTO> lista = new JList <> (dlm2);
         pCentro2.add (comboBox);
         jsp = new JScrollPane (lista);
         pCentro2.add (jsp);
@@ -432,13 +443,13 @@ public class MainWindow extends JFrame {
         pCentro2.repaint ();
     }
 
-    public void theirSession (DefaultListModel <Session> dlm2, JComboBox <String> comboBox) {
+    public void theirSession (DefaultListModel <SessionDTO> dlm2, JComboBox <String> comboBox) {
         pCentro2.removeAll ();
         dlm2.clear ();
-        for (Session s : acceptedSessionThem) {
+        for (SessionDTO s : acceptedSessionThem) {
             dlm2.addElement (s);
         }
-        JList <Session> lista = new JList <> (dlm2);
+        JList <SessionDTO> lista = new JList <> (dlm2);
         pCentro2.add (comboBox);
         jsp = new JScrollPane (lista);
         pCentro2.add (jsp);

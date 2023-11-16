@@ -76,7 +76,7 @@ public final class ChallengeAppService {
         }
     }
 
-    public List <Challenge> getChallenge (ChallengeFilters filters) {
+    public List <Challenge> getChallenges (ChallengeFilters filters) {
         return filters == null
                 ? new ArrayList <Challenge> (ChallengeAppService.challenges)
                 : ChallengeAppService.challenges.stream ().filter (

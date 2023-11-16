@@ -3,7 +3,6 @@
     <property name="img.dir" location="img"/>
 
     <target name="1.build" description="Builds and runs the project">
-        <delete dir="${build.dir}"/>
         <mkdir dir="${build.dir}"/>
 
         <copy todir="${build.dir}">

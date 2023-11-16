@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <project basedir="." default="4.server" name="Strava server">
+    <property name="export.file" value="server.jar"/>
+
     <target name="1.build" description="Builds and runs the project">
         <mkdir dir="${build.dir}"/>
 

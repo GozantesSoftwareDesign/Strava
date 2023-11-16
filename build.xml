@@ -12,7 +12,6 @@
     <property name="registry.ip" value="127.0.0.1"/>
     <property name="registry.port" value="1099"/>
     <property name="service.name" value="Strava"/>
-    <property name="export.file" value="server.jar"/>
     <property name="policy.file" location="security/java.policy"/>
 
     <property name="keystore.location" value="security/keystore.jks"/>

@@ -10,6 +10,8 @@
             <fileset dir="${img.dir}"/>
         </copy>
 
+        <copy todir="${build.dir}" file="${policy.file}"/>
+
         <javac
                 srcdir="${source.dir}"
                 destdir="${build.dir}"
@@ -60,8 +62,6 @@
 
     <target name="4.client" depends="3.sign" description="Runs the client">
         <java jar="${dist.dir}/${export.file}" fork="true">
-            <jvmarg value="-Djava.security.policy=${policy.file}"/>
-
             <arg value="${service.name}"/>
             <arg value="${registry.ip}"/>
             <arg value="${registry.port}"/>

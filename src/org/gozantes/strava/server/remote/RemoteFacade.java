@@ -175,7 +175,7 @@ public final class RemoteFacade extends UnicastRemoteObject implements IRemoteFa
 
             ret = new Object[3];
 
-            if (k.goal () instanceof  Duration) {
+            if (k.goal () instanceof Duration) {
                 Duration t[] = new Duration[] { Duration.ofMinutes (0), Duration.ofMinutes (0) };
 
                 v.forEach ((y) -> {

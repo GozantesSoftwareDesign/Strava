@@ -1,6 +1,8 @@
 package org.gozantes.strava.server.data.dto;
 
 import org.gozantes.strava.server.data.domain.challenge.Challenge;
+import org.gozantes.strava.server.data.domain.challenge.DistanceChallenge;
+import org.gozantes.strava.server.data.domain.challenge.TimeChallenge;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,8 +21,9 @@ public class ChallengeAssembler {
     }
 
     public ChallengeDTO ChallengeToDTOPrivate (Challenge challenge) {
-        ChallengeDTO challengeDTO = new ChallengeDTO (challenge.getName (), challenge.getStart (),
-                challenge.getEnd (), challenge.getSport ());
+        ChallengeDTO challengeDTO = new ChallengeDTO (challenge.getName (), challenge.getLapse (),
+                challenge.getSport (), challenge.isTimed () ? ((TimeChallenge) challenge).getGoal () :
+                ((DistanceChallenge) challenge).getGoal ());
         return challengeDTO;
     }
 

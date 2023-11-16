@@ -4,6 +4,8 @@
         <delete dir="${build.dir}"/>
         <mkdir dir="${build.dir}"/>
 
+        <copy todir="${build.dir}" file="${policy.file}"/>
+
         <javac
                 srcdir="${source.dir}"
                 destdir="${build.dir}"
@@ -55,7 +57,6 @@
     <target name="4.server" depends="3.sign" description="Runs the server">
         <java jar="${dist.dir}/${export.file}" fork="true">
             <jvmarg value="-Djava.rmi.server.hostname=${registry.ip} ${service.name}"/>
-            <jvmarg value="-Djava.security.policy=${policy.file}"/>
 
             <arg value="${service.name}"/>
             <arg value="${registry.ip}"/>

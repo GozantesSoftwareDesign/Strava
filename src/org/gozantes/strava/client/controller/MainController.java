@@ -32,13 +32,9 @@ public class MainController {
         try {
             this.serviceLocator.getService ().createSession (token, sessionData);
         }
-        catch (RemoteException e) {
+        catch (RemoteException | NoSuchAlgorithmException | URISyntaxException e) {
             System.out.println ("Error al crear reto " + e);
         }
-    }
-
-    public String getToken () {
-        return token;
     }
 
     public List <SessionDTO> getSessions () {
@@ -123,7 +119,6 @@ public class MainController {
             token = null;
         }
         catch (RemoteException | URISyntaxException | NoSuchAlgorithmException e) {
-            // TODO Auto-generated catch block
             Logger.getLogger ().severe (String.format ("Could not log out the user: %s", e.getMessage ()));
         }
     }

@@ -1,6 +1,8 @@
 package org.gozantes.strava.client.gui;
 
 import org.gozantes.strava.client.controller.AuthController;
+import org.gozantes.strava.client.controller.MainController;
+import org.gozantes.strava.client.remote.ServiceLocator;
 import org.gozantes.strava.internals.logging.Logger;
 import org.gozantes.strava.internals.swing.ImageDisplayer;
 import org.gozantes.strava.internals.types.Pair;
@@ -28,7 +30,8 @@ public class AuthWindow extends JFrame {
 
     @Serial
     private static final long serialVersionUID = 1L;
-    private AuthController controller;
+    private AuthController authController;
+    private ServiceLocator serviceLocator;
 
     private JFrame frame = new JFrame ("STRAVA");
     private JPanel panelPrincipal = new JPanel (new GridLayout (4, 1));
@@ -79,9 +82,10 @@ public class AuthWindow extends JFrame {
     private ImageDisplayer iconoGoogle;
     private ImageDisplayer iconoMeta;
 
-    public AuthWindow (AuthController controller) {
+    public AuthWindow (AuthController authController, ServiceLocator serviceLocator) {
 
-        this.controller = controller;
+        this.authController = authController;
+        this.serviceLocator = serviceLocator;
         frame.setSize (700, 500);
         frame.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
         frame.setVisible (true);
@@ -312,15 +316,19 @@ public class AuthWindow extends JFrame {
         }
         UserCredentials creds = new UserCredentials (type, userText.getText (),
                 new String (passwordText.getPassword ()));
-        boolean res = this.controller.signUp (creds, data);
+        boolean res = this.authController.signUp (creds, data);
         Logger.getLogger ().info ("sign up result: " + res);
     }
 
     void login (CredType type) {
         UserCredentials creds = new UserCredentials (type, userText.getText (),
                 new String (passwordText.getPassword ()));
-        boolean res = this.controller.login (creds);
+        boolean res = this.authController.login (creds);
         Logger.getLogger ().info ("login result: " + res);
+        if (res) {
+        	MainController mc = new MainController(serviceLocator, authController.getToken());
+        	SwingUtilities.invokeLater (() -> new MainWindow (mc, serviceLocator));
+        }
     }
 
     JScrollPane generateScrollPane (JScrollPane scroll, ArrayList <JPanel> arrayDePaneles, JPanel panel) {

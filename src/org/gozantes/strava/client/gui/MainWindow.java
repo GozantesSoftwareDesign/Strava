@@ -34,7 +34,9 @@ import java.util.Date;
 import java.util.List;
 
 public class MainWindow extends JFrame {
-    private JPanel pArriba = new JPanel (new GridLayout (2, 1));
+
+	private static final long serialVersionUID = 1L;
+	private JPanel pArriba = new JPanel (new GridLayout (2, 1));
     private JPanel pTodo = new JPanel ();
     private JPanel pNorte = new JPanel ();
     private JPanel pCentro2 = new JPanel (), pSur = new JPanel ();
@@ -49,21 +51,18 @@ public class MainWindow extends JFrame {
     private JComboBox <Sport> abelTexto5 = new JComboBox <> ();
     private JComboBox <String> kmorseg = new JComboBox <> ();
 
-    private UserCredentials userCredentials;
-    private ServiceLocator serviceLocator;
     private MainController mainController;
     private ChallengeDTO cselected;
     private List <ChallengeDTO> activeChallenges = mainController.getActiveChallenges();
     private List <SessionDTO> acceptedSessionThem = mainController.searchSessions(new SessionFilters(new UserCredentials(null)));
     private List <SessionDTO> acceptedSession = mainController.getSessions();
 
-    public MainWindow (UserCredentials userCredentials, ServiceLocator serviceLocator,MainController mainController) {
+    public MainWindow (MainController mainController, ServiceLocator serviceLocator) {
         super ();
+        System.out.println(mainController);
         setBounds (300, 100, 600, 400);
         setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
         this.mainController=mainController;
-        this.serviceLocator=serviceLocator;
-        this.userCredentials=userCredentials;
 
         pTodo = new JPanel (new BorderLayout (0, 1));
         pNorte.setBackground (new Color (255, 255, 255));
@@ -105,7 +104,8 @@ public class MainWindow extends JFrame {
             @Override
             public void actionPerformed (ActionEvent e) {
                 try {
-                    new AuthWindow (new AuthController(serviceLocator));
+                	AuthController ac= new AuthController(serviceLocator);
+                	SwingUtilities.invokeLater (() -> new AuthWindow (ac, serviceLocator));
                 }
                 catch (URISyntaxException ex) {
                     throw new RuntimeException (ex);
@@ -282,12 +282,12 @@ public class MainWindow extends JFrame {
                 	BigDecimal bd=new BigDecimal(abel4.getText());                	
                     DistanceChallenge ch=null;
 					try {
-						ch = new DistanceChallenge(nom,pa,sport,userCredentials,bd);
+						//ch = new DistanceChallenge(nom,pa,sport,userCredentials,bd);
 					} catch (Exception e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
-                	mainController.createChallenge(ch);
+                	//mainController.createChallenge(ch);
                 }
                 if (kmorseg.getSelectedItem ().equals ("Tiempo(sec)")) {
                     //Challenge ch=new Challenge(abelTexto1.getText(), new Date(abelTexto2.getText()), new Date
@@ -307,12 +307,12 @@ public class MainWindow extends JFrame {
                 	} 
                     TimeChallenge ch=null;
 					try {
-						ch = new TimeChallenge(nom,pa,sport,userCredentials,dr);
+						//ch = new TimeChallenge(nom,pa,sport,userCredentials,dr);
 					} catch (Exception e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
-                	mainController.createChallenge(ch);
+                	//mainController.createChallenge(ch);
                 }
             }
         });

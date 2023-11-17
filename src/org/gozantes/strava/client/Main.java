@@ -30,10 +30,9 @@ public class Main {
 
         ServiceLocator sl = new ServiceLocator ();
         sl.setService (p);
-
         AuthController ac = new AuthController (sl);
 
-        SwingUtilities.invokeLater (() -> new AuthWindow (ac));
+        SwingUtilities.invokeLater (() -> new AuthWindow (ac, sl));
 
     }
 

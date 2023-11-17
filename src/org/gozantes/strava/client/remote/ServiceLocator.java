@@ -29,11 +29,14 @@ public class ServiceLocator {
 
         try {
             this.service = (IRemoteFacade) Naming.lookup (this.sp.fullName ());
-
-            Logger.getLogger ().info ("Service set to " + this.service + " (server: " + this.sp.fullName () + ").");
         }
         catch (Exception ex) {
             Logger.getLogger().severe ("Error locating remote facade: " + ex.getMessage ());
         }
     }
+
+	@Override
+	public String toString() {
+		return "ServiceLocator [service=" + service + ", sp=" + sp + "]";
+	}
 }

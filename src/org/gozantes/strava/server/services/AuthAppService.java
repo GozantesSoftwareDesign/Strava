@@ -134,7 +134,7 @@ public final class AuthAppService {
                 + "Esteban-de-Hungría Ladislado Enrique Ildefonso Hermenegildo Carlos-Borromeo Eduardo "
                 + "Francisco-Régis Vicente-Ferrer Pascual Miguel-de-los-Santos Adriano Venancio Valentín Benito "
                 + "José-Oriol Domingo Florencio Alfacio Benére Domingo-de-Silos Ramón Isidro Manuel Antonio "
-                + "Todos-los-Santos de Borbón y Borbón"; // https://en.wikipedia.org/wiki/Alfonso_de_Borb%C3%B3n_y_Borb%C3%B3n#cite_ref-3
+                + "Todos-los-Santos de Borbón y Borbón"; // https://es.wikipedia.org/w/index.php?title=Alfonso_Mar%C3%ADa_de_Borb%C3%B3n_y_Borb%C3%B3n&oldid=154761971
 
         Calendar birth = Calendar.getInstance ();
         birth.set (2003, Calendar.FEBRUARY, 21);

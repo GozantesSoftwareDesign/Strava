@@ -7,7 +7,9 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 public final class Session implements Serializable {
@@ -15,6 +17,7 @@ public final class Session implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private final UserCredentials parent;
+    private final List <UserCredentials> participants = new ArrayList <> ();
     private long id;
     private SessionState state;
 
@@ -27,17 +30,13 @@ public final class Session implements Serializable {
     public Session (long id, UserCredentials parent, SessionData data, SessionState state) {
         super ();
 
-        Objects.requireNonNull (parent);
-        Objects.requireNonNull (data);
-        Objects.requireNonNull (state);
-
         if (id < 0)
             throw new RuntimeException ("Session IDs cannot be negative");
 
         this.id = id;
-        this.parent = parent;
-        this.state = state;
-        this.data = data;
+        this.participants.add ((this.parent = Objects.requireNonNull (parent)));
+        this.state = Objects.requireNonNull (state);
+        this.data = Objects.requireNonNull (data);
     }
 
     public long getId () {

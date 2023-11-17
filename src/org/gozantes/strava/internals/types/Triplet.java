@@ -1,6 +1,12 @@
 package org.gozantes.strava.internals.types;
 
-public record Triplet <X, Y, Z>(X x, Y y, Z z) {
+import java.io.Serial;
+import java.io.Serializable;
+
+public record Triplet <X, Y, Z>(X x, Y y, Z z) implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
+
     public Triplet (Triplet <X, Y, Z> triplet) {
         this (triplet.x, triplet.y, triplet.z);
     }

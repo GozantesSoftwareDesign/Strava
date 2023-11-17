@@ -4,11 +4,16 @@ import org.gozantes.strava.internals.types.Pair;
 import org.gozantes.strava.server.data.domain.Sport;
 import org.gozantes.strava.server.data.domain.auth.UserCredentials;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Objects;
 
-public final class DistanceChallenge extends Challenge {
+public final class DistanceChallenge extends Challenge implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
+    
     private final BigDecimal goal;
 
     public DistanceChallenge (String name, Pair <Date, Date> lapse, Sport sport, UserCredentials parent,

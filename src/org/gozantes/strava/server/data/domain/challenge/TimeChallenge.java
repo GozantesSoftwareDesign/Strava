@@ -4,11 +4,16 @@ import org.gozantes.strava.internals.types.Pair;
 import org.gozantes.strava.server.data.domain.Sport;
 import org.gozantes.strava.server.data.domain.auth.UserCredentials;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.time.Duration;
 import java.util.Date;
 import java.util.Objects;
 
-public final class TimeChallenge extends Challenge {
+public final class TimeChallenge extends Challenge  implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
+    
     private final Duration goal;
 
     public TimeChallenge (String name, Pair <Date, Date> lapse, Sport sport, UserCredentials parent,

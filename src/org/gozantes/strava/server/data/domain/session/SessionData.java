@@ -2,13 +2,19 @@ package org.gozantes.strava.server.data.domain.session;
 
 import org.gozantes.strava.server.data.domain.Sport;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.util.Date;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
-public record SessionData(String title, Sport sport, BigDecimal distance, Date start, Duration duration) {
+public record SessionData(String title, Sport sport, BigDecimal distance, Date start, Duration duration) implements
+        Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
+    
     public SessionData (String title, Sport sport, BigDecimal distance, Date start, Duration duration) {
         Objects.requireNonNull (title);
         Objects.requireNonNull (sport);

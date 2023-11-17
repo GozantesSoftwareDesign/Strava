@@ -1,6 +1,8 @@
 package org.gozantes.strava.server.data.domain.auth;
 
-public enum CredType {
+import java.io.Serializable;
+
+public enum CredType implements Serializable {
     Meta ("Meta"),
     Google ("Google");
 

@@ -4,7 +4,7 @@ import org.gozantes.strava.client.controller.AuthController;
 import org.gozantes.strava.internals.logging.Logger;
 import org.gozantes.strava.internals.swing.ImageDisplayer;
 import org.gozantes.strava.internals.types.Pair;
-import org.gozantes.strava.internals.types.TextPrompt;
+import org.gozantes.strava.internals.swing.TextPrompt;
 import org.gozantes.strava.server.data.domain.auth.CredType;
 import org.gozantes.strava.server.data.domain.auth.UserCredentials;
 import org.gozantes.strava.server.data.domain.auth.UserData;

@@ -21,6 +21,8 @@ import org.gozantes.strava.server.services.AuthAppService;
 import org.gozantes.strava.server.services.ChallengeAppService;
 import org.gozantes.strava.server.services.SessionAppService;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.MalformedURLException;
@@ -35,7 +37,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public final class RemoteFacade extends UnicastRemoteObject implements IRemoteFacade {
+public final class RemoteFacade extends UnicastRemoteObject implements IRemoteFacade, Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
+
     public final Map <String, User> state = new HashMap <String, User> ();
     final private ServerParams params;
 

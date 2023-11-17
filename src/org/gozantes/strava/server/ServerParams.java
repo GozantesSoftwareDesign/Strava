@@ -2,15 +2,20 @@ package org.gozantes.strava.server;
 
 import org.w3c.dom.ranges.RangeException;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.net.Inet4Address;
 import java.net.UnknownHostException;
 
-public record ServerParams(String name, Inet4Address ip, int port) {
+public record ServerParams(String name, Inet4Address ip, int port) implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
+
     public static ServerParams defaults;
 
     static {
         try {
-            defaults = new ServerParams ("StravaServer", (Inet4Address) Inet4Address.getByName ("127.0.0.1"), 1099);
+            defaults = new ServerParams ("Strava", (Inet4Address) Inet4Address.getByName ("127.0.0.1"), 1099);
         }
         catch (UnknownHostException e) {
             throw new RuntimeException (e);
@@ -35,8 +40,8 @@ public record ServerParams(String name, Inet4Address ip, int port) {
     }
 
     public ServerParams (String name, String ip, String port) throws UnknownHostException, NumberFormatException {
-        this (name, ip == null ? ServerParams.defaults.ip : (Inet4Address) Inet4Address.getByName (ip),
-                port == null ? ServerParams.defaults.port : Integer.parseInt (port));
+        this (name, ip == null ? ServerParams.defaults.ip : (Inet4Address) Inet4Address.getByName (ip.strip ()),
+                port == null ? ServerParams.defaults.port : Integer.parseInt (port.strip ()));
     }
 
     public ServerParams (String name, String ip, int port) throws UnknownHostException {
@@ -44,7 +49,7 @@ public record ServerParams(String name, Inet4Address ip, int port) {
     }
 
     public ServerParams (String name, Inet4Address ip, int port) {
-        this.name = name == null ? ServerParams.defaults.name : name;
+        this.name = (name == null ? ServerParams.defaults.name : name).strip ();
         this.ip = ip;
         this.port = port;
 

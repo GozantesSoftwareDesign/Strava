@@ -3,12 +3,17 @@ package org.gozantes.strava.server.data.domain.session;
 import org.gozantes.strava.server.data.domain.Sport;
 import org.gozantes.strava.server.data.domain.auth.UserCredentials;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.util.Date;
 import java.util.Objects;
 
-public final class Session {
+public final class Session implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
+
     private final UserCredentials parent;
     private long id;
     private SessionState state;

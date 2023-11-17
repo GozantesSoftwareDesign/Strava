@@ -2,6 +2,8 @@ package org.gozantes.strava.server.data.domain.auth;
 
 import org.gozantes.strava.internals.types.Pair;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.time.DateTimeException;
@@ -10,7 +12,10 @@ import java.util.Date;
 import java.util.Objects;
 
 public record UserData(String name, Date birth, BigDecimal weight, Integer height,
-        Pair <Integer, Integer> heartRate) {
+        Pair <Integer, Integer> heartRate) implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
+
     public UserData (String name, Date birth, BigDecimal weight, Integer height, Pair <Integer, Integer> heartRate) {
         Objects.requireNonNull (name);
         Objects.requireNonNull (birth);

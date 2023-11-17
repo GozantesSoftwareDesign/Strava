@@ -29,11 +29,21 @@ import java.util.Calendar;
 import java.util.Map;
 
 public final class AuthAppService {
-    private static final String GooglePublicKeyStr = "uB-3s136B_Vcme1zGQEg-Avs31_voau8BPKtvbYhB0QOHTtrXCF_wxIH5vWjl"
-            + "-5ts8up8Iy2kVnaItsecGohBAy_0kRgq8oi"
-            + "-n_cZ0i5bspAX5VW0peh_QU3KTlKSBaz3ZD9xMCDWuJFFniHuxLtJ4QtL4v2oDD3pBPNRPyIcZ_LKhH3-Jm-EAvubI5"
-            +
-            "-6lB01zkP5x8f2mp2upqAmyex0jKFka2e0DOBavmGsGvKHKtTnE9oSOTDlhINgQPohoSmir89NRbEqqzeZVb55LWRl_hkiDDOZmcM_oJ8iUbm6vQu3YwCy-ef9wGYEij5GOWLmpYsws5vLVtTE2U-0C_ItQ";
+    private static final String GooglePublicKeyStr = "MIIDJzCCAg+gAwIBAgIJAO5q5hCX9S"
+            + "+zMA0GCSqGSIb3DQEBBQUAMDYxNDAyBgNV\\nBAMMK2ZlZGVyYXRlZC1zaWdub24uc3lzdGVtLmdzZXJ2aWNlYWNjb3VudC5jb20w"
+            + "\\nHhcNMjMxMTA0MDQzODA0WhcNMjMxMTIwMTY1MzA0WjA2MTQwMgYDVQQDDCtmZWRl"
+            + "\\ncmF0ZWQtc2lnbm9uLnN5c3RlbS5nc2VydmljZWFjY291bnQuY29tMIIBIjANBgkq"
+            + "\\nhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAuB+3s136B/Vcme1zGQEg+Avs31/voau8\\nBPKtvbYhB0QOHTtrXCF/wxIH5vWjl"
+            + "+5ts8up8Iy2kVnaItsecGohBAy/0kRgq8oi\\n+n/cZ0i5bspAX5VW0peh/QU3KTlKSBaz3ZD9xMCDWuJFFniHuxLtJ4QtL4v2oDD3"
+            + "\\npBPNRPyIcZ/LKhH3+Jm+EAvubI5+6lB01zkP5x8f2mp2upqAmyex0jKFka2e0DOB"
+            + "\\navmGsGvKHKtTnE9oSOTDlhINgQPohoSmir89NRbEqqzeZVb55LWRl/hkiDDOZmcM\\n/oJ8iUbm6vQu3YwCy"
+            + "+ef9wGYEij5GOWLmpYsws5vLVtTE2U+0C/ItQIDAQABozgw\\nNjAMBgNVHRMBAf8EAjAAMA4GA1UdDwEB"
+            + "/wQEAwIHgDAWBgNVHSUBAf8EDDAKBggr\\nBgEFBQcDAjANBgkqhkiG9w0BAQUFAAOCAQEAifQankV6Ca4UQ9MvTX4KlsaVV6WR"
+            + "\\n1FL2ZwRPHwFQnw3hFJrHKdQBvCS1339G1uguCOi0CQQJmQauSvRureJ/80Fc/j3c"
+            + "\\nwEWQgBhuKCHiQbIMFpVoljsVsF91E0FvZ8eJJ5/y7QB3Ww68FavXNjZ62GaYp8aw"
+            + "\\nEdqJdqNFaIv7yWzOO27filjzF3H6VJG7ucx0P6JCCCC6HSii3o1lkRISvSTcevqZ"
+            + "\\nsFdbJEqtVU70siOHxWxMqRopetiTEAsbvwiicdZ6flZqtnxKqB6YEb6TocWpzGvd"
+            + "\\nVKxzByXdPJbyYvAnvusborJZPHKbleZjyonK+cmsOU6N1Yn/FUxKKhFXEg==";
     private static AuthAppService instance;
     private final RSAPublicKey GooglePublicKey;
     private final RSAPrivateKey PrivateKey;
@@ -41,16 +51,28 @@ public final class AuthAppService {
     private AuthAppService () throws NoSuchAlgorithmException, InvalidKeySpecException {
         super ();
 
-        this.GooglePublicKey = (RSAPublicKey) KeyFactory.getInstance ("RSA")
-                .generatePublic (new X509EncodedKeySpec (Base64.getDecoder ().decode (GooglePublicKeyStr)));
+        RSAPublicKey gk = null;
+        RSAPrivateKey pk = null;
 
-        RSAKeyPairGenerator kpg = new RSAKeyPairGenerator ();
-        kpg.init (new KeyGenerationParameters (SecureRandom.getInstance ("SHA1PRNG"), 256));
+        try {
+            gk = (RSAPublicKey) KeyFactory.getInstance ("RSA")
+                    .generatePublic (new X509EncodedKeySpec (Base64.getMimeDecoder ().decode (GooglePublicKeyStr)));
 
-        KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance ("RSA");
-        keyPairGenerator.initialize (256);
+            final RSAKeyPairGenerator kpg = new RSAKeyPairGenerator ();
+            kpg.init (new KeyGenerationParameters (SecureRandom.getInstance ("SHA1PRNG"), 256));
 
-        this.PrivateKey = (RSAPrivateKey) keyPairGenerator.generateKeyPair ().getPrivate ();
+            final KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance ("RSA");
+            keyPairGenerator.initialize (256);
+
+            pk = (RSAPrivateKey) keyPairGenerator.generateKeyPair ().getPrivate ();
+        }
+        catch (Exception e) {
+            gk = null;
+            pk = null;
+        }
+
+        this.GooglePublicKey = gk;
+        this.PrivateKey = pk;
     }
 
     public static AuthAppService getInstance () throws NoSuchAlgorithmException, InvalidKeySpecException {
@@ -61,6 +83,9 @@ public final class AuthAppService {
     }
 
     private String googleValidate (UserCredentials creds) {
+        if (this.GooglePublicKey == null || this.PrivateKey == null) // Keys are not working right now :(
+            return metaValidate (creds);
+
         String token = null;
 
         try {
@@ -100,12 +125,23 @@ public final class AuthAppService {
         if (token == null)
             return null;
 
+        String name = "Alfonso María Isabel Francisco Eugenio Gabriel Pedro Sebastián Pelayo Fernando Francisco de "
+                + "Paula Pío Miguel Rafael Juan José Joaquín Ana Zacarías Elisabeth Simeón Tereso Pedro Pablo Tadeo "
+                + "Santiago Simón Lucas Juan Mateo Andrés Bartolomé Ambrosio Gerónimo Agustín Bernardo Cándido "
+                + "Gerardo Luis-Gonzaga Filomeno Camilo Cayetano Andrés-Avelino Bruno Joaquín-Picolimini Felipe "
+                + "Luis-Rey-de-Francia Ricardo Esteban-Protomártir Genaro Nicolás Estanislao-de-Koska Lorenzo Vicente"
+                + " Crisóstomo Cristano Darío Ignacio Francisco-Javier Francisco-de-Borja Higona Clemente "
+                + "Esteban-de-Hungría Ladislado Enrique Ildefonso Hermenegildo Carlos-Borromeo Eduardo "
+                + "Francisco-Régis Vicente-Ferrer Pascual Miguel-de-los-Santos Adriano Venancio Valentín Benito "
+                + "José-Oriol Domingo Florencio Alfacio Benére Domingo-de-Silos Ramón Isidro Manuel Antonio "
+                + "Todos-los-Santos de Borbón y Borbón"; // https://en.wikipedia.org/wiki/Alfonso_de_Borb%C3%B3n_y_Borb%C3%B3n#cite_ref-3
+
         Calendar birth = Calendar.getInstance ();
         birth.set (2003, Calendar.FEBRUARY, 21);
 
         User u = false
                 ? UserDAO.getInstance ().find (creds.id ())
-                : new User (creds, new UserData (null, birth.getTime ()));
+                : new User (creds, new UserData (name, birth.getTime (), null, null, null));
 
         return u == null ? null : new Pair <String, User> (token, u);
     }

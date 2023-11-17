@@ -1,10 +1,12 @@
 grant codeBase "file:../-" {
-    permission java.net.SocketPermission "localhost:0", "listen, resolve";
-    permission java.net.SocketPermission "*:1024-", "connect, accept";
+    permission java.net.SocketPermission "localhost:0", "connect, accept, listen, resolve";
+    permission java.net.SocketPermission "*:1024-", "connect, accept, listen, resolve";
 };
 
 grant codeBase "file:${user.dir}/-" {
     permission java.util.PropertyPermission "user.dir", "read";
+    permission java.util.PropertyPermission "java.rmi.server.hostname", "write";
+
     permission java.io.FilePermission "file:${user.dir}", "read, write";
     permission java.io.FilePermission "log/", "read, write";
     permission java.io.FilePermission "log/*", "read, write, delete";
@@ -13,5 +15,8 @@ grant codeBase "file:${user.dir}/-" {
 grant {
     permission java.util.logging.LoggingPermission "control";
     permission java.util.logging.PropertyPermission "os.name", "read";
+
+    permission java.lang.RuntimePermission "accessDeclaredMembers";
+
     permission java.io.FilePermission "file:/usr/bin", "execute";
 };

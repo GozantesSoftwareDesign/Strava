@@ -18,16 +18,11 @@ public final class Security {
             System.setSecurityManager (new SecurityManager ());
 
         try {
-            System.out.print ("\033[H\033[2J");
-            System.out.flush ();
-
             final String os = System.getProperty ("os.name");
             if (os.contains ("Windows"))
                 new ProcessBuilder ("cmd", "/c", "cls").inheritIO ().start ().waitFor ();
             else
                 new ProcessBuilder ("sh", "-c", "clear").inheritIO ().start ().waitFor ();
-
-            System.out.flush ();
         }
         catch (Exception e) {
         }

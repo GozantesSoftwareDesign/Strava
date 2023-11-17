@@ -1,6 +1,8 @@
 package org.gozantes.strava.server.data.domain.session;
 
-public enum SessionState {
+import java.io.Serializable;
+
+public enum SessionState implements Serializable {
     CANCELLED ("Cancelled"),
     IN_PROGRESS ("In progress"),
     COMPLETED ("Completed");

@@ -19,6 +19,7 @@ public class Main {
             ServerParams p = new ServerParams (args.length > 0 ? args[0] : null, args.length > 1 ? args[1] : null,
                     args.length > 2 ? args[2] : null);
 
+            System.setProperty ("java.rmi.server.hostname", p.ip().getHostAddress ());
             LocateRegistry.createRegistry (p.port ());
             IRemoteFacade rf = new RemoteFacade (p);
 

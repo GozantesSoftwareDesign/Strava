@@ -58,6 +58,8 @@
 
     <target name="4.server" depends="3.sign" description="Runs the server">
         <java jar="${dist.dir}/${export.file}" fork="true">
+            <jvmarg value="-Djava.rmi.server.codebase=file:${bin.dir}/"/>
+            <jvmarg value="-Djava.rmi.server.useCodebaseOnly=false" />
             <jvmarg value="-Djava.rmi.server.hostname=${registry.ip} ${service.name}"/>
 
             <arg value="${service.name}"/>

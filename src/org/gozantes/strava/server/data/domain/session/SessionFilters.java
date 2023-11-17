@@ -4,11 +4,16 @@ import org.gozantes.strava.internals.types.Pair;
 import org.gozantes.strava.server.data.domain.Sport;
 import org.gozantes.strava.server.data.domain.auth.UserCredentials;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.Duration;
 
 public record SessionFilters(UserCredentials user, String title, Sport sport, Pair <BigDecimal, BigDecimal> distance,
-        Pair <Duration, Duration> duration) {
+        Pair <Duration, Duration> duration) implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
+    
     public SessionFilters (UserCredentials user, String title, Sport sport, Pair <BigDecimal, BigDecimal> distance,
             Pair <Duration, Duration> duration) {
         this.user = user;

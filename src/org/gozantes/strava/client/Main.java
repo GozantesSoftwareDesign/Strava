@@ -14,17 +14,19 @@ import java.security.NoSuchAlgorithmException;
 
 public class Main {
 
-    public static void main (String[] args) throws URISyntaxException, NoSuchAlgorithmException {
-        Security.init ();
-
+    public static void main (String[] args) throws URISyntaxException, NoSuchAlgorithmException, UnknownHostException {
         ServerParams p = null;
         try {
             p = new ServerParams (args.length > 0 ? args[0] : null, args.length > 1 ? args[1] : null,
                     args.length > 2 ? args[2] : null);
         }
+
         catch (NumberFormatException | UnknownHostException e) {
             Logger.getLogger ().severe (e);
+            throw e;
         }
+
+        Security.init ();
 
         ServiceLocator sl = new ServiceLocator ();
         sl.setService (p);

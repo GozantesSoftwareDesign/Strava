@@ -4,12 +4,16 @@ import org.gozantes.strava.internals.types.Pair;
 import org.gozantes.strava.server.data.domain.Sport;
 import org.gozantes.strava.server.data.domain.auth.UserCredentials;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.util.Date;
 
 public record ChallengeFilters(UserCredentials user, String title, Pair <Date, Date> lapse, Sport sport,
-        Pair <BigDecimal, BigDecimal> distance, Pair <Duration, Duration> duration) {
+        Pair <BigDecimal, BigDecimal> distance, Pair <Duration, Duration> duration) implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     public ChallengeFilters (UserCredentials user, String title, Pair <Date, Date> lapse, Sport sport,
             Pair <BigDecimal, BigDecimal> distance, Pair <Duration, Duration> duration) {

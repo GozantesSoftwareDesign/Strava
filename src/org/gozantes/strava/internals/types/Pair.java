@@ -1,6 +1,12 @@
 package org.gozantes.strava.internals.types;
 
-public record Pair <X, Y>(X x, Y y) {
+import java.io.Serial;
+import java.io.Serializable;
+
+public record Pair <X, Y>(X x, Y y) implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
+
     public Pair (Pair <X, Y> pair) {
         this (pair.x, pair.y);
     }

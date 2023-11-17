@@ -5,13 +5,18 @@ import org.gozantes.strava.server.data.domain.Mergeable;
 import org.gozantes.strava.server.data.domain.challenge.Challenge;
 import org.gozantes.strava.server.data.domain.session.Session;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
-public final class User implements Mergeable {
+public final class User implements Mergeable, Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
+
     private final List <Session> sessions = new ArrayList <Session> ();
     private final List <Challenge> challenges = new ArrayList <Challenge> ();
     private UserCredentials creds;

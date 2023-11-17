@@ -1,4 +1,4 @@
-package org.gozantes.strava.internals.types;
+package org.gozantes.strava.internals.swing;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;

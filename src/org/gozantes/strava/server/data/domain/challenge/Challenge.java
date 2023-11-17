@@ -4,12 +4,17 @@ import org.gozantes.strava.internals.types.Pair;
 import org.gozantes.strava.server.data.domain.Sport;
 import org.gozantes.strava.server.data.domain.auth.UserCredentials;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
-public abstract class Challenge {
+public abstract class Challenge implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
+
     protected final String name;
     protected final Pair <Date, Date> lapse;
     protected final Sport sport;

@@ -102,6 +102,7 @@ public abstract class DAO <T> implements IDAO <T> {
         catch (Exception e) {
             Logger.getLogger ().severe (
                     String.format ("There was an error trying to retrieve all objects of class %s: %s",
+                            this.instance ().objClass.getName (),
                             e.getMessage ()));
         }
         finally {

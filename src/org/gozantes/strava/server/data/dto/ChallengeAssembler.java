@@ -23,9 +23,10 @@ public class ChallengeAssembler {
     public ChallengeDTO ChallengeToDTO (Challenge challenge) {
         ChallengeDTO challengeDTO = new ChallengeDTO (challenge.getName (), challenge.getLapse (),
                 challenge.getSport (), challenge.isTimed () ? ((TimeChallenge) challenge).getGoal () :
-                ((DistanceChallenge) challenge).getGoal (), challenge.getId());
+                ((DistanceChallenge) challenge).getGoal (), challenge.getId ());
         return challengeDTO;
     }
+
     public List <ChallengeDTO> ChallengesToDTO (List <Challenge> challenges) {
         List <ChallengeDTO> dtos = new ArrayList <> ();
 

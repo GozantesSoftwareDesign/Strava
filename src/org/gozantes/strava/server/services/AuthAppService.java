@@ -87,6 +87,7 @@ public final class AuthAppService {
         if (creds == null)
             Logger.getLogger ().severe (new NullPointerException ("The credentials cannot be null."));
 
+        assert creds != null;
         if (creds.passwd () == null)
             Logger.getLogger ().severe (new NullPointerException ("Credentials must have a password."));
 

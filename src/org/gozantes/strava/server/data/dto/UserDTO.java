@@ -7,11 +7,8 @@ import java.util.Objects;
 
 public record UserDTO(UserCredentials creds, UserData data) {
     public UserDTO (UserCredentials creds, UserData data) {
-        Objects.nonNull (creds);
-        Objects.nonNull (data);
-
-        this.creds = creds;
-        this.data = data;
+        this.creds = Objects.requireNonNull (creds);
+        this.data = Objects.requireNonNull (data);
     }
 
     public UserCredentials creds () {

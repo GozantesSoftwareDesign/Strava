@@ -81,9 +81,9 @@ public final class ChallengeAppService {
                 ? new ArrayList <Challenge> (ChallengeAppService.challenges)
                 : ChallengeAppService.challenges.stream ().filter (
                                 (x) -> (filters.user () == null || (filters.user ().id ().equals (x.getParent ().id ())
-                                        && filters.user ().type ().equals (filters.user ().type ()))) && x.getName ()
+                                        && filters.user ().type ().equals (x.getParent ().type ()))) && x.getName ()
                                         .toLowerCase ()
-                                        .contains ((filters.title () == null ? filters.title () : "").toLowerCase ()) && (
+                                        .contains ((filters.title () == null ? "" : filters.title ()).toLowerCase ()) && (
                                         filters.sport () == null || x.getSport ().equals (filters.sport ())) && (
                                         filters.distance () == null || filters.distance ().x () == null || (!x.isTimed ()
                                                 && filters.distance ().x ().compareTo (((DistanceChallenge) x).getGoal ())
@@ -102,12 +102,12 @@ public final class ChallengeAppService {
                 .filter ((x) -> x.getId ().equals (challenge)).findFirst ();
 
         if (c.isEmpty ())
-            throw new RemoteException (String.format ("No challenges with ID %ld could be found."));
+            throw new RemoteException (String.format ("No challenges with ID %d could be found.", challenge));
 
         if (c.get ().getParticipants ().stream ()
                 .anyMatch ((x) -> x.type ().equals (creds.type ()) && x.id ().equals (creds.id ())))
             throw new RemoteException (
-                    String.format ("User %s (%s) has already accepted challenge %ld", creds.id (), creds.type (),
+                    String.format ("User %s (%s) has already accepted challenge %d", creds.id (), creds.type (),
                             challenge));
 
         c.get ().getParticipants ().add (creds);

@@ -29,7 +29,13 @@
         </fileset>
     </path>
 
-    <target name="all" depends="client, server"/>
+    <target name="all">
+        <parallel>
+            <ant antfile="${client.file}" inheritrefs="true"/>
+
+            <ant antfile="${server.file}" inheritrefs="true"/>
+        </parallel>
+    </target>
 
     <target name="client">
         <ant antfile="${client.file}" inheritrefs="true"/>

@@ -42,11 +42,13 @@ public final class Logger {
                 throw new FileSystemException (fd.getPath () + " is not a directory.");
 
             final File[] ff = fd.listFiles ();
-            for (int[] i = new int[] { 0, ff.length - 10 }; i[0] < i[1]; ff[i[0]++].delete ())
+            for (int[] i = new int[] { 0, (ff == null ? new File[0] : ff).length - 10 };
+                    i[0] < i[1]; Objects.requireNonNull (
+                    ff)[i[0]++].delete ())
                 ;
 
             java.util.logging.FileHandler fh = new java.util.logging.FileHandler (
-                    "log/" + name + new SimpleDateFormat ("_dd-MM-YYYY_H-m-s").format (
+                    "log/" + name + new SimpleDateFormat ("_dd-MM-yyyy_H-m-s").format (
                             new Date (System.currentTimeMillis ())) + ".log");
             fh.setFormatter (fm);
 

@@ -73,8 +73,8 @@ public final class SessionAppService {
         return filters != null
                 ? SessionAppService.sessions.stream ().filter (
                 (x) -> (filters.user () == null || (filters.user ().id ().equals (x.getParent ().id ())
-                        && filters.user ().type ().equals (filters.user ().type ()))) && x.getTitle ().toLowerCase ()
-                        .contains (((filters.title () == null ? filters.title () : "").strip ()).toLowerCase ()) && (
+                        && filters.user ().type ().equals (x.getParent ().type ()))) && x.getTitle ().toLowerCase ()
+                        .contains (((filters.title () == null ? "" : filters.title ()).strip ()).toLowerCase ()) && (
                         filters.sport () == null || x.getSport ().equals (filters.sport ())) && (
                         filters.distance () == null || filters.distance ().x () == null
                                 || filters.distance ().x ().compareTo (x.getDistance ()) <= 0) && (

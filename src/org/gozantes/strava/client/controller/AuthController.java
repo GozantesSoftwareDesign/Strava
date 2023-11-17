@@ -24,13 +24,11 @@ public class AuthController {
             return true;
         }
         catch (RemoteException | NoSuchAlgorithmException | InvalidKeySpecException e) {
-            Logger.getLogger ().severe (String.format ("Could not log in the user", e.getMessage ()));
+            Logger.getLogger ().severe (String.format ("Could not log in the user: %s", e.getMessage ()));
             token = null;
             return false;
         }
     }
-
-    
 
     public Boolean signUp (UserCredentials creds, UserData data) {
         try {
@@ -39,7 +37,7 @@ public class AuthController {
         }
         catch (RemoteException e) {
             token = null;
-            Logger.getLogger ().severe (String.format ("Could not sign in the user: %s", e.getMessage()));
+            Logger.getLogger ().severe (String.format ("Could not sign in the user: %s", e.getMessage ()));
             return false;
         }
     }

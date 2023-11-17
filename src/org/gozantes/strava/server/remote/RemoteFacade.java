@@ -22,6 +22,7 @@ import org.gozantes.strava.server.services.ChallengeAppService;
 import org.gozantes.strava.server.services.SessionAppService;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
@@ -227,12 +228,12 @@ public final class RemoteFacade extends UnicastRemoteObject implements IRemoteFa
     @Override
     public Map <ChallengeDTO, Pair <Triplet <Object, Object, BigDecimal>, Map <Sport, List <SessionDTO>>>> getActiveChallengeStatus (
             String token) throws RemoteException {
-        Map <Challenge, List <SessionDTO>> sessions;
+        Map <ChallengeDTO, List <SessionDTO>> sessions;
 
         {
             List <SessionDTO> sessionTotal = this.getSessions (token);
 
-            sessions = Map.ofEntries ((Map.Entry[]) List.of ((ChallengeDTO) null).stream ().map ((c) -> Map.entry (c,
+            sessions = Map.ofEntries ((Map.Entry[]) this.getActiveChallenges (token).stream ().map ((c) -> Map.entry (c,
                     sessionTotal.stream ()
                             .filter ((s) -> c.sport () == null || c.sport ().equals (s.data ().sport ())))).toArray ());
         }
@@ -243,7 +244,7 @@ public final class RemoteFacade extends UnicastRemoteObject implements IRemoteFa
         ChallengeDTO k;
         List <SessionDTO> v;
         Object[] ret;
-        for (Map.Entry <ChallengeDTO, List <SessionDTO>> x : (Map.Entry[]) sessions.entrySet ().toArray ()) {
+        for (Map.Entry <ChallengeDTO, List <SessionDTO>> x : sessions.entrySet ().stream ().map ((x) -> x).toList ()) {
             k = x.getKey ();
             v = x.getValue ();
 
@@ -265,7 +266,7 @@ public final class RemoteFacade extends UnicastRemoteObject implements IRemoteFa
                 });
 
                 ret[2] = (BigDecimal.valueOf ((Long) (ret[0] = (Long) t[0].toMinutes ()))).divide (
-                        BigDecimal.valueOf ((Long) (ret[1] = (Long) t[1].toMinutes ())));
+                        BigDecimal.valueOf ((Long) (ret[1] = (Long) t[1].toMinutes ())), RoundingMode.HALF_EVEN);
             }
 
             else {

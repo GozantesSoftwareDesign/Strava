@@ -33,7 +33,7 @@
 
     <target name="2.export" depends="1.build" description="Export the project into a .jar file">
         <mkdir dir="${dist.dir}"/>
-        <delete file="${dist.dir}/${export.file}" />
+        <delete file="${dist.dir}/${export.file}"/>
 
         <manifestclasspath property="jar.classpath" jarfile="${dist.dir}/${export.file}">
             <classpath>

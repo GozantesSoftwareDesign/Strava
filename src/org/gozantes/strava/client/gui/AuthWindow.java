@@ -5,7 +5,9 @@ import org.gozantes.strava.internals.logging.Logger;
 import org.gozantes.strava.internals.swing.ImageDisplayer;
 import org.gozantes.strava.internals.types.Pair;
 import org.gozantes.strava.internals.types.TextPrompt;
-import org.gozantes.strava.server.data.domain.auth.*;
+import org.gozantes.strava.server.data.domain.auth.CredType;
+import org.gozantes.strava.server.data.domain.auth.UserCredentials;
+import org.gozantes.strava.server.data.domain.auth.UserData;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -13,6 +15,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.io.Serial;
 import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -23,9 +26,10 @@ import java.util.Objects;
 
 public class AuthWindow extends JFrame {
 
+    @Serial
     private static final long serialVersionUID = 1L;
-    private AuthController controller;	
-    
+    private AuthController controller;
+
     private JFrame frame = new JFrame ("STRAVA");
     private JPanel panelPrincipal = new JPanel (new GridLayout (4, 1));
     private JPanel panelUser = new JPanel (new FlowLayout (FlowLayout.CENTER));
@@ -43,8 +47,8 @@ public class AuthWindow extends JFrame {
     private SpinnerNumberModel heightSpinnerM = new SpinnerNumberModel (0, 0, 250, 1);
     private SpinnerNumberModel maximunHeartRateSpinnerM = new SpinnerNumberModel (0, 0, 300, 1);
     private SpinnerNumberModel restingHeartRateSpinnerM = new SpinnerNumberModel (0, 0, 300, 1);
-    
-    private DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+
+    private DateFormat formatter = new SimpleDateFormat ("dd/MM/yyyy");
 
     private JLabel userLabel = new JLabel ("Email");
     private JTextField userText = new JTextField (20);
@@ -62,9 +66,9 @@ public class AuthWindow extends JFrame {
     private JSpinner maximunHeartRateSpinner = new JSpinner (maximunHeartRateSpinnerM);
     private JLabel restingHeartRateLabel = new JLabel ("RestingHeartRate(Optional)");
     private JSpinner restingHeartRateSpinner = new JSpinner (restingHeartRateSpinnerM);
-    
-	private TextPrompt placeholder = new TextPrompt("dd/MM/yyyy", birthDateText);
-    
+
+    private TextPrompt placeholder = new TextPrompt ("dd/MM/yyyy", birthDateText);
+
     private JButton login = new JButton ("Login");
     private JButton loginMeta = new JButton ("Login with Meta");
     private JButton loginGoogle = new JButton ("Login with Google");
@@ -76,8 +80,8 @@ public class AuthWindow extends JFrame {
     private ImageDisplayer iconoMeta;
 
     public AuthWindow (AuthController controller) {
-    	
-    	this.controller = controller;
+
+        this.controller = controller;
         frame.setSize (700, 500);
         frame.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
         frame.setVisible (true);
@@ -115,7 +119,7 @@ public class AuthWindow extends JFrame {
 
             @Override
             public void actionPerformed (ActionEvent e) {
-            	signUp(CredType.Google);
+                signUp (CredType.Google);
             }
 
         });
@@ -123,7 +127,7 @@ public class AuthWindow extends JFrame {
 
             @Override
             public void actionPerformed (ActionEvent e) {
-            	signUp(CredType.Meta);
+                signUp (CredType.Meta);
             }
 
         });
@@ -139,7 +143,7 @@ public class AuthWindow extends JFrame {
 
             @Override
             public void actionPerformed (ActionEvent e) {
-            	login(CredType.Google);
+                login (CredType.Google);
             }
 
         });
@@ -147,7 +151,7 @@ public class AuthWindow extends JFrame {
 
             @Override
             public void actionPerformed (ActionEvent e) {
-            	login(CredType.Meta);
+                login (CredType.Meta);
             }
 
         });
@@ -280,37 +284,45 @@ public class AuthWindow extends JFrame {
     }
 
     void signUp (CredType type) {
-    	Pair <Integer, Integer> HeartRate = new Pair<>((Integer)maximunHeartRateSpinner.getValue(),(Integer) restingHeartRateSpinner.getValue());
-    	UserData data = null;
-    	BigDecimal w;
-    	Integer h;
-    	if ((Integer)weightSpinner.getValue() == 0) {
-    		w = null;
-    	} else {
-    		w = BigDecimal.valueOf((long) weightSpinner.getValue());
-    	}
-    	if ((Integer) heightSpinner.getValue() == 0) {
-    		h = null;
-    	} else {
-    		h = (Integer) heightSpinner.getValue();
-    	}
-    	System.out.println(birthDateText.getText());
-    	try {
-    		Date birth = formatter.parse(birthDateText.getText());
-    		
-			data = new UserData(userText.getText(), birth, w, h, HeartRate);
-		} catch (ParseException e) {
-			Logger.getLogger().severe("Birthdate cant be parse: " + e.getMessage());
-		}
-    	UserCredentials creds = new UserCredentials(type, userText.getText(),new String(passwordText.getPassword()));
-        boolean res = this.controller.signUp(creds, data);
-        Logger.getLogger().info("sign up result: " + res);
+        Pair <Integer, Integer> HeartRate = new Pair <> ((Integer) maximunHeartRateSpinner.getValue (),
+                (Integer) restingHeartRateSpinner.getValue ());
+        UserData data = null;
+        BigDecimal w;
+        Integer h;
+        if ((Integer) weightSpinner.getValue () == 0) {
+            w = null;
+        }
+        else {
+            w = BigDecimal.valueOf ((long) weightSpinner.getValue ());
+        }
+        if ((Integer) heightSpinner.getValue () == 0) {
+            h = null;
+        }
+        else {
+            h = (Integer) heightSpinner.getValue ();
+        }
+        System.out.println (birthDateText.getText ());
+        try {
+            Date birth = formatter.parse (birthDateText.getText ());
+
+            data = new UserData (userText.getText (), birth, w, h, HeartRate);
+        }
+        catch (ParseException e) {
+            Logger.getLogger ().severe ("Birthdate cant be parse: " + e.getMessage ());
+        }
+        UserCredentials creds = new UserCredentials (type, userText.getText (),
+                new String (passwordText.getPassword ()));
+        boolean res = this.controller.signUp (creds, data);
+        Logger.getLogger ().info ("sign up result: " + res);
     }
-    void login(CredType type) {
-    	UserCredentials creds = new UserCredentials(type, userText.getText(),new String(passwordText.getPassword()));
-    	boolean res = this.controller.login(creds);
-    	Logger.getLogger().info("login result: " + res);
+
+    void login (CredType type) {
+        UserCredentials creds = new UserCredentials (type, userText.getText (),
+                new String (passwordText.getPassword ()));
+        boolean res = this.controller.login (creds);
+        Logger.getLogger ().info ("login result: " + res);
     }
+
     JScrollPane generateScrollPane (JScrollPane scroll, ArrayList <JPanel> arrayDePaneles, JPanel panel) {
         scroll.setViewportView (panel);
         arrayDePaneles.get (0).setBounds (scroll.getX (), scroll.getY (), scroll.getWidth () - 50, 50);

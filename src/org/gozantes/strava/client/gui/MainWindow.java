@@ -1,5 +1,7 @@
 package org.gozantes.strava.client.gui;
 
+import java.net.URISyntaxException;
+import java.security.NoSuchAlgorithmException;
 import java.time.Duration;
 import org.gozantes.strava.client.controller.AuthController;
 import org.gozantes.strava.client.controller.MainController;
@@ -102,7 +104,15 @@ public class MainWindow extends JFrame {
         logout.addActionListener (new ActionListener () {
             @Override
             public void actionPerformed (ActionEvent e) {
-                new AuthWindow (new AuthController(serviceLocator));
+                try {
+                    new AuthWindow (new AuthController(serviceLocator));
+                }
+                catch (URISyntaxException ex) {
+                    throw new RuntimeException (ex);
+                }
+                catch (NoSuchAlgorithmException ex) {
+                    throw new RuntimeException (ex);
+                }
                 mainController.logout();
                 dispose ();
             }

@@ -13,7 +13,9 @@ import org.gozantes.strava.server.data.dto.ChallengeDTO;
 import org.gozantes.strava.server.data.dto.SessionDTO;
 
 import java.math.BigDecimal;
+import java.net.URISyntaxException;
 import java.rmi.RemoteException;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Map;
 
@@ -43,7 +45,7 @@ public class MainController {
         try {
             return this.serviceLocator.getService ().getSessions (token);
         }
-        catch (RemoteException e) {
+        catch (RemoteException | URISyntaxException | NoSuchAlgorithmException e) {
             System.out.println ("Error al sacar sesiones " + e);
             return null;
         }
@@ -53,7 +55,7 @@ public class MainController {
         try {
             return this.serviceLocator.getService ().searchSessions (filters);
         }
-        catch (RemoteException e) {
+        catch (RemoteException | URISyntaxException | NoSuchAlgorithmException e) {
             System.out.println ("Error al buscar sesiones " + e);
             return null;
         }
@@ -72,7 +74,7 @@ public class MainController {
         try {
             this.serviceLocator.getService ().createChallenge (token, challenge);
         }
-        catch (RemoteException e) {
+        catch (RemoteException | URISyntaxException | NoSuchAlgorithmException e) {
             System.out.println ("Error al crear reto " + e);
         }
     }
@@ -81,7 +83,7 @@ public class MainController {
         try {
             return this.serviceLocator.getService ().getActiveChallenges (token);
         }
-        catch (RemoteException e) {
+        catch (RemoteException | URISyntaxException | NoSuchAlgorithmException e) {
             System.out.println ("Error en al obtener los retos activos " + e);
             return null;
         }
@@ -99,7 +101,7 @@ public class MainController {
         try {
             this.serviceLocator.getService ().acceptChallenge (token, challenge);
         }
-        catch (RemoteException e) {
+        catch (RemoteException | URISyntaxException | NoSuchAlgorithmException e) {
             System.out.println ("Error al aceptar el reto" + e);
         }
     }
@@ -109,7 +111,7 @@ public class MainController {
         try {
             return this.serviceLocator.getService ().getActiveChallengeStatus (token);
         }
-        catch (RemoteException e) {
+        catch (RemoteException | URISyntaxException | NoSuchAlgorithmException e) {
             System.out.println ("Error al obtener el estado de los reos activos" + e);
             return null;
         }
@@ -120,7 +122,7 @@ public class MainController {
             this.serviceLocator.getService ().logout (this.token);
             token = null;
         }
-        catch (RemoteException e) {
+        catch (RemoteException | URISyntaxException | NoSuchAlgorithmException e) {
             // TODO Auto-generated catch block
             Logger.getLogger ().severe (String.format ("Could not log out the user: %s", e.getMessage ()));
         }

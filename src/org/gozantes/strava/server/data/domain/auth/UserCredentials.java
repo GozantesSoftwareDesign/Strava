@@ -14,11 +14,8 @@ public record UserCredentials(@Id CredType type, @Id String id, String passwd) i
     }
 
     public UserCredentials (CredType type, String id, String passwd) {
-        Objects.requireNonNull (type);
-        Objects.requireNonNull (id);
-
-        this.type = type;
-        this.id = id;
+        this.type = Objects.requireNonNull (type);
+        this.id = Objects.requireNonNull (id);
         this.passwd = passwd;
     }
 

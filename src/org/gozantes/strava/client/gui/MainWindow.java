@@ -53,9 +53,9 @@ public class MainWindow extends JFrame {
 
     private MainController mainController;
     private ChallengeDTO cselected;
-    private List <ChallengeDTO> activeChallenges = mainController.getActiveChallenges();
-    private List <SessionDTO> acceptedSessionThem = mainController.searchSessions(new SessionFilters(new UserCredentials(null)));
-    private List <SessionDTO> acceptedSession = mainController.getSessions();
+    private List <ChallengeDTO> activeChallenges;
+    private List <SessionDTO> acceptedSessionThem;
+    private List <SessionDTO> acceptedSession;
 
     public MainWindow (MainController mainController, ServiceLocator serviceLocator) {
         super ();
@@ -63,6 +63,9 @@ public class MainWindow extends JFrame {
         setBounds (300, 100, 600, 400);
         setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
         this.mainController=mainController;
+        this.activeChallenges = this.mainController.getActiveChallenges();
+        this.acceptedSessionThem = this.mainController.searchSessions(new SessionFilters(null));
+        this.acceptedSession = this.mainController.getSessions();
 
         pTodo = new JPanel (new BorderLayout (0, 1));
         pNorte.setBackground (new Color (255, 255, 255));
@@ -193,7 +196,7 @@ public class MainWindow extends JFrame {
                 JButton boton3 = new JButton ("Crear sesi�n");
                 boton3.setPreferredSize (new Dimension (110, 20));
                 pSur.add (boton3);
-                JButton boton4 = new JButton ("Consultar sesi�n");
+                JButton boton4 = new JButton ("Consultar sesión");
                 boton4.setPreferredSize (new Dimension (130, 20));
                 pSur.add (boton4);
                 boton4.addActionListener (new ActionListener () {

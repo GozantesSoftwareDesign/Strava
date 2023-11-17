@@ -24,6 +24,8 @@ public class MainController {
     private String token;
 
     public MainController (ServiceLocator serviceLocator, String token) {
+        super ();
+
         this.serviceLocator = serviceLocator;
         this.token = token;
     }

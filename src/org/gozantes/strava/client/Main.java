@@ -1,6 +1,7 @@
 package org.gozantes.strava.client;
 
 import org.gozantes.strava.client.controller.AuthController;
+import org.gozantes.strava.client.controller.MainController;
 import org.gozantes.strava.client.gui.AuthWindow;
 import org.gozantes.strava.client.remote.ServiceLocator;
 import org.gozantes.strava.internals.logging.Logger;

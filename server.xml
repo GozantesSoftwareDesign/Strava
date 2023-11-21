@@ -8,6 +8,7 @@
         <copy todir="${build.dir}" file="${policy.file}"/>
 
         <javac
+        		encoding="utf-8"
                 srcdir="${source.dir}"
                 destdir="${build.dir}"
                 deprecation="false"

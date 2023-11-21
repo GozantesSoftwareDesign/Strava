@@ -1,6 +1,8 @@
 package org.gozantes.strava.server.data.domain;
 
-public enum Sport {
+import java.io.Serializable;
+
+public enum Sport implements Serializable {
     Cyclism ("Cyclism"),
     Running ("Running");
 

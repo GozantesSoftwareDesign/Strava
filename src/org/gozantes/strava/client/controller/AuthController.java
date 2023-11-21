@@ -19,7 +19,6 @@ public class AuthController {
         super ();
 
         this.serviceLocator = serviceLocator;
-        System.out.println (this.serviceLocator.getService ());
     }
 
     public Boolean login (UserCredentials cred) {

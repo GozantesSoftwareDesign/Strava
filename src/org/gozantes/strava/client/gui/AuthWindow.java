@@ -32,7 +32,7 @@ public class AuthWindow extends JFrame {
     private static final long serialVersionUID = 1L;
     private AuthController authController;
     private ServiceLocator serviceLocator;
-
+    
     private JFrame frame = new JFrame ("STRAVA");
     private JPanel panelPrincipal = new JPanel (new GridLayout (4, 1));
     private JPanel panelUser = new JPanel (new FlowLayout (FlowLayout.CENTER));
@@ -70,7 +70,8 @@ public class AuthWindow extends JFrame {
     private JLabel restingHeartRateLabel = new JLabel ("RestingHeartRate(Optional)");
     private JSpinner restingHeartRateSpinner = new JSpinner (restingHeartRateSpinnerM);
 
-    private TextPrompt placeholder = new TextPrompt ("dd/MM/yyyy", birthDateText);
+    @SuppressWarnings("unused")
+	private TextPrompt placeholder = new TextPrompt ("dd/MM/yyyy", birthDateText);
 
     private JButton login = new JButton ("Login");
     private JButton loginMeta = new JButton ("Login with Meta");
@@ -83,11 +84,11 @@ public class AuthWindow extends JFrame {
     private ImageDisplayer iconoMeta;
 
     public AuthWindow (AuthController authController, ServiceLocator serviceLocator) {
-
-        this.authController = authController;
+    	super();
+    	this.authController = authController;
         this.serviceLocator = serviceLocator;
         frame.setSize (700, 500);
-        frame.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation (JFrame.DISPOSE_ON_CLOSE);
         frame.setVisible (true);
         frame.setLocationRelativeTo (null);
         frame.setLayout (null);
@@ -148,6 +149,7 @@ public class AuthWindow extends JFrame {
             @Override
             public void actionPerformed (ActionEvent e) {
                 login (CredType.Google);
+                frame.dispose();
             }
 
         });
@@ -156,6 +158,7 @@ public class AuthWindow extends JFrame {
             @Override
             public void actionPerformed (ActionEvent e) {
                 login (CredType.Meta);
+                frame.dispose();
             }
 
         });

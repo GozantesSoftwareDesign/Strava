@@ -26,5 +26,7 @@ public final class Security {
         }
         catch (Exception e) {
         }
+        System.setProperty("stdout.encoding", "UTF-8");
+        System.setProperty("file.encoding", "UTF-8");
     }
 }

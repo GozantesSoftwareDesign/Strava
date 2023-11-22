@@ -64,8 +64,12 @@ public final class ChallengeAppService {
             throw new RemoteException ("The challenge data cannot be null");
 
         try {
-            Challenge c = new TimeChallenge (ChallengeAppService.counter++, data.getName (), data.getLapse (),
-                    data.getSport (), creds, ((TimeChallenge) data).getGoal ());
+            Challenge c = data.isTimed () ? new TimeChallenge (ChallengeAppService.counter++, data.getName (),
+                    data.getLapse (),
+                    data.getSport (), creds, ((TimeChallenge) data).getGoal ()) :
+                    new DistanceChallenge (ChallengeAppService.counter++, data.getName (),
+                    data.getLapse (),
+                    data.getSport (), creds, ((DistanceChallenge) data).getGoal ());
 
             challenges.add (c);
 

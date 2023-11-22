@@ -2,6 +2,8 @@ package org.gozantes.strava.client.gui;
 
 import java.net.URISyntaxException;
 import java.security.NoSuchAlgorithmException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.Duration;
 import org.gozantes.strava.client.controller.AuthController;
 import org.gozantes.strava.client.controller.MainController;
@@ -9,8 +11,11 @@ import org.gozantes.strava.client.remote.ServiceLocator;
 import org.gozantes.strava.internals.logging.Logger;
 import org.gozantes.strava.internals.types.Pair;
 import org.gozantes.strava.server.data.domain.Sport;
+import org.gozantes.strava.server.data.domain.auth.UserCredentials;
+import org.gozantes.strava.server.data.domain.challenge.Challenge;
 import org.gozantes.strava.server.data.domain.challenge.DistanceChallenge;
 import org.gozantes.strava.server.data.domain.challenge.TimeChallenge;
+import org.gozantes.strava.server.data.domain.session.SessionData;
 import org.gozantes.strava.server.data.domain.session.SessionFilters;
 import org.gozantes.strava.server.data.dto.ChallengeDTO;
 import org.gozantes.strava.server.data.dto.SessionDTO;
@@ -92,6 +97,8 @@ public class MainWindow extends JFrame {
     private List <ChallengeDTO> activeChallenges;
     private List <SessionDTO> acceptedSessionThem;
     private List <SessionDTO> acceptedSession;
+    
+    private boolean estadoKmorseg;
 
     public MainWindow (MainController mainController, ServiceLocator serviceLocator) {
         super ();
@@ -102,7 +109,7 @@ public class MainWindow extends JFrame {
         this.acceptedSession = this.mainController.getSessions();
         
         frame.setSize (1000, 800);
-        frame.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);        
         frame.setVisible(true);
         frame.setLocationRelativeTo(null);
 
@@ -179,6 +186,19 @@ public class MainWindow extends JFrame {
                 ventanaAcceptedChallenges ();
             }
         });
+        
+        kmorseg.addItemListener (new ItemListener () {       	
+
+            @Override
+            public void itemStateChanged (ItemEvent e) {
+                if (e.getStateChange () == ItemEvent.SELECTED) {
+                    estadoKmorseg = true;
+                }else{
+                	estadoKmorseg = false;
+                }
+                
+            }
+        });
 
         frame.add(pPrincipal);
     }
@@ -222,9 +242,19 @@ public class MainWindow extends JFrame {
                 Crear.addActionListener (new ActionListener () {
                     @Override
                     public void actionPerformed (ActionEvent e) {
-                    	             	                    
-                    	//SessionData sessionData=new SessionData(st,sp, bd, dt, dr);
-                    	//mainController.createSession(sessionData);
+                    	String st=tituloText.getText();
+                    	Sport sp=(Sport) deporteBox.getSelectedItem();
+                    	BigDecimal bd= new BigDecimal(distanciaTexto.getText());
+						Duration dr= Duration.ofMinutes(Integer.parseInt(DuracionText.getText()));
+						SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
+						Date di = null;
+						try {
+							di = sdf.parse(fInicioText.getText());
+							} catch (ParseException e1) {
+								e1.printStackTrace();
+								}
+						SessionData sessionData=new SessionData(st,sp, bd, di, dr);
+                    	mainController.createSession(sessionData);
                         paintVentana (1);
                     }
                 });
@@ -265,11 +295,49 @@ public class MainWindow extends JFrame {
         
         Crear.addActionListener (new ActionListener () {
             @Override
-            public void actionPerformed (ActionEvent e) {
-            	             	                    
-            	//SessionData sessionData=new SessionData(st,sp, bd, dt, dr);
-            	//mainController.createSession(sessionData);
-                paintVentana (1);
+            public void actionPerformed (ActionEvent e) { 
+            	String ti=tituloText.getText();
+            	SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
+            	Date di = null;
+				try {
+					di = sdf.parse(fInicioText.getText());
+				} catch (ParseException e1) {					
+					e1.printStackTrace();
+				}
+            	Date df=null;
+				try {
+					df = sdf.parse(fFinalText.getText());
+				} catch (ParseException e1) {					
+					e1.printStackTrace();
+				}
+            	Pair<Date,Date> lapse=new Pair<Date, Date>(di, df);
+            	Sport sp=(Sport) deporteBox.getSelectedItem();            	
+            	Challenge ch = null;
+            	
+            	if (estadoKmorseg) {
+            		if(kmorseg.getSelectedObjects().equals(kmorseg.getItemAt(0))) {
+            			BigDecimal bd=new BigDecimal(distanciaTexto.getText());
+            			try {
+							ch= new DistanceChallenge(ti, lapse, sp, null, bd);
+						} catch (Exception e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+            			mainController.createChallenge(ch);
+            		}
+            		else if(kmorseg.getSelectedObjects().equals(kmorseg.getItemAt(1))){
+            			Duration dr = Duration.ofMinutes(Integer.parseInt(DuracionText.getText()));
+            			try {
+							ch=new TimeChallenge(ti,lapse,sp,null,dr);
+						} catch (Exception e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+            		}
+            	}else{
+            		Logger.getLogger().info("No esta seleccionado la unidad de challenge");
+            	}
+                paintVentana (0);
             }
         });
     }

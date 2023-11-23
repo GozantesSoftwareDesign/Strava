@@ -466,7 +466,7 @@ public class MainWindow extends JFrame {
         kmorseg.addItem ("Tiempo(sec)");
         usuarioBox.addItem ("Tu Usuario");
         usuarioBox.addItem ("Otros usuarios");
-        
+        usuarioBox.setSelectedIndex(0);     
         
         //Header Panels
         pLogout.add (botonLogout);

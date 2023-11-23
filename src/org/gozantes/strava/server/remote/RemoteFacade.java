@@ -177,6 +177,9 @@ public final class RemoteFacade extends UnicastRemoteObject implements IRemoteFa
             Logger.getLogger ().severe (new RemoteException (
                     "The user trying to get their active challenges is not " + "currently logged in."));
 
+        System.out.println (ChallengeAppService.getInstance ()
+                .getChallenges (new ChallengeFilters (this.state.get (token).getCredentials ())));
+
         List <ChallengeDTO> c = null;
         try {
             c = ChallengeAssembler.getInstance ().ChallengesToDTO (ChallengeAppService.getInstance ()

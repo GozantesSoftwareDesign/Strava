@@ -74,15 +74,9 @@ public class MainController {
         }
     }
 
-    public boolean createChallenge (Challenge challenge) {
-        try {
-            this.serviceLocator.getService ().createChallenge (token, challenge);
-            return true;
-        }
-        catch (RemoteException | URISyntaxException | NoSuchAlgorithmException e) {
-            System.out.println ("Error al crear reto " + e);
-            return false;
-        }
+    public boolean createChallenge (Challenge challenge)
+            throws URISyntaxException, NoSuchAlgorithmException, RemoteException {
+            return this.serviceLocator.getService ().createChallenge (token, challenge);
     }
 
     public List <ChallengeDTO> getActiveChallenges () {

@@ -1,5 +1,6 @@
 package org.gozantes.strava.client.gui;
 
+import java.io.Serial;
 import java.net.URISyntaxException;
 import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
@@ -36,7 +37,8 @@ import java.util.List;
 
 public class MainWindow extends JFrame {
 
-	private static final long serialVersionUID = 1L;
+	@Serial
+    private static final long serialVersionUID = 1L;
 	
 	private JFrame frame = new JFrame ("Usuario");
 	

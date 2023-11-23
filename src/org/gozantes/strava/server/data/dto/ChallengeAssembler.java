@@ -4,6 +4,7 @@ import org.gozantes.strava.server.data.domain.challenge.Challenge;
 import org.gozantes.strava.server.data.domain.challenge.DistanceChallenge;
 import org.gozantes.strava.server.data.domain.challenge.TimeChallenge;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,10 +22,9 @@ public class ChallengeAssembler {
     }
 
     public ChallengeDTO ChallengeToDTO (Challenge challenge) {
-        ChallengeDTO challengeDTO = new ChallengeDTO (challenge.getName (), challenge.getLapse (),
-                challenge.getSport (), challenge.isTimed () ? ((TimeChallenge) challenge).getGoal () :
-                ((DistanceChallenge) challenge).getGoal (), challenge.getId ());
-        return challengeDTO;
+        return new ChallengeDTO (challenge.getName (), challenge.getLapse (),
+                challenge.getSport (), (Serializable) (challenge.isTimed () ? ((TimeChallenge) challenge).getGoal () :
+                ((DistanceChallenge) challenge).getGoal ()), challenge.getId ());
     }
 
     public List <ChallengeDTO> ChallengesToDTO (List <Challenge> challenges) {

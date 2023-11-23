@@ -198,6 +198,7 @@ public final class RemoteFacade extends UnicastRemoteObject implements IRemoteFa
         try {
             ChallengeAppService.getInstance ().create (this.state.get (token).getCredentials (), data);
         }
+        
         catch (Exception e) {
             Logger.getLogger ().severe ("Could not create challenge: " + e.getMessage ());
 

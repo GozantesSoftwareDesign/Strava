@@ -1,5 +1,6 @@
 package org.gozantes.strava.server.data.dto;
 
+import org.apache.commons.lang.SerializationUtils;
 import org.gozantes.strava.internals.types.Pair;
 import org.gozantes.strava.server.data.domain.Sport;
 
@@ -29,6 +30,8 @@ public record ChallengeDTO(String name, Pair <Date, Date> lapse, Sport sport, Se
             throw new RuntimeException (
                     "Challenge goals must be either instances of Duration representing time goals or instances of "
                             + "BigDecimal representing distance goals in kilometers.");
+
+        SerializationUtils.serialize (goal);
 
         this.name = name;
         this.lapse = lapse;

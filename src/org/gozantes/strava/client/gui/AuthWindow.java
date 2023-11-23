@@ -300,7 +300,8 @@ public class AuthWindow extends JFrame {
             w = null;
         }
         else {
-            w = BigDecimal.valueOf ((long) weightSpinner.getValue ());
+
+            w = BigDecimal.valueOf (Long.valueOf((Integer)weightSpinner.getValue()));
         }
         if ((Integer) heightSpinner.getValue () == 0) {
             h = null;

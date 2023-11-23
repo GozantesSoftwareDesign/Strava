@@ -34,12 +34,14 @@ public class MainController {
         this.token = token;
     }
 
-    public void createSession (SessionData sessionData) {
+    public boolean createSession (SessionData sessionData) {
         try {
             this.serviceLocator.getService ().createSession (token, sessionData);
+            return true;
         }
         catch (RemoteException | NoSuchAlgorithmException | URISyntaxException e) {
             System.out.println ("Error al crear reto " + e);
+            return false;
         }
     }
 
@@ -72,17 +74,20 @@ public class MainController {
         }
     }
 
-    public void createChallenge (Challenge challenge) {
+    public boolean createChallenge (Challenge challenge) {
         try {
             this.serviceLocator.getService ().createChallenge (token, challenge);
+            return true;
         }
         catch (RemoteException | URISyntaxException | NoSuchAlgorithmException e) {
             System.out.println ("Error al crear reto " + e);
+            return false;
         }
     }
 
     public List <ChallengeDTO> getActiveChallenges () {
         try {
+        	System.out.println("challenges devueltos");
             return this.serviceLocator.getService ().getActiveChallenges (token);
         }
         catch (RemoteException | URISyntaxException | NoSuchAlgorithmException e) {

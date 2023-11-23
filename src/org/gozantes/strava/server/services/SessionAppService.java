@@ -12,6 +12,7 @@ import java.math.BigDecimal;
 import java.rmi.RemoteException;
 import java.time.Duration;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public final class SessionAppService {
     private final static List <Session> sessions;
@@ -45,7 +46,7 @@ public final class SessionAppService {
             counter++;
 
             return s;
-        }).toList ();
+        }).collect(Collectors.toCollection(ArrayList::new));
     }
 
     private SessionAppService () {

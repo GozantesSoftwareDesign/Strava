@@ -3,6 +3,7 @@ package org.gozantes.strava.client.gui;
 import java.io.Serial;
 import java.net.URISyntaxException;
 import java.security.NoSuchAlgorithmException;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
@@ -10,6 +11,7 @@ import org.gozantes.strava.client.controller.AuthController;
 import org.gozantes.strava.client.controller.MainController;
 import org.gozantes.strava.client.remote.ServiceLocator;
 import org.gozantes.strava.internals.logging.Logger;
+import org.gozantes.strava.internals.swing.TextPrompt;
 import org.gozantes.strava.internals.types.Pair;
 import org.gozantes.strava.server.data.domain.Sport;
 import org.gozantes.strava.server.data.domain.auth.UserCredentials;
@@ -58,37 +60,41 @@ public class MainWindow extends JFrame {
     private JPanel pObjetivo = new JPanel (new FlowLayout (FlowLayout.CENTER));
     private JPanel pDeporte = new JPanel (new FlowLayout (FlowLayout.CENTER));
     private JPanel pUnidad = new JPanel (new FlowLayout (FlowLayout.CENTER));
-    private JPanel pCrear = new JPanel (new FlowLayout (FlowLayout.CENTER));
+    private JPanel pCrearSesion = new JPanel (new FlowLayout (FlowLayout.CENTER));
+    private JPanel pCrearChallenge = new JPanel (new FlowLayout (FlowLayout.CENTER));
 
     private JButton botonChallenge = new JButton ("Challenge");
     private JButton botonSession = new JButton ("Sesión");
     private JButton botonLogout = new JButton ("Logout");
-    private JButton Crear = new JButton ("Crear");
-    private JButton botonCrearSesion = new JButton ("Crear sesión");
+    private JButton GenerarSesion = new JButton ("Generar Sesion");
+    private JButton GenerarChallenge = new JButton ("Generar Challenge");
+    private JButton botonCrearSesion = new JButton ("GenerarSesion sesión");
     private JButton botonConsultarSesion = new JButton ("Consultar sesión");
-    private JButton botonCrearReto = new JButton ("Crear reto");
+    private JButton botonCrearReto = new JButton ("GenerarSesion reto");
     private JButton botonRetosActivos = new JButton ("Obtener retos activos");
     private JButton botonAceptarReto = new JButton ("Aceptar reto");
     private JButton botonComrpobarAceptados = new JButton ("Comprobar aceptados");
+    
+    private DateFormat formatter = new SimpleDateFormat ("dd/MM/yyyy");
     
     private JLabel tituloLabel = new JLabel ("Titulo:");
     private JTextField tituloText = new JTextField (15);
     private JLabel deporteLabel = new JLabel ("Deporte:");
     private JComboBox <Sport> deporteBox = new JComboBox <> ();
     private JLabel distanciaLabel = new JLabel ("Distancia (km):");
-    private JTextField distanciaTexto = new JTextField (15);
+    private JSpinner distanciaSpinner = new JSpinner (new SpinnerNumberModel(0, 0, null, 1));
     private JLabel fInicioLabel = new JLabel ("Fecha de inicio:");
     private JTextField fInicioText = new JTextField (15);
     private JLabel hInicioLabel = new JLabel ("Hora de inicio:");
     private JTextField hInicioText= new JTextField (15);
     private JLabel DuracionLabel = new JLabel ("Duracion:");
-    private JTextField DuracionText = new JTextField (15);
+    private JSpinner duracionSpinner = new JSpinner (new SpinnerNumberModel(0, 0, null, 1));
     private JLabel fFinalLabel = new JLabel ("Fecha Final:");
     private JTextField fFinalText = new JTextField (15);
     private JLabel unidadLabel = new JLabel ("Elija unidad");
     private JComboBox <String> kmorseg = new JComboBox <> ();
     private JLabel objetivoLabel = new JLabel ("Objetivo(km or s):");
-    private JTextField objetivoText = new JTextField (15);
+    private JSpinner objetivoSpinner = new JSpinner (new SpinnerNumberModel(0, 0, null, 1));
     
     private JComboBox <String> usuarioBox = new JComboBox <> ();
     
@@ -101,15 +107,15 @@ public class MainWindow extends JFrame {
     private List <SessionDTO> acceptedSessionThem;
     private List <SessionDTO> acceptedSession;
     
+	private TextPrompt placeholder1 = new TextPrompt ("dd/MM/yyyy", fInicioText);
+	private TextPrompt placeholder2 = new TextPrompt ("dd/MM/yyyy", fFinalText);
+    
     private boolean estadoKmorseg;
 
     public MainWindow (MainController mainController, ServiceLocator serviceLocator) {
         super ();
         this.mainController = mainController;
         this.serviceLocator = serviceLocator;
-        this.activeChallenges = this.mainController.getActiveChallenges();
-        this.acceptedSessionThem = this.mainController.searchSessions(new SessionFilters(null));
-        this.acceptedSession = this.mainController.getSessions();
         
         frame.setSize (1000, 800);
         frame.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);        
@@ -117,6 +123,8 @@ public class MainWindow extends JFrame {
         frame.setLocationRelativeTo(null);
 
         inicializarVentana();
+        
+        frame.add(pPrincipal);
 
         botonChallenge.addActionListener (new ActionListener () {
             @Override
@@ -202,8 +210,66 @@ public class MainWindow extends JFrame {
                 
             }
         });
-
-        frame.add(pPrincipal);
+        GenerarSesion.addActionListener (new ActionListener () {
+            @Override
+            public void actionPerformed (ActionEvent e) {
+            	boolean estado;
+            	String st=tituloText.getText();
+            	Sport sp=(Sport) deporteBox.getSelectedItem();
+            	BigDecimal bd= BigDecimal.valueOf(Long.valueOf((Integer)distanciaSpinner.getValue()));
+				Duration dr= Duration.ofMinutes(Long.valueOf((Integer)duracionSpinner.getValue()));
+				Date di = null;
+				try {
+					di = formatter.parse(fInicioText.getText());
+				} catch (ParseException e1) {
+						Logger.getLogger().severe("no se puede parsear la fecha de inicio: " + e);
+					}
+				SessionData sessionData=new SessionData(st,sp, bd, di, dr);
+            	estado = mainController.createSession(sessionData);
+            	Logger.getLogger().info("session created : " + estado);
+                paintVentana (1);
+            }
+        });
+        GenerarChallenge.addActionListener (new ActionListener () {
+            @Override
+            public void actionPerformed (ActionEvent e) { 
+            	boolean estado = false;
+            	String ti=tituloText.getText();
+            	Date di = null;
+				try {
+					di = formatter.parse(fInicioText.getText());
+				} catch (ParseException e1) {					
+					e1.printStackTrace();
+				}
+            	Date df=null;
+				try {
+					df = formatter.parse(fFinalText.getText());
+				} catch (ParseException e1) {					
+					e1.printStackTrace();
+				}
+            	Pair<Date,Date> lapse=new Pair<Date, Date>(di, df);
+            	Sport sp=(Sport) deporteBox.getSelectedItem();            	
+            	Challenge ch = null;
+            	if(kmorseg.getSelectedObjects().equals(kmorseg.getItemAt(0))) {
+            		BigDecimal bd=BigDecimal.valueOf(Long.valueOf((Integer)distanciaSpinner.getValue()));
+            		try {
+						ch= new DistanceChallenge(ti, lapse, sp, null, bd);
+					} catch (Exception e1) {
+						e1.printStackTrace();
+					}
+            	} else if(kmorseg.getSelectedObjects().equals(kmorseg.getItemAt(1))){
+            		Duration dr = Duration.ofMinutes(Long.valueOf((Integer)duracionSpinner.getValue()));
+            		try {
+						ch=new TimeChallenge(ti,lapse,sp,null,dr);
+					} catch (Exception e1) {
+						e1.printStackTrace();
+					}
+            	}
+            	estado = mainController.createChallenge(ch);
+            	Logger.getLogger().info("Challenge created: " + estado);
+                paintVentana (0);
+            }
+        });
     }
     
     void paintVentana (int estado) {
@@ -218,6 +284,8 @@ public class MainWindow extends JFrame {
                 pSur.removeAll ();
                 pScrollPane.removeAll ();
                 
+                
+                
                 ArrayList <JPanel> arrayDePaneles = new ArrayList <JPanel> ();
                 
                 arrayDePaneles.add (pTitulo);
@@ -226,7 +294,7 @@ public class MainWindow extends JFrame {
                 arrayDePaneles.add (pFInicio);
                 arrayDePaneles.add (pHInicio);
                 arrayDePaneles.add (pDeporte);
-                arrayDePaneles.add (pCrear);
+                arrayDePaneles.add (pCrearSesion);
                 
                 this.generateScrollPane(scrollPane, arrayDePaneles, pScrollPane);
                 
@@ -242,25 +310,6 @@ public class MainWindow extends JFrame {
                 pSur.revalidate ();
                 pSur.repaint ();
                 
-                Crear.addActionListener (new ActionListener () {
-                    @Override
-                    public void actionPerformed (ActionEvent e) {
-                    	String st=tituloText.getText();
-                    	Sport sp=(Sport) deporteBox.getSelectedItem();
-                    	BigDecimal bd= new BigDecimal(distanciaTexto.getText());
-						Duration dr= Duration.ofMinutes(Integer.parseInt(DuracionText.getText()));
-						SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
-						Date di = null;
-						try {
-							di = sdf.parse(fInicioText.getText());
-							} catch (ParseException e1) {
-								e1.printStackTrace();
-								}
-						SessionData sessionData=new SessionData(st,sp, bd, di, dr);
-                    	mainController.createSession(sessionData);
-                        paintVentana (1);
-                    }
-                });
                 break;
                 
         }
@@ -279,7 +328,7 @@ public class MainWindow extends JFrame {
         arrayDePaneles.add (pObjetivo);
         arrayDePaneles.add (pUnidad);
         arrayDePaneles.add (pDeporte);
-        arrayDePaneles.add (pCrear);
+        arrayDePaneles.add (pCrearChallenge);
         
         this.generateScrollPane(scrollPane, arrayDePaneles, pScrollPane);
         
@@ -296,53 +345,6 @@ public class MainWindow extends JFrame {
         pSur.revalidate ();
         pSur.repaint ();
         
-        Crear.addActionListener (new ActionListener () {
-            @Override
-            public void actionPerformed (ActionEvent e) { 
-            	String ti=tituloText.getText();
-            	SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
-            	Date di = null;
-				try {
-					di = sdf.parse(fInicioText.getText());
-				} catch (ParseException e1) {					
-					e1.printStackTrace();
-				}
-            	Date df=null;
-				try {
-					df = sdf.parse(fFinalText.getText());
-				} catch (ParseException e1) {					
-					e1.printStackTrace();
-				}
-            	Pair<Date,Date> lapse=new Pair<Date, Date>(di, df);
-            	Sport sp=(Sport) deporteBox.getSelectedItem();            	
-            	Challenge ch = null;
-            	
-            	if (estadoKmorseg) {
-            		if(kmorseg.getSelectedObjects().equals(kmorseg.getItemAt(0))) {
-            			BigDecimal bd=new BigDecimal(distanciaTexto.getText());
-            			try {
-							ch= new DistanceChallenge(ti, lapse, sp, null, bd);
-						} catch (Exception e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
-						}
-            			mainController.createChallenge(ch);
-            		}
-            		else if(kmorseg.getSelectedObjects().equals(kmorseg.getItemAt(1))){
-            			Duration dr = Duration.ofMinutes(Integer.parseInt(DuracionText.getText()));
-            			try {
-							ch=new TimeChallenge(ti,lapse,sp,null,dr);
-						} catch (Exception e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
-						}
-            		}
-            	}else{
-            		Logger.getLogger().info("No esta seleccionado la unidad de challenge");
-            	}
-                paintVentana (0);
-            }
-        });
     }
     
     public void ventanaGetChallenges () {
@@ -375,8 +377,9 @@ public class MainWindow extends JFrame {
     }
 
     public void ventanaAcceptedChallenges () {
-
+    	
         pCentro.removeAll ();
+        this.activeChallenges = this.mainController.getActiveChallenges();
         DefaultListModel <ChallengeDTO> lmd = new DefaultListModel <> ();
         for (ChallengeDTO c : activeChallenges) {
             lmd.addElement (c);
@@ -392,6 +395,8 @@ public class MainWindow extends JFrame {
 
     public void consultarSession() {
     	pCentro.removeAll();
+    	
+    	this.acceptedSession = this.mainController.getSessions();
 
         DefaultListModel <SessionDTO> dlm2 = new DefaultListModel <SessionDTO> ();
         if(acceptedSession != null) {
@@ -427,6 +432,7 @@ public class MainWindow extends JFrame {
     public void theirSession (DefaultListModel<SessionDTO> dlm2) {
         pCentro.removeAll ();
         dlm2.removeAllElements();
+        this.acceptedSessionThem = this.mainController.searchSessions(new SessionFilters(null));
         if(acceptedSessionThem != null) {
         	for (SessionDTO s : acceptedSessionThem) {
                 dlm2.addElement (s);
@@ -462,8 +468,10 @@ public class MainWindow extends JFrame {
 
         deporteBox.addItem (Sport.Cyclism);
         deporteBox.addItem (Sport.Running);
+        deporteBox.setSelectedIndex(0);  
         kmorseg.addItem ("Distancia(km)");
         kmorseg.addItem ("Tiempo(sec)");
+        kmorseg.setSelectedIndex(0);  
         usuarioBox.addItem ("Tu Usuario");
         usuarioBox.addItem ("Otros usuarios");
         usuarioBox.setSelectedIndex(0);     
@@ -478,9 +486,9 @@ public class MainWindow extends JFrame {
         pTitulo.add (tituloLabel);
         pTitulo.add (tituloText);
         pDuracion.add (DuracionLabel);
-        pDuracion.add (DuracionText);
+        pDuracion.add (duracionSpinner);
         pDistancia.add (distanciaLabel);
-        pDistancia.add (distanciaTexto);
+        pDistancia.add (distanciaSpinner);
         pFInicio.add (fInicioLabel);
         pFInicio.add (fInicioText);
         pHInicio.add (hInicioLabel);
@@ -488,12 +496,14 @@ public class MainWindow extends JFrame {
         pFFinal.add (fFinalLabel);
         pFFinal.add (fFinalText);
         pObjetivo.add (objetivoLabel);
-        pObjetivo.add (objetivoText);
+        pObjetivo.add (objetivoSpinner);
         pUnidad.add (unidadLabel);
         pUnidad.add (kmorseg);
         pDeporte.add (deporteLabel);
         pDeporte.add (deporteBox);
-        pCrear.add (Crear);
+        pCrearSesion.add (GenerarSesion);
+        pCrearChallenge.add (GenerarChallenge);
+        
         //Sesion scroll Pane
         //Challenge scroll Pane
         

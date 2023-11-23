@@ -37,7 +37,7 @@ public abstract class Challenge implements Serializable {
 				.getTime())
 			throw new Exception("Challenges must start before their deadline has already been met.");
 
-		this.participants.add(this.parent = Objects.requireNonNull(parent));
+		this.participants.add(this.parent=parent);
 		this.id = id;
 		this.name = name;
 		this.lapse = lapse;

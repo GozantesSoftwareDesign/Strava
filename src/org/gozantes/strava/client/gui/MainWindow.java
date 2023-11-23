@@ -250,21 +250,26 @@ public class MainWindow extends JFrame {
             	Pair<Date,Date> lapse=new Pair<Date, Date>(di, df);
             	Sport sp=(Sport) deporteBox.getSelectedItem();            	
             	Challenge ch = null;
-            	if(kmorseg.getSelectedObjects().equals(kmorseg.getItemAt(0))) {
-            		BigDecimal bd=BigDecimal.valueOf(Long.valueOf((Integer)distanciaSpinner.getValue()));
+            	if(kmorseg.getSelectedItem().equals(kmorseg.getItemAt(0))) {
+            		BigDecimal bd=BigDecimal.valueOf(Long.valueOf((Integer)objetivoSpinner.getValue()));
             		try {
 						ch= new DistanceChallenge(ti, lapse, sp, null, bd);
+						System.out.println("distance challenge"+ " titulo" + ti + " lapso" + lapse + " deporte" + sp + " objetivo" + bd);
 					} catch (Exception e1) {
-						e1.printStackTrace();
+						Logger.getLogger().severe("no se puede crear el distanceChallenge" + e1);
 					}
-            	} else if(kmorseg.getSelectedObjects().equals(kmorseg.getItemAt(1))){
-            		Duration dr = Duration.ofMinutes(Long.valueOf((Integer)duracionSpinner.getValue()));
+            	} else if(kmorseg.getSelectedItem().equals(kmorseg.getItemAt(1))){
+            		Duration dr = Duration.ofMinutes(Long.valueOf((Integer)objetivoSpinner.getValue()));
             		try {
 						ch=new TimeChallenge(ti,lapse,sp,null,dr);
+						System.out.println("distance challenge"+ " titulo" + ti + " lapso" + lapse + " deporte" + sp + " objetivo" + dr);
 					} catch (Exception e1) {
-						e1.printStackTrace();
+						Logger.getLogger().severe("no se puede crear el distanceChallenge" + e1);
 					}
+            	} else {
+            		System.out.println("ninguna de las dos");
             	}
+            	
             	estado = mainController.createChallenge(ch);
             	Logger.getLogger().info("Challenge created: " + estado);
                 paintVentana (0);

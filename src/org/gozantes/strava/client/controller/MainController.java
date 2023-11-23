@@ -87,7 +87,6 @@ public class MainController {
 
     public List <ChallengeDTO> getActiveChallenges () {
         try {
-        	System.out.println("challenges devueltos");
             return this.serviceLocator.getService ().getActiveChallenges (token);
         }
         catch (RemoteException | URISyntaxException | NoSuchAlgorithmException e) {

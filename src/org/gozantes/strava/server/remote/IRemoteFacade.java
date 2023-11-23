@@ -13,6 +13,7 @@ import org.gozantes.strava.server.data.domain.session.SessionState;
 import org.gozantes.strava.server.data.dto.ChallengeDTO;
 import org.gozantes.strava.server.data.dto.SessionDTO;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -45,6 +46,6 @@ public interface IRemoteFacade extends Remote {
 
     public void acceptChallenge (String token, long challenge) throws RemoteException;
 
-    public Map <ChallengeDTO, Pair <Triplet <Object, Object, BigDecimal>, Map <Sport, List <SessionDTO>>>> getActiveChallengeStatus (
+    public Map <ChallengeDTO, Pair <Triplet <Serializable, Serializable, BigDecimal>, Map <Sport, List <SessionDTO>>>> getActiveChallengeStatus (
             String token) throws RemoteException;
 }

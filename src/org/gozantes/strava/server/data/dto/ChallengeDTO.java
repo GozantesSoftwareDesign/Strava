@@ -3,13 +3,18 @@ package org.gozantes.strava.server.data.dto;
 import org.gozantes.strava.internals.types.Pair;
 import org.gozantes.strava.server.data.domain.Sport;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.util.Date;
 import java.util.Objects;
 
-public record ChallengeDTO(String name, Pair <Date, Date> lapse, Sport sport, Object goal, long id) {
-    public ChallengeDTO (String name, Pair <Date, Date> lapse, Sport sport, Object goal, long id) {
+public record ChallengeDTO(String name, Pair <Date, Date> lapse, Sport sport, Serializable goal, long id) implements Serializable {
+	@Serial
+    private static final long serialVersionUID = 1L;
+	
+    public ChallengeDTO (String name, Pair <Date, Date> lapse, Sport sport, Serializable goal, long id) {
         Objects.requireNonNull (name);
         Objects.requireNonNull (lapse);
         Objects.requireNonNull (goal);

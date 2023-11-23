@@ -231,7 +231,7 @@ public final class RemoteFacade extends UnicastRemoteObject implements IRemoteFa
      *   - The sessions, mapped by sport
      * */
     @Override
-    public Map <ChallengeDTO, Pair <Triplet <Object, Object, BigDecimal>, Map <Sport, List <SessionDTO>>>> getActiveChallengeStatus (
+    public Map <ChallengeDTO, Pair <Triplet <Serializable, Serializable, BigDecimal>, Map <Sport, List <SessionDTO>>>> getActiveChallengeStatus (
             String token) throws RemoteException {
         Map <ChallengeDTO, List <SessionDTO>> sessions;
 
@@ -243,12 +243,12 @@ public final class RemoteFacade extends UnicastRemoteObject implements IRemoteFa
                             .filter ((s) -> c.sport () == null || c.sport ().equals (s.data ().sport ())))).toArray ());
         }
 
-        Map <ChallengeDTO, Pair <Triplet <Object, Object, BigDecimal>, Map <Sport, List <SessionDTO>>>> map =
+        Map <ChallengeDTO, Pair <Triplet <Serializable, Serializable, BigDecimal>, Map <Sport, List <SessionDTO>>>> map =
                 new HashMap <> ();
 
         ChallengeDTO k;
         List <SessionDTO> v;
-        Object[] ret;
+        Serializable[] ret;
         for (Map.Entry <ChallengeDTO, List <SessionDTO>> x : sessions.entrySet ().stream ().map ((x) -> x).toList ()) {
             k = x.getKey ();
             v = x.getValue ();
@@ -256,7 +256,7 @@ public final class RemoteFacade extends UnicastRemoteObject implements IRemoteFa
             Map <Sport, List <SessionDTO>> m = Map.of (Sport.Cyclism, new ArrayList <SessionDTO> (), Sport.Running,
                     new ArrayList <SessionDTO> ());
 
-            ret = new Object[3];
+            ret = new Serializable[3];
 
             if (k.goal () instanceof Duration) {
                 Duration t[] = new Duration[] { Duration.ofMinutes (0), Duration.ofMinutes (0) };

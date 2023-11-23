@@ -13,6 +13,7 @@ import org.gozantes.strava.internals.types.Pair;
 import org.gozantes.strava.server.data.domain.Sport;
 import org.gozantes.strava.server.data.domain.auth.UserCredentials;
 import org.gozantes.strava.server.data.domain.challenge.Challenge;
+import org.gozantes.strava.server.data.domain.challenge.ChallengeFilters;
 import org.gozantes.strava.server.data.domain.challenge.DistanceChallenge;
 import org.gozantes.strava.server.data.domain.challenge.TimeChallenge;
 import org.gozantes.strava.server.data.domain.session.SessionData;
@@ -345,9 +346,12 @@ public class MainWindow extends JFrame {
     public void ventanaGetChallenges () {
     	pCentro.removeAll ();
         
-        List <ChallengeDTO> activeChallenges = mainController.getActiveChallenges();
-        
-        JList <ChallengeDTO> lista = new JList <> ();
+        List <ChallengeDTO> activeChallenges = mainController.searchChallenges(null);       
+        DefaultListModel<ChallengeDTO>model=new DefaultListModel<ChallengeDTO>();
+        for (ChallengeDTO challengeDTO : activeChallenges) {
+			model.addElement(challengeDTO);
+		}
+        JList <ChallengeDTO> lista = new JList <> (model);
         scrollPane = new JScrollPane (lista);
 
         lista.addListSelectionListener (new ListSelectionListener () {

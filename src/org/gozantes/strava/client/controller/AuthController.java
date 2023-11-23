@@ -33,7 +33,7 @@ public class AuthController {
         }
     }
 
-    public Boolean signUp (UserCredentials creds, UserData data) {
+    public boolean signUp (UserCredentials creds, UserData data) {
         try {
             this.token = serviceLocator.getService ().signup (creds, data);
 

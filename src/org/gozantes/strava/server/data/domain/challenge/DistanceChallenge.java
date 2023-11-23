@@ -36,4 +36,10 @@ public final class DistanceChallenge extends Challenge implements Serializable {
     public BigDecimal getGoal () {
         return this.goal;
     }
+
+	@Override
+	public String toString() {
+		return "DistanceChallenge [goal=" + goal + ", name=" + name + ", lapse=" + lapse + ", sport=" + sport
+				+ ", parent=" + parent + ", participants=" + participants + ", id=" + id + "]";
+	}
 }

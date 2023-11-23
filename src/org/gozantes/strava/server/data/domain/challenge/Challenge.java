@@ -83,4 +83,10 @@ public abstract class Challenge implements Serializable {
 	public final List<UserCredentials> getParticipants() {
 		return this.participants;
 	}
+
+	@Override
+	public String toString() {
+		return "Challenge [name=" + name + ", lapse=" + lapse + ", sport=" + sport + ", parent=" + parent
+				+ ", participants=" + participants + ", id=" + id + "]";
+	}
 }

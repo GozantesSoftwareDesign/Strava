@@ -36,4 +36,11 @@ public final class TimeChallenge extends Challenge  implements Serializable {
     public Duration getGoal () {
         return this.goal;
     }
+
+	@Override
+	public String toString() {
+		return "TimeChallenge [goal=" + goal + ", name=" + name + ", lapse=" + lapse + ", sport=" + sport + ", parent="
+				+ parent + ", participants=" + participants + ", id=" + id + "]";
+	}
+    
 }

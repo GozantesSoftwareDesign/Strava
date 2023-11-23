@@ -2,6 +2,7 @@ package org.gozantes.strava.client.gui;
 
 import java.io.Serial;
 import java.net.URISyntaxException;
+import java.rmi.RemoteException;
 import java.security.NoSuchAlgorithmException;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -213,7 +214,7 @@ public class MainWindow extends JFrame {
         GenerarSesion.addActionListener (new ActionListener () {
             @Override
             public void actionPerformed (ActionEvent e) {
-            	boolean estado;
+            	boolean estado = false;
             	String st=tituloText.getText();
             	Sport sp=(Sport) deporteBox.getSelectedItem();
             	BigDecimal bd= BigDecimal.valueOf(Long.valueOf((Integer)distanciaSpinner.getValue()));
@@ -225,7 +226,12 @@ public class MainWindow extends JFrame {
 						Logger.getLogger().severe("no se puede parsear la fecha de inicio: " + e);
 					}
 				SessionData sessionData=new SessionData(st,sp, bd, di, dr);
-            	estado = mainController.createSession(sessionData);
+            	try {
+					estado = mainController.createSession(sessionData);
+				} catch (RemoteException | NoSuchAlgorithmException | URISyntaxException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
             	Logger.getLogger().info("session created : " + estado);
                 paintVentana (1);
             }
@@ -234,6 +240,8 @@ public class MainWindow extends JFrame {
             @Override
             public void actionPerformed (ActionEvent e) { 
             	boolean estado = false;
+            	BigDecimal bd = null;
+            	Duration dr = null;
             	String ti=tituloText.getText();
             	Date di = null;
 				try {
@@ -249,28 +257,25 @@ public class MainWindow extends JFrame {
 				}
             	Pair<Date,Date> lapse=new Pair<Date, Date>(di, df);
             	Sport sp=(Sport) deporteBox.getSelectedItem();            	
-            	Challenge ch = null;
             	if(kmorseg.getSelectedItem().equals(kmorseg.getItemAt(0))) {
-            		BigDecimal bd=BigDecimal.valueOf(Long.valueOf((Integer)objetivoSpinner.getValue()));
+            		bd=BigDecimal.valueOf(Long.valueOf((Integer)objetivoSpinner.getValue()));
             		try {
-						ch= new DistanceChallenge(ti, lapse, sp, null, bd);
-						System.out.println("distance challenge"+ " titulo" + ti + " lapso" + lapse + " deporte" + sp + " objetivo" + bd);
+            			DistanceChallenge dc= new DistanceChallenge(ti, lapse, sp, null, bd);
+						estado = mainController.createChallenge(dc);
 					} catch (Exception e1) {
 						Logger.getLogger().severe("no se puede crear el distanceChallenge" + e1);
 					}
             	} else if(kmorseg.getSelectedItem().equals(kmorseg.getItemAt(1))){
-            		Duration dr = Duration.ofMinutes(Long.valueOf((Integer)objetivoSpinner.getValue()));
+            		dr = Duration.ofMinutes(Long.valueOf((Integer)objetivoSpinner.getValue()));
             		try {
-						ch=new TimeChallenge(ti,lapse,sp,null,dr);
-						System.out.println("distance challenge"+ " titulo" + ti + " lapso" + lapse + " deporte" + sp + " objetivo" + dr);
+            			TimeChallenge tc=new TimeChallenge(ti,lapse,sp,null,dr);
+            			estado = mainController.createChallenge(tc);
 					} catch (Exception e1) {
 						Logger.getLogger().severe("no se puede crear el distanceChallenge" + e1);
 					}
             	} else {
             		System.out.println("ninguna de las dos");
             	}
-            	
-            	estado = mainController.createChallenge(ch);
             	Logger.getLogger().info("Challenge created: " + estado);
                 paintVentana (0);
             }

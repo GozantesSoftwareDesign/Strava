@@ -34,15 +34,8 @@ public class MainController {
         this.token = token;
     }
 
-    public boolean createSession (SessionData sessionData) {
-        try {
-            this.serviceLocator.getService ().createSession (token, sessionData);
-            return true;
-        }
-        catch (RemoteException | NoSuchAlgorithmException | URISyntaxException e) {
-            System.out.println ("Error al crear reto " + e);
-            return false;
-        }
+    public boolean createSession (SessionData sessionData) throws RemoteException, NoSuchAlgorithmException, URISyntaxException {
+           return this.serviceLocator.getService ().createSession (token, sessionData);
     }
 
     public List <SessionDTO> getSessions () {
@@ -76,6 +69,7 @@ public class MainController {
 
     public boolean createChallenge (Challenge challenge)
             throws URISyntaxException, NoSuchAlgorithmException, RemoteException {
+    		System.out.println("challenge: " + challenge);
             return this.serviceLocator.getService ().createChallenge (token, challenge);
     }
 

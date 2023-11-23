@@ -69,7 +69,6 @@ public class MainController {
 
     public boolean createChallenge (Challenge challenge)
             throws URISyntaxException, NoSuchAlgorithmException, RemoteException {
-    		System.out.println("challenge: " + challenge);
             return this.serviceLocator.getService ().createChallenge (token, challenge);
     }
 

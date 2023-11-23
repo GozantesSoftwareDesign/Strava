@@ -13,6 +13,7 @@ import java.math.BigDecimal;
 import java.rmi.RemoteException;
 import java.time.Duration;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public final class ChallengeAppService {
     private final static List <Challenge> challenges;
@@ -39,7 +40,7 @@ public final class ChallengeAppService {
                                     new Date (Calendar.getInstance ().getTime ().getTime () + Duration.ofDays (365)
                                             .toMillis ())), Sport.Cyclism,
                             new UserCredentials (CredType.Meta, "gonzalo.pena@opendeusto.es"),
-                            BigDecimal.valueOf (2000)));
+                            BigDecimal.valueOf (2000))).stream().collect (Collectors.toCollection (ArrayList::new));
         }
         catch (Exception e) {
             throw new RuntimeException (e);

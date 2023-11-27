@@ -10,10 +10,10 @@ import java.time.Duration;
 import java.util.Date;
 import java.util.Objects;
 
-public final class TimeChallenge extends Challenge  implements Serializable {
+public final class TimeChallenge extends Challenge implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
-    
+
     private final Duration goal;
 
     public TimeChallenge (String name, Pair <Date, Date> lapse, Sport sport, UserCredentials parent,
@@ -37,10 +37,10 @@ public final class TimeChallenge extends Challenge  implements Serializable {
         return this.goal;
     }
 
-	@Override
-	public String toString() {
-		return "TimeChallenge [goal=" + goal + ", name=" + name + ", lapse=" + lapse + ", sport=" + sport + ", parent="
-				+ parent + ", participants=" + participants + ", id=" + id + "]";
-	}
-    
+    @Override
+    public String toString () {
+        return "TimeChallenge [goal=" + goal + ", name=" + name + ", lapse=" + lapse + ", sport=" + sport + ", parent="
+                + parent + ", participants=" + participants + ", id=" + id + "]";
+    }
+
 }

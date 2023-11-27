@@ -8,9 +8,9 @@ import java.io.Serializable;
 import java.util.Objects;
 
 public record SessionDTO(long id, SessionState state, SessionData data) implements Serializable {
-	@Serial
+    @Serial
     private static final long serialVersionUID = 1L;
-	
+
     public SessionDTO (long id, SessionState state, SessionData data) {
         Objects.requireNonNull (id);
 

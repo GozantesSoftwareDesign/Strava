@@ -13,7 +13,7 @@ public record SessionFilters(UserCredentials user, String title, Sport sport, Pa
         Pair <Duration, Duration> duration) implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
-    
+
     public SessionFilters (UserCredentials user, String title, Sport sport, Pair <BigDecimal, BigDecimal> distance,
             Pair <Duration, Duration> duration) {
         this.user = user;

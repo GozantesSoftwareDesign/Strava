@@ -155,7 +155,7 @@ public final class RemoteFacade extends UnicastRemoteObject implements IRemoteFa
     @Override
     public List <ChallengeDTO> searchChallenges (ChallengeFilters filters) throws RemoteException {
         if (filters != null)
-            filters = new ChallengeFilters (null, filters.title (), filters.lapse (), filters.sport (),
+            filters = new ChallengeFilters (null, null, filters.title (), filters.lapse (), filters.sport (),
                     filters.distance (), filters.duration ());
 
         List <ChallengeDTO> c = null;
@@ -173,23 +173,19 @@ public final class RemoteFacade extends UnicastRemoteObject implements IRemoteFa
 
     @Override
     public List <ChallengeDTO> getActiveChallenges (String token) throws RemoteException {
-        if (!this.state.containsKey (token))
-            Logger.getLogger ().severe (new RemoteException (
-                    "The user trying to get their active challenges is not " + "currently logged in."));
+        if (!(token != null && this.state.containsKey (token)))
+            Logger.getLogger ().severe (
+                    new RemoteException ("The user trying to get their active challenges is not currently logged in."));
 
-        System.out.println (ChallengeAppService.getInstance ()
-                .getChallenges (new ChallengeFilters (this.state.get (token).getCredentials ())));
-
-        List <ChallengeDTO> c = null;
         try {
-            c = ChallengeAssembler.getInstance ().ChallengesToDTO (ChallengeAppService.getInstance ()
-                    .getChallenges (new ChallengeFilters (this.state.get (token).getCredentials ())));
+            return ChallengeAssembler.getInstance ().ChallengesToDTO (ChallengeAppService.getInstance ()
+                    .getChallenges (new ChallengeFilters (null, this.state.get (token).getCredentials ())));
         }
+
         catch (Exception e) {
             Logger.getLogger ().severe (e);
+            throw e;
         }
-
-        return c;
     }
 
     @Override
@@ -201,7 +197,7 @@ public final class RemoteFacade extends UnicastRemoteObject implements IRemoteFa
         try {
             ChallengeAppService.getInstance ().create (this.state.get (token).getCredentials (), data);
         }
-        
+
         catch (Exception e) {
             Logger.getLogger ().severe ("Could not create challenge: " + e.getMessage ());
 
@@ -235,7 +231,8 @@ public final class RemoteFacade extends UnicastRemoteObject implements IRemoteFa
      *   - The sessions, mapped by sport
      * */
     @Override
-    public Map <ChallengeDTO, Pair <Triplet <Serializable, Serializable, BigDecimal>, Map <Sport, List <SessionDTO>>>> getActiveChallengeStatus (
+    public Map <ChallengeDTO,
+            Pair <Triplet <Serializable, Serializable, BigDecimal>, Map <Sport, List <SessionDTO>>>> getActiveChallengeStatus (
             String token) throws RemoteException {
         Map <ChallengeDTO, List <SessionDTO>> sessions;
 
@@ -247,8 +244,7 @@ public final class RemoteFacade extends UnicastRemoteObject implements IRemoteFa
                             .filter ((s) -> c.sport () == null || c.sport ().equals (s.data ().sport ())))).toArray ());
         }
 
-        Map <ChallengeDTO, Pair <Triplet <Serializable, Serializable, BigDecimal>, Map <Sport, List <SessionDTO>>>> map =
-                new HashMap <> ();
+        Map <ChallengeDTO, Pair <Triplet <Serializable, Serializable, BigDecimal>, Map <Sport, List <SessionDTO>>>> map = new HashMap <> ();
 
         ChallengeDTO k;
         List <SessionDTO> v;

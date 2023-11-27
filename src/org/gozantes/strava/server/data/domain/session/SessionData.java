@@ -14,7 +14,7 @@ public record SessionData(String title, Sport sport, BigDecimal distance, Date s
         Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
-    
+
     public SessionData (String title, Sport sport, BigDecimal distance, Date start, Duration duration) {
         Objects.requireNonNull (title);
         Objects.requireNonNull (sport);

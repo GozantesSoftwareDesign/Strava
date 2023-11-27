@@ -24,6 +24,7 @@ public class TextPrompt extends JLabel
     private Show show;
     private boolean showPromptOnce;
     private int focusLost;
+
     public TextPrompt (String text, JTextComponent component) {
         this (text, component, Show.ALWAYS);
     }

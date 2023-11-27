@@ -13,7 +13,7 @@ import java.util.Objects;
 public final class DistanceChallenge extends Challenge implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
-    
+
     private final BigDecimal goal;
 
     public DistanceChallenge (String name, Pair <Date, Date> lapse, Sport sport, UserCredentials parent,
@@ -37,9 +37,9 @@ public final class DistanceChallenge extends Challenge implements Serializable {
         return this.goal;
     }
 
-	@Override
-	public String toString() {
-		return "DistanceChallenge [goal=" + goal + ", name=" + name + ", lapse=" + lapse + ", sport=" + sport
-				+ ", parent=" + parent + ", participants=" + participants + ", id=" + id + "]";
-	}
+    @Override
+    public String toString () {
+        return "DistanceChallenge [goal=" + goal + ", name=" + name + ", lapse=" + lapse + ", sport=" + sport
+                + ", parent=" + parent + ", participants=" + participants + ", id=" + id + "]";
+    }
 }

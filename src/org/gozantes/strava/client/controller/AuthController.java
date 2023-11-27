@@ -45,7 +45,8 @@ public class AuthController {
             return false;
         }
     }
-    public String getToken() {
-    	return this.token;
+
+    public String getToken () {
+        return this.token;
     }
 }

@@ -40,7 +40,7 @@ public final class ChallengeAppService {
                                     new Date (Calendar.getInstance ().getTime ().getTime () + Duration.ofDays (365)
                                             .toMillis ())), Sport.Cyclism,
                             new UserCredentials (CredType.Meta, "gonzalo.pena@opendeusto.es"),
-                            BigDecimal.valueOf (2000))).stream().collect (Collectors.toCollection (ArrayList::new));
+                            BigDecimal.valueOf (2000))).stream ().collect (Collectors.toCollection (ArrayList::new));
         }
         catch (Exception e) {
             throw new RuntimeException (e);
@@ -65,12 +65,11 @@ public final class ChallengeAppService {
             throw new RemoteException ("The challenge data cannot be null");
 
         try {
-            Challenge c = data.isTimed () ? new TimeChallenge (ChallengeAppService.counter++, data.getName (),
-                    data.getLapse (),
-                    data.getSport (), creds, ((TimeChallenge) data).getGoal ()) :
-                    new DistanceChallenge (ChallengeAppService.counter++, data.getName (),
-                    data.getLapse (),
-                    data.getSport (), creds, ((DistanceChallenge) data).getGoal ());
+            Challenge c = data.isTimed ()
+                    ? new TimeChallenge (ChallengeAppService.counter++, data.getName (), data.getLapse (),
+                    data.getSport (), creds, ((TimeChallenge) data).getGoal ())
+                    : new DistanceChallenge (ChallengeAppService.counter++, data.getName (), data.getLapse (),
+                            data.getSport (), creds, ((DistanceChallenge) data).getGoal ());
 
             challenges.add (c);
 
@@ -83,11 +82,13 @@ public final class ChallengeAppService {
 
     public List <Challenge> getChallenges (ChallengeFilters filters) {
         return filters == null
-                ? new ArrayList <Challenge> (ChallengeAppService.challenges)
+                ? new ArrayList <> (ChallengeAppService.challenges)
                 : ChallengeAppService.challenges.stream ().filter (
                                 (x) -> (filters.user () == null || (filters.user ().id ().equals (x.getParent ().id ())
-                                        && filters.user ().type ().equals (x.getParent ().type ()))) && x.getName ()
-                                        .toLowerCase ()
+                                        && filters.user ().type ().equals (x.getParent ().type ()))) && Arrays.stream (
+                                        filters.participants ()).allMatch ((y) -> x.getParticipants ().stream ()
+                                        .anyMatch ((z) -> z.id ().equals (y.id ()) && z.type ().equals (y.type ())))
+                                        && x.getName ().toLowerCase ()
                                         .contains ((filters.title () == null ? "" : filters.title ()).toLowerCase ()) && (
                                         filters.sport () == null || x.getSport ().equals (filters.sport ())) && (
                                         filters.distance () == null || filters.distance ().x () == null || (!x.isTimed ()
@@ -114,7 +115,7 @@ public final class ChallengeAppService {
             throw new RemoteException (
                     String.format ("User %s (%s) has already accepted challenge %d", creds.id (), creds.type (),
                             challenge));
-        System.out.println(challenge);System.out.println(creds);
+
         c.get ().getParticipants ().add (creds);
     }
 }

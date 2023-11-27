@@ -5,7 +5,6 @@ import org.gozantes.strava.internals.logging.Logger;
 import org.gozantes.strava.internals.types.Pair;
 import org.gozantes.strava.internals.types.Triplet;
 import org.gozantes.strava.server.data.domain.Sport;
-import org.gozantes.strava.server.data.domain.auth.UserCredentials;
 import org.gozantes.strava.server.data.domain.challenge.Challenge;
 import org.gozantes.strava.server.data.domain.challenge.ChallengeFilters;
 import org.gozantes.strava.server.data.domain.session.SessionData;
@@ -34,8 +33,9 @@ public class MainController {
         this.token = token;
     }
 
-    public boolean createSession (SessionData sessionData) throws RemoteException, NoSuchAlgorithmException, URISyntaxException {
-           return this.serviceLocator.getService ().createSession (token, sessionData);
+    public boolean createSession (SessionData sessionData)
+            throws RemoteException, NoSuchAlgorithmException, URISyntaxException {
+        return this.serviceLocator.getService ().createSession (token, sessionData);
     }
 
     public List <SessionDTO> getSessions () {
@@ -69,28 +69,30 @@ public class MainController {
 
     public boolean createChallenge (Challenge challenge)
             throws URISyntaxException, NoSuchAlgorithmException, RemoteException {
-            return this.serviceLocator.getService ().createChallenge (token, challenge);
+        return this.serviceLocator.getService ().createChallenge (token, challenge);
     }
 
     public List <ChallengeDTO> getActiveChallenges () {
         try {
-            return this.serviceLocator.getService ().getActiveChallenges (token);
+            return this.serviceLocator.getService ().getActiveChallenges (this.token);
         }
         catch (RemoteException | URISyntaxException | NoSuchAlgorithmException e) {
             System.out.println ("Error en al obtener los retos activos " + e);
-            return null;
+            return Collections.EMPTY_LIST;
         }
     }
-    public List<ChallengeDTO> searchChallenges(ChallengeFilters challengeFilters){
-		try {
-			return this.serviceLocator.getService().searchChallenges(challengeFilters);
-		} catch (RemoteException | URISyntaxException | NoSuchAlgorithmException e) {
-			Logger.getLogger ().severe("Error en al obtener los retos: " + e.getMessage());
-			return Collections.EMPTY_LIST;
-		}
-    	
+
+    public List <ChallengeDTO> searchChallenges (ChallengeFilters challengeFilters) {
+        try {
+            return this.serviceLocator.getService ().searchChallenges (challengeFilters);
+        }
+        catch (RemoteException | URISyntaxException | NoSuchAlgorithmException e) {
+            Logger.getLogger ().severe ("Error en al obtener los retos: " + e.getMessage ());
+            return Collections.EMPTY_LIST;
+        }
+
     }
-    
+
     public void acceptChallenge (long challenge) {
         try {
             this.serviceLocator.getService ().acceptChallenge (token, challenge);
@@ -100,8 +102,9 @@ public class MainController {
         }
     }
 
-    public Map <ChallengeDTO, Pair <Triplet <Serializable, Serializable, BigDecimal>, Map <Sport, List <SessionDTO>>>> getActiveChallengeStatus (
-    ) throws RemoteException {
+    public Map <ChallengeDTO,
+            Pair <Triplet <Serializable, Serializable, BigDecimal>, Map <Sport, List <SessionDTO>>>> getActiveChallengeStatus ()
+            throws RemoteException {
         try {
             return this.serviceLocator.getService ().getActiveChallengeStatus (token);
         }

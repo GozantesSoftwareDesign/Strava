@@ -1,7 +1,6 @@
 package org.gozantes.strava.client.remote;
 
 import org.gozantes.strava.internals.logging.Logger;
-import org.gozantes.strava.internals.security.Security;
 import org.gozantes.strava.server.ServerParams;
 import org.gozantes.strava.server.remote.IRemoteFacade;
 
@@ -31,12 +30,12 @@ public class ServiceLocator {
             this.service = (IRemoteFacade) Naming.lookup (this.sp.fullName ());
         }
         catch (Exception ex) {
-            Logger.getLogger().severe ("Error locating remote facade: " + ex.getMessage ());
+            Logger.getLogger ().severe ("Error locating remote facade: " + ex.getMessage ());
         }
     }
 
-	@Override
-	public String toString() {
-		return "ServiceLocator [service=" + service + ", sp=" + sp + "]";
-	}
+    @Override
+    public String toString () {
+        return "ServiceLocator [service=" + service + ", sp=" + sp + "]";
+    }
 }

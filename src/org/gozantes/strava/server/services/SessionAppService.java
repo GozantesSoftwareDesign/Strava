@@ -46,7 +46,7 @@ public final class SessionAppService {
             counter++;
 
             return s;
-        }).collect(Collectors.toCollection(ArrayList::new));
+        }).collect (Collectors.toCollection (ArrayList::new));
     }
 
     private SessionAppService () {

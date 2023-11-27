@@ -11,10 +11,11 @@ import java.time.Duration;
 import java.util.Date;
 import java.util.Objects;
 
-public record ChallengeDTO(String name, Pair <Date, Date> lapse, Sport sport, Serializable goal, long id) implements Serializable {
-	@Serial
+public record ChallengeDTO(String name, Pair <Date, Date> lapse, Sport sport, Serializable goal, long id)
+        implements Serializable {
+    @Serial
     private static final long serialVersionUID = 1L;
-	
+
     public ChallengeDTO (String name, Pair <Date, Date> lapse, Sport sport, Serializable goal, long id) {
         Objects.requireNonNull (name);
         Objects.requireNonNull (lapse);

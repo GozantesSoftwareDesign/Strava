@@ -114,7 +114,7 @@ public final class ChallengeAppService {
             throw new RemoteException (
                     String.format ("User %s (%s) has already accepted challenge %d", creds.id (), creds.type (),
                             challenge));
-
+        System.out.println(challenge);System.out.println(creds);
         c.get ().getParticipants ().add (creds);
     }
 }

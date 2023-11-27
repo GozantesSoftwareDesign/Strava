@@ -188,7 +188,7 @@ public class MainWindow extends JFrame {
         botonAceptarReto.addActionListener (new ActionListener () {
             @Override
             public void actionPerformed (ActionEvent e) {
-            	
+            	System.out.println(cselected.id());
                 mainController.acceptChallenge(cselected.id());
             }
         });
@@ -382,12 +382,12 @@ public class MainWindow extends JFrame {
         });
 
         pCentro.add (scrollPane);
+        pCentro.add(botonAceptarReto);
         pCentro.revalidate ();
         pCentro.repaint ();
     }
 
-    public void ventanaAcceptedChallenges () {
-    	
+    public void ventanaAcceptedChallenges () {    	
         pCentro.removeAll ();
         this.activeChallenges = this.mainController.getActiveChallenges();
         DefaultListModel <ChallengeDTO> lmd = new DefaultListModel <> ();

@@ -11,12 +11,15 @@ import org.gozantes.strava.server.data.domain.challenge.DistanceChallenge;
 import org.gozantes.strava.server.data.domain.challenge.TimeChallenge;
 import org.gozantes.strava.server.data.domain.session.SessionData;
 import org.gozantes.strava.server.data.domain.session.SessionFilters;
+import org.gozantes.strava.server.data.domain.session.SessionState;
 import org.gozantes.strava.server.data.dto.ChallengeDTO;
 import org.gozantes.strava.server.data.dto.SessionDTO;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.table.DefaultTableModel;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -32,8 +35,10 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Vector;
 
 public class MainWindow extends JFrame {
 
@@ -97,6 +102,9 @@ public class MainWindow extends JFrame {
     private JComboBox <String> usuarioBox = new JComboBox <> ();
 
     private JScrollPane scrollPane = new JScrollPane ();
+    
+    private DefaultTableModel modeloDatos;
+    private JTable tabla;
 
     private MainController mainController;
     private ServiceLocator serviceLocator;
@@ -104,6 +112,7 @@ public class MainWindow extends JFrame {
     private List <ChallengeDTO> activeChallenges;
     private List <SessionDTO> acceptedSessionThem;
     private List <SessionDTO> acceptedSession;
+    private List<String>list;
 
     private TextPrompt placeholder1 = new TextPrompt ("dd/MM/yyyy", fInicioText);
     private TextPrompt placeholder2 = new TextPrompt ("dd/MM/yyyy", fFinalText);
@@ -363,30 +372,21 @@ public class MainWindow extends JFrame {
 
     public void ventanaGetChallenges () {
         pCentro.removeAll ();
-
         List <ChallengeDTO> activeChallenges = mainController.searchChallenges (null);
-        DefaultListModel <ChallengeDTO> model = new DefaultListModel <ChallengeDTO> ();
-        for (ChallengeDTO challengeDTO : activeChallenges) {
-            model.addElement (challengeDTO);
-        }
-        JList <ChallengeDTO> lista = new JList <> (model);
-        scrollPane = new JScrollPane (lista);
+        
+        
+        list=new ArrayList<String>();
+        list.add("Nombre");
+        list.add("Fecha Inicio");
+        list.add("Fecha final");
+        list.add("Deporte");
+        list.add("Objetivo");
+        list.add("ID");
+        initTabla(list);
+        cargarChallengesTabla(activeChallenges);
 
-        lista.addListSelectionListener (new ListSelectionListener () {
-            @Override
-            public void valueChanged (ListSelectionEvent e) {
-                if (!e.getValueIsAdjusting ()) {
-                    ChallengeDTO sChallenge = lista.getSelectedValue ();
-                    if (sChallenge != null) {
-                        cselected = sChallenge;
-                    }
-                }
-
-            }
-        });
-
-        pCentro.add (scrollPane);
-        pCentro.add (botonAceptarReto);
+        pCentro.add (new JScrollPane(tabla), BorderLayout.CENTER);        
+        pCentro.add (botonAceptarReto, BorderLayout.SOUTH);
         pCentro.revalidate ();
         pCentro.repaint ();
     }
@@ -411,19 +411,16 @@ public class MainWindow extends JFrame {
         pCentro.removeAll ();
 
         this.acceptedSession = this.mainController.getSessions ();
-
-        DefaultListModel <SessionDTO> dlm2 = new DefaultListModel <SessionDTO> ();
-        if (acceptedSession != null) {
-            for (SessionDTO s : acceptedSession) {
-                dlm2.addElement (s);
-            }
-        }
-        else {
-            Logger.getLogger ().info ("no tienes sesiones personales");
-        }
-
-        JList <SessionDTO> lista = new JList <> (dlm2);
-        scrollPane = new JScrollPane (lista);
+        list=new ArrayList<String>();
+        list.add("Id");
+        list.add("Título");
+        list.add("Deporte");
+        list.add("Distancia");
+        list.add("Fecha Inicio");
+        list.add("Duración");        
+        initTabla(list);
+        cargarSesionActivasTabla(acceptedSession);
+        scrollPane=new JScrollPane(tabla);
         pCentro.add (usuarioBox);
         pCentro.add (scrollPane);
 
@@ -436,7 +433,7 @@ public class MainWindow extends JFrame {
                         consultarSession ();
                     }
                     else if (usuarioBox.getSelectedItem ().equals (usuarioBox.getItemAt (1))) {
-                        theirSession (dlm2);
+                        theirSession ();
                     }
                 }
             }
@@ -445,21 +442,20 @@ public class MainWindow extends JFrame {
         pCentro.repaint ();
     }
 
-    public void theirSession (DefaultListModel <SessionDTO> dlm2) {
-        pCentro.removeAll ();
-        dlm2.removeAllElements ();
+    public void theirSession () {
+        pCentro.removeAll ();        
         this.acceptedSessionThem = this.mainController.searchSessions (new SessionFilters (null));
-        if (acceptedSessionThem != null) {
-            for (SessionDTO s : acceptedSessionThem) {
-                dlm2.addElement (s);
-            }
-        }
-        else {
-            Logger.getLogger ().info ("no hay sesiones publicadas");
-        }
-        JList <SessionDTO> lista = new JList <> (dlm2);
+        list=new ArrayList<String>();
+        list.add("Id");
+        list.add("Título");
+        list.add("Deporte");
+        list.add("Distancia");
+        list.add("Fecha Inicio");
+        list.add("Duración");        
+        initTabla(list);
+        cargarSesionActivasTabla(acceptedSessionThem);
         pCentro.add (usuarioBox);
-        scrollPane = new JScrollPane (lista);
+        scrollPane = new JScrollPane (tabla);
         pCentro.add (scrollPane);
         pCentro.revalidate ();
         pCentro.repaint ();
@@ -544,5 +540,33 @@ public class MainWindow extends JFrame {
         }
 
         return scroll;
+    }
+    public void initTabla(List<String> list) {
+    	Vector<String>cabecera= new Vector<String>(list);
+    	this.modeloDatos= new DefaultTableModel(new Vector<Vector<Object>>(),cabecera);
+    	this.tabla= new JTable(this.modeloDatos) {
+    		private static final long serialVersionUID = 1L;
+            public boolean isCellEditable(int row, int col) {
+            	return false;                 
+             }
+    	};
+    }
+    public void cargarChallengesTabla(List <ChallengeDTO> activeChallenges) {
+    	this.modeloDatos.setRowCount(0);
+    	activeChallenges.forEach(c->this.modeloDatos.addRow(
+    			new Object[] {c.name(),c.lapse().x(),c.lapse().y(),c.sport(),c.goal(),c.id()}
+    			));
+    }
+    public void cargarSesionActivasTabla(List <SessionDTO> activeSessions) {
+    	this.modeloDatos.setRowCount(0);
+    	List<SessionDTO>sesionesActivas=new ArrayList<SessionDTO>();
+    	for (SessionDTO s : activeSessions) {
+			if(s.state()==SessionState.IN_PROGRESS) {
+				sesionesActivas.add(s);
+			}
+		}
+    	sesionesActivas.forEach(s->this.modeloDatos.addRow(
+    			new Object[] {s.id(),s.data().title(),s.data().sport(),s.data().distance(),s.data().start(),s.data().duration()}
+    			));
     }
 }

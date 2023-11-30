@@ -100,7 +100,6 @@ public class MainWindow extends JFrame {
     private JSpinner objetivoSpinner = new JSpinner (new SpinnerNumberModel (0, 0, null, 1));
 
     private JComboBox <String> usuarioBox = new JComboBox <> ();
-
     private JScrollPane scrollPane = new JScrollPane ();
     
     private DefaultTableModel modeloDatos;
@@ -108,7 +107,7 @@ public class MainWindow extends JFrame {
 
     private MainController mainController;
     private ServiceLocator serviceLocator;
-    private ChallengeDTO cselected;
+    private long cselected;
     private List <ChallengeDTO> activeChallenges;
     private List <SessionDTO> acceptedSessionThem;
     private List <SessionDTO> acceptedSession;
@@ -194,8 +193,8 @@ public class MainWindow extends JFrame {
         botonAceptarReto.addActionListener (new ActionListener () {
             @Override
             public void actionPerformed (ActionEvent e) {
-                System.out.println (cselected.id ());
-                mainController.acceptChallenge (cselected.id ());
+                System.out.println (cselected);
+                mainController.acceptChallenge (cselected);
             }
         });
         botonComrpobarAceptados.addActionListener (new ActionListener () {
@@ -372,9 +371,39 @@ public class MainWindow extends JFrame {
 
     public void ventanaGetChallenges () {
         pCentro.removeAll ();
-        List <ChallengeDTO> activeChallenges = mainController.searchChallenges (null);
-        
-        
+        this.activeChallenges = mainController.searchChallenges (null);        
+        list=new ArrayList<String>();
+        list.add("Nombre");
+        list.add("Fecha Inicio");
+        list.add("Fecha final");
+        list.add("Deporte");
+        list.add("Objetivo");
+        list.add("ID");
+        initTabla(list);
+        cargarChallengesTabla(activeChallenges);
+        tabla.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+			
+			@Override
+			public void valueChanged(ListSelectionEvent e) {
+				if(!e.getValueIsAdjusting()){
+					int filaSeleccionada = tabla.getSelectedRow();
+					if (filaSeleccionada != -1) {                        
+                        cselected=(long) modeloDatos.getValueAt(filaSeleccionada, 5);                        
+                    }
+				}
+				
+			}
+		});
+
+        pCentro.add (new JScrollPane(tabla), BorderLayout.CENTER);        
+        pCentro.add (botonAceptarReto, BorderLayout.SOUTH);
+        pCentro.revalidate ();
+        pCentro.repaint ();
+    }
+
+    public void ventanaAcceptedChallenges () {
+        pCentro.removeAll ();
+        this.activeChallenges = this.mainController.getActiveChallenges ();              
         list=new ArrayList<String>();
         list.add("Nombre");
         list.add("Fecha Inicio");
@@ -385,22 +414,7 @@ public class MainWindow extends JFrame {
         initTabla(list);
         cargarChallengesTabla(activeChallenges);
 
-        pCentro.add (new JScrollPane(tabla), BorderLayout.CENTER);        
-        pCentro.add (botonAceptarReto, BorderLayout.SOUTH);
-        pCentro.revalidate ();
-        pCentro.repaint ();
-    }
-
-    public void ventanaAcceptedChallenges () {
-        pCentro.removeAll ();
-        this.activeChallenges = this.mainController.getActiveChallenges ();
-        DefaultListModel <ChallengeDTO> lmd = new DefaultListModel <> ();
-        for (ChallengeDTO c : this.activeChallenges) {
-            lmd.addElement (c);
-        }
-        JList <ChallengeDTO> lista = new JList <> (lmd);
-
-        scrollPane = new JScrollPane (lista);
+        scrollPane = new JScrollPane (tabla);
 
         pCentro.add (scrollPane);
         pCentro.revalidate ();

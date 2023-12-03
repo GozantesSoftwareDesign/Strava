@@ -53,6 +53,7 @@ public class MainWindow extends JFrame {
     private JPanel pCentro = new JPanel (), pSur = new JPanel ();
     private JPanel pLogout = new JPanel (new FlowLayout (FlowLayout.LEFT));
     private JPanel pScrollPane = new JPanel (new GridLayout (0, 1));
+    private JPanel pSOE= new JPanel(new FlowLayout (FlowLayout.CENTER));
 
     private JPanel pTitulo = new JPanel (new FlowLayout (FlowLayout.CENTER));
     private JPanel pDuracion = new JPanel (new FlowLayout (FlowLayout.CENTER));
@@ -73,7 +74,7 @@ public class MainWindow extends JFrame {
     private JButton GenerarChallenge = new JButton ("Generar Challenge");
     private JButton botonCrearSesion = new JButton ("GenerarSesion sesión");
     private JButton botonConsultarSesion = new JButton ("Consultar sesión");
-    private JButton botonCrearReto = new JButton ("GenerarSesion reto");
+    private JButton botonCrearReto = new JButton ("Generar reto");
     private JButton botonRetosActivos = new JButton ("Obtener retos activos");
     private JButton botonAceptarReto = new JButton ("Aceptar reto");
     private JButton botonComrpobarAceptados = new JButton ("Comprobar aceptados");
@@ -393,10 +394,10 @@ public class MainWindow extends JFrame {
 				}
 				
 			}
-		});
-
-        pCentro.add (new JScrollPane(tabla), BorderLayout.CENTER);        
-        pCentro.add (botonAceptarReto, BorderLayout.SOUTH);
+		});        
+        pSOE.add(new JScrollPane(tabla), BorderLayout.CENTER);
+        pSOE.add(botonAceptarReto, BorderLayout.SOUTH);        
+        pCentro.add (pSOE);
         pCentro.revalidate ();
         pCentro.repaint ();
     }
@@ -483,7 +484,7 @@ public class MainWindow extends JFrame {
 
         botonSession.setFont (new Font ("Tahoma", Font.BOLD, 10));
         botonChallenge.setFont (new Font ("Tahoma", Font.BOLD, 10));
-
+        
         botonLogout.setPreferredSize (new Dimension (100, 20));
         botonChallenge.setPreferredSize (new Dimension (150, 25));
         botonSession.setPreferredSize (new Dimension (150, 25));
@@ -491,7 +492,7 @@ public class MainWindow extends JFrame {
         botonCrearSesion.setPreferredSize (new Dimension (110, 20));
         botonCrearReto.setPreferredSize (new Dimension (100, 20));
         botonRetosActivos.setPreferredSize (new Dimension (160, 20));
-        botonAceptarReto.setPreferredSize (new Dimension (110, 20));
+        botonAceptarReto.setPreferredSize (new Dimension (50, 20));
         botonComrpobarAceptados.setPreferredSize (new Dimension (170, 20));
 
         deporteBox.addItem (Sport.Cyclism);

@@ -53,7 +53,9 @@ public class MainWindow extends JFrame {
     private JPanel pCentro = new JPanel (), pSur = new JPanel ();
     private JPanel pLogout = new JPanel (new FlowLayout (FlowLayout.LEFT));
     private JPanel pScrollPane = new JPanel (new GridLayout (0, 1));
-    private JPanel pSOE= new JPanel(new FlowLayout (FlowLayout.CENTER));
+    private JPanel pSOE= new JPanel(new BorderLayout());
+    private JPanel pTablaChallenge= new JPanel(new FlowLayout (FlowLayout.CENTER));
+    private JPanel ppSOE= new JPanel(new FlowLayout (FlowLayout.CENTER));
 
     private JPanel pTitulo = new JPanel (new FlowLayout (FlowLayout.CENTER));
     private JPanel pDuracion = new JPanel (new FlowLayout (FlowLayout.CENTER));
@@ -72,7 +74,7 @@ public class MainWindow extends JFrame {
     private JButton botonLogout = new JButton ("Logout");
     private JButton GenerarSesion = new JButton ("Generar Sesion");
     private JButton GenerarChallenge = new JButton ("Generar Challenge");
-    private JButton botonCrearSesion = new JButton ("GenerarSesion sesión");
+    private JButton botonCrearSesion = new JButton ("Generar sesión");
     private JButton botonConsultarSesion = new JButton ("Consultar sesión");
     private JButton botonCrearReto = new JButton ("Generar reto");
     private JButton botonRetosActivos = new JButton ("Obtener retos activos");
@@ -394,9 +396,12 @@ public class MainWindow extends JFrame {
 				}
 				
 			}
-		});        
-        pSOE.add(new JScrollPane(tabla), BorderLayout.CENTER);
-        pSOE.add(botonAceptarReto, BorderLayout.SOUTH);        
+		});
+        ppSOE.add(botonAceptarReto);
+        ppSOE.setBounds(pSOE.getX(),tabla.getY()+tabla.getY(), 200, 50);
+        pTablaChallenge.add(new JScrollPane(tabla));
+        pSOE.add(pTablaChallenge, BorderLayout.CENTER);
+        pSOE.add(ppSOE, BorderLayout.SOUTH);        
         pCentro.add (pSOE);
         pCentro.revalidate ();
         pCentro.repaint ();
@@ -481,6 +486,8 @@ public class MainWindow extends JFrame {
         pCentro.setBackground (new Color (255, 255, 255));
         pSur.setBackground (new Color (255, 255, 255));
         pLogout.setBackground (new Color (255, 255, 255));
+        pSOE.setBackground (new Color (255, 255, 255));
+        ppSOE.setBackground (new Color (255, 255, 255));
 
         botonSession.setFont (new Font ("Tahoma", Font.BOLD, 10));
         botonChallenge.setFont (new Font ("Tahoma", Font.BOLD, 10));
@@ -489,10 +496,10 @@ public class MainWindow extends JFrame {
         botonChallenge.setPreferredSize (new Dimension (150, 25));
         botonSession.setPreferredSize (new Dimension (150, 25));
         botonConsultarSesion.setPreferredSize (new Dimension (130, 20));
-        botonCrearSesion.setPreferredSize (new Dimension (110, 20));
-        botonCrearReto.setPreferredSize (new Dimension (100, 20));
+        botonCrearSesion.setPreferredSize (new Dimension (140, 20));
+        botonCrearReto.setPreferredSize (new Dimension (140, 20));
         botonRetosActivos.setPreferredSize (new Dimension (160, 20));
-        botonAceptarReto.setPreferredSize (new Dimension (50, 20));
+        botonAceptarReto.setPreferredSize (new Dimension (120, 20));
         botonComrpobarAceptados.setPreferredSize (new Dimension (170, 20));
 
         deporteBox.addItem (Sport.Cyclism);

@@ -82,6 +82,7 @@ public class AuthWindow extends JFrame {
 
     private ImageDisplayer iconoGoogle;
     private ImageDisplayer iconoMeta;
+   
 
     public AuthWindow (AuthController authController, ServiceLocator serviceLocator) {
         super ();
@@ -91,7 +92,7 @@ public class AuthWindow extends JFrame {
         frame.setDefaultCloseOperation (JFrame.DISPOSE_ON_CLOSE);
         frame.setVisible (true);
         frame.setLocationRelativeTo (null);
-        frame.setLayout (null);
+        frame.getContentPane().setLayout (null);
 
         try {
             iconoGoogle = new ImageDisplayer (ImageIO.read (
@@ -107,6 +108,7 @@ public class AuthWindow extends JFrame {
         catch (IOException e) {
             e.printStackTrace ();
         }
+        
 
         inicializarVentana ();
 
@@ -211,7 +213,7 @@ public class AuthWindow extends JFrame {
                 scrollPane.getViewport ().revalidate ();
                 scrollPane.getViewport ().repaint ();
 
-                frame.add (panelPrincipal);
+                frame.getContentPane().add (panelPrincipal);
                 break;
             case 1:
 
@@ -241,7 +243,7 @@ public class AuthWindow extends JFrame {
                 panelPrincipal.revalidate ();
                 panelPrincipal.repaint ();
 
-                frame.add (panelPrincipal);
+                frame.getContentPane().add (panelPrincipal);
                 break;
         }
     }
@@ -271,6 +273,7 @@ public class AuthWindow extends JFrame {
         signUp.setPreferredSize (new Dimension (150, 25));
         signUpMeta.setPreferredSize (new Dimension (170, 25));
         signUpGoogle.setPreferredSize (new Dimension (150, 25));
+        panelUser.setBackground(new Color(240, 240, 240));
 
         panelUser.add (userLabel);
         panelUser.add (userText);

@@ -21,6 +21,10 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
+import javax.swing.table.TableCellRenderer;
+
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -135,7 +139,7 @@ public class MainWindow extends JFrame {
 
         inicializarVentana ();
 
-        frame.add (pPrincipal);
+        frame.getContentPane().add (pPrincipal);
 
         botonChallenge.addActionListener (new ActionListener () {
             @Override
@@ -150,6 +154,7 @@ public class MainWindow extends JFrame {
                 paintVentana (1);
             }
         });
+        botonLogout.setBackground(new Color(240, 240, 240));
         botonLogout.addActionListener (new ActionListener () {
             @Override
             public void actionPerformed (ActionEvent e) {
@@ -520,10 +525,10 @@ public class MainWindow extends JFrame {
 
 
     private void inicializarVentana () {
-        pNorte.setBackground (new Color (255, 255, 255));
-        pCentro.setBackground (new Color (255, 255, 255));
-        pSur.setBackground (new Color (255, 255, 255));
-        pLogout.setBackground (new Color (255, 255, 255));
+        pNorte.setBackground (new Color(255, 255, 255));
+        pCentro.setBackground (new Color(255, 255, 255));
+        pSur.setBackground (new Color(255, 255, 255));
+        pLogout.setBackground (new Color(255, 255, 255));
         pSOE.setBackground (new Color (255, 255, 255));
         ppSOE.setBackground (new Color (255, 255, 255));
 
@@ -621,7 +626,13 @@ public class MainWindow extends JFrame {
                 };
             }
         };
+        
+        TableCellRenderer renderer = new DefaultTableCellRenderer();
+        ((JComponent) renderer).setBackground(Color.LIGHT_GRAY);
+        this.tabla.getColumnModel().getColumn(0).setCellRenderer(renderer);
 
+        this.tabla.getTableHeader().setBackground(Color.DARK_GRAY);
+        this.tabla.getTableHeader().setForeground(Color.WHITE);
         this.tabla.setRowHeight(40);
         this.tabla.setRowSelectionAllowed(true);
         this.tabla.getTableHeader().setReorderingAllowed(false);
@@ -638,29 +649,35 @@ public class MainWindow extends JFrame {
             this.tabla.getColumnModel().getColumn(5).setPreferredWidth(50);
         }
         this.tabla.setPreferredScrollableViewportSize(new Dimension(900, 400));
+        TableRowSorter<TableModel> sorter = new TableRowSorter<>(this.modeloDatos);
+        this.tabla.setRowSorter(sorter);
     }
     public void cargarChallengesTabla(List<ChallengeDTO> activeChallenges) {
         this.modeloDatos.setRowCount(0);
+        
         activeChallenges.forEach(c -> {
             Object sportValue;
             if (c.sport() != null) {
                 sportValue = c.sport();
             } else {
-            	sportValue = "Both";
+                sportValue = "Both";
             }
-            this.modeloDatos.addRow(new Object[]{c.name(), c.lapse().x(), c.lapse().y(), sportValue, c.goal(), c.id()});
+            this.modeloDatos.addRow(new Object[]{c.name(), c.lapse().x(), c.lapse().y(), sportValue, c.goal(),
+                    "<html><i>" + c.id() + "</i></html>"});
         });
     }
-    public void cargarSesionActivasTabla(List <SessionDTO> activeSessions) {
-    	this.modeloDatos.setRowCount(0);
-    	List<SessionDTO>sesionesActivas=new ArrayList<SessionDTO>();
-    	for (SessionDTO s : activeSessions) {
-			if(s.state()==SessionState.IN_PROGRESS) {
-				sesionesActivas.add(s);
-			}
-		}
-    	sesionesActivas.forEach(s->this.modeloDatos.addRow(
-    			new Object[] {s.data().title(),s.data().sport(),s.data().start(),s.data().distance(),s.data().duration(),s.id()}
-    			));
+    public void cargarSesionActivasTabla(List<SessionDTO> activeSessions) {
+        this.modeloDatos.setRowCount(0);
+        List<SessionDTO> sesionesActivas = new ArrayList<SessionDTO>();
+
+        for (SessionDTO s : activeSessions) {
+            if (s.state() == SessionState.IN_PROGRESS) {
+                sesionesActivas.add(s);
+            }
+        }
+
+        sesionesActivas.forEach(s -> this.modeloDatos.addRow(
+                new Object[]{s.data().title(), s.data().sport(), s.data().start(), s.data().distance(), s.data().duration(),
+                        "<html><i>" + s.id() + "</i></html>"}));	
     }
 }

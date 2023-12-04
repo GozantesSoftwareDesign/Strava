@@ -374,6 +374,9 @@ public class MainWindow extends JFrame {
 
     public void ventanaGetChallenges () {
         pCentro.removeAll ();
+        ppSOE.removeAll();
+        pSOE.removeAll();
+        pTablaChallenge.removeAll();
         this.activeChallenges = mainController.searchChallenges (null);        
         list=new ArrayList<String>();
         list.add("Nombre");
@@ -403,6 +406,12 @@ public class MainWindow extends JFrame {
         pSOE.add(pTablaChallenge, BorderLayout.CENTER);
         pSOE.add(ppSOE, BorderLayout.SOUTH);        
         pCentro.add (pSOE);
+        pTablaChallenge.revalidate();
+        pTablaChallenge.repaint();
+        ppSOE.revalidate();
+        ppSOE.repaint();
+        pSOE.revalidate();
+        pSOE.repaint();
         pCentro.revalidate ();
         pCentro.repaint ();
     }

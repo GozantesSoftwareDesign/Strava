@@ -2,6 +2,7 @@ package org.gozantes.strava.internals.logging;
 
 import java.io.File;
 import java.nio.file.FileSystemException;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Objects;
@@ -43,12 +44,22 @@ public final class Logger {
 
             final File[] ff = fd.listFiles ();
             for (int[] i = new int[] { 0, (ff == null ? new File[0] : ff).length - 10 };
-                    i[0] < i[1]; Objects.requireNonNull (
-                    ff)[i[0]++].delete ())
+                    i[0] < i[1]; Objects.requireNonNull (ff)[i[0]++].delete ())
                 ;
 
+            String jar = "";
+
+            try {
+                jar = "_" + Paths.get (
+                                Logger.class.getProtectionDomain ().getCodeSource ().getLocation ().toURI ().getPath ())
+                        .getFileName ().toString ();
+            }
+            catch (Exception e) {
+                jar = "";
+            }
+
             java.util.logging.FileHandler fh = new java.util.logging.FileHandler (
-                    "log/" + name + new SimpleDateFormat ("_dd-MM-yyyy_H-m-s").format (
+                    "log/" + name + jar + new SimpleDateFormat ("_dd-MM-yyyy_H-m-s").format (
                             new Date (System.currentTimeMillis ())) + ".log");
             fh.setFormatter (fm);
 

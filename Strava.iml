@@ -17,5 +17,7 @@
     <orderEntry type="library" name="auth0.java.jwt" level="project" />
     <orderEntry type="library" name="javax.el.api" level="project" />
     <orderEntry type="library" name="commons.lang" level="project" />
+    <orderEntry type="library" name="spring-boot-antlib-3.2.0" level="project" />
+    <orderEntry type="library" name="lib" level="project" />
   </component>
 </module>

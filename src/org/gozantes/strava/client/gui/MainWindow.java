@@ -18,7 +18,9 @@ import org.gozantes.strava.server.data.dto.SessionDTO;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -438,20 +440,22 @@ public class MainWindow extends JFrame {
 
     public void consultarSession () {
         pCentro.removeAll ();
-
+        ppSOE.removeAll();
+        pSOE.removeAll();
+        pTablaChallenge.removeAll();
         this.acceptedSession = this.mainController.getSessions ();
         list=new ArrayList<String>();
-        list.add("Id");
-        list.add("Título");
+        list.add("Título");        
         list.add("Deporte");
-        list.add("Distancia");
         list.add("Fecha Inicio");
-        list.add("Duración");        
+        list.add("Distancia");        
+        list.add("Duración");     
+        list.add("Id");      
         initTabla(list);
         cargarSesionActivasTabla(acceptedSession);
         scrollPane=new JScrollPane(tabla);
-        pCentro.add (usuarioBox);
-        pCentro.add (scrollPane);
+        ppSOE.add(usuarioBox);
+        pTablaChallenge.add(scrollPane);
 
         usuarioBox.addItemListener (new ItemListener () {
 
@@ -467,28 +471,53 @@ public class MainWindow extends JFrame {
                 }
             }
         });
+        
+        ppSOE.setBounds(pSOE.getX(),tabla.getY()+tabla.getY(), 200, 50);
+        pSOE.add(pTablaChallenge, BorderLayout.CENTER);
+        pSOE.add(ppSOE, BorderLayout.NORTH);
+        pCentro.add(pSOE);
+        ppSOE.revalidate();
+        ppSOE.repaint();
+        pSOE.revalidate();
+        pSOE.repaint();
+        pTablaChallenge.revalidate();
+        pTablaChallenge.repaint();
         pCentro.revalidate ();
         pCentro.repaint ();
     }
 
     public void theirSession () {
-        pCentro.removeAll ();        
+        pCentro.removeAll ();     
+        ppSOE.removeAll();
+        pSOE.removeAll();
+        pTablaChallenge.removeAll();
         this.acceptedSessionThem = this.mainController.searchSessions (new SessionFilters (null));
         list=new ArrayList<String>();
-        list.add("Id");
-        list.add("Título");
+        list.add("Título");        
         list.add("Deporte");
-        list.add("Distancia");
         list.add("Fecha Inicio");
-        list.add("Duración");        
+        list.add("Distancia");        
+        list.add("Duración");     
+        list.add("Id");
         initTabla(list);
         cargarSesionActivasTabla(acceptedSessionThem);
-        pCentro.add (usuarioBox);
         scrollPane = new JScrollPane (tabla);
-        pCentro.add (scrollPane);
+        ppSOE.add(usuarioBox);
+        pTablaChallenge.add(scrollPane);
+        ppSOE.setBounds(pSOE.getX(),tabla.getY()+tabla.getY(), 200, 50);
+        pSOE.add(pTablaChallenge, BorderLayout.CENTER);
+        pSOE.add(ppSOE, BorderLayout.NORTH);
+        pCentro.add(pSOE);
+        ppSOE.revalidate();
+        ppSOE.repaint();
+        pSOE.revalidate();
+        pSOE.repaint();
+        pTablaChallenge.revalidate();
+        pTablaChallenge.repaint();
         pCentro.revalidate ();
         pCentro.repaint ();
     }
+
 
     private void inicializarVentana () {
         pNorte.setBackground (new Color (255, 255, 255));
@@ -573,20 +602,54 @@ public class MainWindow extends JFrame {
         return scroll;
     }
     public void initTabla(List<String> list) {
-    	Vector<String>cabecera= new Vector<String>(list);
-    	this.modeloDatos= new DefaultTableModel(new Vector<Vector<Object>>(),cabecera);
-    	this.tabla= new JTable(this.modeloDatos) {
-    		private static final long serialVersionUID = 1L;
+        Vector<String> cabecera = new Vector<>(list);
+        Vector<Vector<Object>> datos = new Vector<>();
+        this.modeloDatos = new DefaultTableModel(datos, cabecera);
+        this.tabla = new JTable(this.modeloDatos) {
+            private static final long serialVersionUID = 1L;
+            @Override
             public boolean isCellEditable(int row, int col) {
-            	return false;                 
-             }
-    	};
+                return false;
+            }
+            @Override
+            protected JTableHeader createDefaultTableHeader() {
+                return new JTableHeader(columnModel) {
+                    @Override
+                    public java.awt.Font getFont() {
+                        return new Font("Arial", Font.BOLD, 12);
+                    }
+                };
+            }
+        };
+
+        this.tabla.setRowHeight(40);
+        this.tabla.setRowSelectionAllowed(true);
+        this.tabla.getTableHeader().setReorderingAllowed(false);
+        this.tabla.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+
+        int numColumnas = this.tabla.getColumnCount();
+        for (int i = 0; i < numColumnas; i++) {
+            this.tabla.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+            this.tabla.getColumnModel().getColumn(i).setPreferredWidth(223);
+            this.tabla.getColumnModel().getColumn(3).setPreferredWidth(80);
+            this.tabla.getColumnModel().getColumn(4).setPreferredWidth(100);
+            this.tabla.getColumnModel().getColumn(5).setPreferredWidth(50);
+        }
+        this.tabla.setPreferredScrollableViewportSize(new Dimension(900, 400));
     }
-    public void cargarChallengesTabla(List <ChallengeDTO> activeChallenges) {
-    	this.modeloDatos.setRowCount(0);
-    	activeChallenges.forEach(c->this.modeloDatos.addRow(
-    			new Object[] {c.name(),c.lapse().x(),c.lapse().y(),c.sport(),c.goal(),c.id()}
-    			));
+    public void cargarChallengesTabla(List<ChallengeDTO> activeChallenges) {
+        this.modeloDatos.setRowCount(0);
+        activeChallenges.forEach(c -> {
+            Object sportValue;
+            if (c.sport() != null) {
+                sportValue = c.sport();
+            } else {
+            	sportValue = "Both";
+            }
+            this.modeloDatos.addRow(new Object[]{c.name(), c.lapse().x(), c.lapse().y(), sportValue, c.goal(), c.id()});
+        });
     }
     public void cargarSesionActivasTabla(List <SessionDTO> activeSessions) {
     	this.modeloDatos.setRowCount(0);
@@ -597,7 +660,7 @@ public class MainWindow extends JFrame {
 			}
 		}
     	sesionesActivas.forEach(s->this.modeloDatos.addRow(
-    			new Object[] {s.id(),s.data().title(),s.data().sport(),s.data().distance(),s.data().start(),s.data().duration()}
+    			new Object[] {s.data().title(),s.data().sport(),s.data().start(),s.data().distance(),s.data().duration(),s.id()}
     			));
     }
 }

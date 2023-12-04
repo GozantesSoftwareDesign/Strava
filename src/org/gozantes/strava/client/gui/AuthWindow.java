@@ -82,6 +82,7 @@ public class AuthWindow extends JFrame {
 
     private ImageDisplayer iconoGoogle;
     private ImageDisplayer iconoMeta;
+	private JLabel titleLabel;
    
 
     public AuthWindow (AuthController authController, ServiceLocator serviceLocator) {
@@ -107,6 +108,17 @@ public class AuthWindow extends JFrame {
         }
         catch (IOException e) {
             e.printStackTrace ();
+        }
+        
+        try {
+            ImageIcon titleImage = new ImageIcon(
+                    Objects.requireNonNull(this.getClass().getClassLoader().getResource("Strava.png")));
+            titleImage = new ImageIcon(titleImage.getImage().getScaledInstance(420, 200, Image.SCALE_SMOOTH));
+            titleLabel = new JLabel(titleImage);
+            titleLabel.setLayout(new FlowLayout(FlowLayout.CENTER));
+            titleLabel.setBounds(60, 0, 475, 100);              
+        } catch (NullPointerException e) {
+            e.printStackTrace();
         }
         
 
@@ -203,6 +215,7 @@ public class AuthWindow extends JFrame {
                 panelBotonesSignUp.setBounds (panelPrincipal.getX (),
                         panelBotonesLogin.getY () + panelBotonesLogin.getHeight (), panelPrincipal.getWidth (), 50);
 
+                panelPrincipal.add(titleLabel);
                 panelPrincipal.add (panelUser);
                 panelPrincipal.add (panelPassword);
                 panelPrincipal.add (panelBotonesLogin);

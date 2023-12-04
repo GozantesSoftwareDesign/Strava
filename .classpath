@@ -6,7 +6,7 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry exported="true" kind="lib" path="dist/server.jar"/>
+	<classpathentry kind="lib" path="C:/Users/dnoci/git/Strava/lib/server.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/bcpkix-jdk15to18-1.76.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/bcprov-jdk15to18-1.76.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/bcutil-jdk15to18-1.76.jar"/>

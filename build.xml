@@ -4,6 +4,7 @@
 
     <property name="client.file" location="client.xml"/>
     <property name="server.file" location="server.xml"/>
+	<property name="meta.file" location="meta.xml"/>
 
     <property name="source.dir" location="src"/>
     <property name="build.dir" location="bin"/>
@@ -34,6 +35,8 @@
             <ant antfile="${client.file}" inheritrefs="true"/>
 
             <ant antfile="${server.file}" inheritrefs="true"/>
+        	
+        	<ant antfile="${meta.file}" inheritrefs="true"/>
         </parallel>
     </target>
 
@@ -44,5 +47,8 @@
     <target name="server">
         <ant antfile="${server.file}" inheritrefs="true"/>
     </target>
+	<target name="meta">
+		<ant antfile="${meta.file}" inheritrefs="true"/>
+	</target>
 
 </project>

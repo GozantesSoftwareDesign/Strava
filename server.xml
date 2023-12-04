@@ -38,7 +38,6 @@
             </classpath>
         </manifestclasspath>
 
-
         <jar destfile="${dist.dir}/${export.file}" basedir="${build.dir}">
             <manifest>
                 <attribute name="Main-Class" value="org.gozantes.strava.server.Main"/>

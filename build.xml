@@ -4,8 +4,8 @@
 
     <property name="client.file" location="client.xml"/>
     <property name="server.file" location="server.xml"/>
-	<property name="meta.file" location="meta.xml"/>
-    <property name="google.file" location="google.xml"/> 
+    <property name="meta.file" location="meta.xml"/>
+    <property name="google.file" location="google.xml"/>
 
     <property name="source.dir" location="src"/>
     <property name="build.dir" location="bin"/>
@@ -33,18 +33,16 @@
 
     <path id="springboot.classpath">
         <fileset dir="${lib.dir}">
-            <include name="spring-boot-antlib.jar" />
+            <include name="ivy-2.5.2.jar"/>
+            <include name="spring-boot-antlib-3.2.0.jar"/>
         </fileset>
     </path>
 
     <target name="all">
         <parallel>
-            <ant antfile="${google.file}" inheritrefs="true">
-                <property name="additional.classpath" refid="custom.classpath" />
-            </ant>
+            <ant antfile="${google.file}" inheritrefs="true"/>
+            <ant antfile="${meta.file}" inheritrefs="true"/>
             <ant antfile="${server.file}" inheritrefs="true"/>
-        	
-        	<ant antfile="${meta.file}" inheritrefs="true"/>
             <ant antfile="${client.file}" inheritrefs="true"/>
         </parallel>
     </target>
@@ -56,14 +54,12 @@
     <target name="server">
         <ant antfile="${server.file}" inheritrefs="true"/>
     </target>
-	<target name="meta">
-		<ant antfile="${meta.file}" inheritrefs="true"/>
-	</target>
+    <target name="meta">
+        <ant antfile="${meta.file}" inheritrefs="true"/>
+    </target>
 
     <target name="google">
-        <ant antfile="${google.file}" inheritrefs="true">
-            <property name="additional.classpath" refid="springboot.classpath" />
-        </ant>
+        <ant antfile="${google.file}" inheritrefs="true"/>
     </target>
 
 </project>

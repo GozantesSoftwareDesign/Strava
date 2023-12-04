@@ -10,7 +10,7 @@ public final class Security {
     @SuppressWarnings ({ "removal", "deprecation" })
     public static void init () throws URISyntaxException, NoSuchAlgorithmException {
         java.security.Policy.setPolicy (java.security.Policy.getInstance ("JavaPolicy", new java.security.URIParameter (
-                Objects.requireNonNull (Main.class.getClassLoader ().getResource ("java.policy")).toURI ())));
+                Objects.requireNonNull (Security.class.getClassLoader ().getResource ("java.policy")).toURI ())));
         java.security.Security.setProperty ("policy.provider", "com.sun.security.provider.PolicyFile");
         java.security.Policy.getPolicy ().refresh ();
 

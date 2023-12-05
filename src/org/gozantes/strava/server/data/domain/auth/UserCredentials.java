@@ -1,10 +1,12 @@
 package org.gozantes.strava.server.data.domain.auth;
 
+import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Objects;
 
+@Entity
 public record UserCredentials(@Id CredType type, @Id String id, String passwd) implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;

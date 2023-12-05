@@ -42,6 +42,7 @@ import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Vector;
@@ -121,6 +122,9 @@ public class MainWindow extends JFrame {
     private List <SessionDTO> acceptedSessionThem;
     private List <SessionDTO> acceptedSession;
     private List<String>list;
+    
+    private TableRowSorter<TableModel> sorter;
+    private Comparator<String> dateComparator;
 
     private TextPrompt placeholder1 = new TextPrompt ("dd/MM/yyyy", fInicioText);
     private TextPrompt placeholder2 = new TextPrompt ("dd/MM/yyyy", fFinalText);
@@ -131,6 +135,21 @@ public class MainWindow extends JFrame {
         super ();
         this.mainController = mainController;
         this.serviceLocator = serviceLocator;
+        
+        dateComparator = new Comparator<String>() {
+            @Override
+            public int compare(String fechaCadena1, String fechaCadena2) {
+                try {
+                    Date fecha1 = formatter.parse(fechaCadena1);
+                    Date fecha2 = formatter.parse(fechaCadena2);
+                    return fecha1.compareTo(fecha2);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                    return 0;
+                }
+            }
+        };       
+        
 
         frame.setSize (1000, 800);
         frame.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
@@ -407,6 +426,10 @@ public class MainWindow extends JFrame {
 				
 			}
 		});
+        sorter = new TableRowSorter<>(this.modeloDatos);
+        this.tabla.setRowSorter(sorter);
+        sorter.setComparator(2, dateComparator);
+        sorter.setComparator(1, dateComparator);
         ppSOE.add(botonAceptarReto);
         ppSOE.setBounds(pSOE.getX(),tabla.getY()+tabla.getY(), 200, 50);
         pTablaChallenge.add(new JScrollPane(tabla));
@@ -435,7 +458,11 @@ public class MainWindow extends JFrame {
         list.add("ID");
         initTabla(list);
         cargarChallengesTabla(activeChallenges);
-
+        
+        sorter = new TableRowSorter<>(this.modeloDatos);
+        this.tabla.setRowSorter(sorter);
+        sorter.setComparator(2, dateComparator);
+        sorter.setComparator(1, dateComparator);
         scrollPane = new JScrollPane (tabla);
 
         pCentro.add (scrollPane);
@@ -458,6 +485,11 @@ public class MainWindow extends JFrame {
         list.add("Id");      
         initTabla(list);
         cargarSesionActivasTabla(acceptedSession);
+        
+        sorter = new TableRowSorter<>(this.modeloDatos);
+        this.tabla.setRowSorter(sorter);
+        sorter.setComparator(2, dateComparator);       
+        
         scrollPane=new JScrollPane(tabla);
         ppSOE.add(usuarioBox);
         pTablaChallenge.add(scrollPane);
@@ -506,6 +538,9 @@ public class MainWindow extends JFrame {
         list.add("Id");
         initTabla(list);
         cargarSesionActivasTabla(acceptedSessionThem);
+        sorter = new TableRowSorter<>(this.modeloDatos);
+        this.tabla.setRowSorter(sorter);
+        sorter.setComparator(2, dateComparator);        
         scrollPane = new JScrollPane (tabla);
         ppSOE.add(usuarioBox);
         pTablaChallenge.add(scrollPane);
@@ -649,8 +684,8 @@ public class MainWindow extends JFrame {
             this.tabla.getColumnModel().getColumn(5).setPreferredWidth(50);
         }
         this.tabla.setPreferredScrollableViewportSize(new Dimension(900, 400));
-        TableRowSorter<TableModel> sorter = new TableRowSorter<>(this.modeloDatos);
-        this.tabla.setRowSorter(sorter);
+        
+        
     }
     public void cargarChallengesTabla(List<ChallengeDTO> activeChallenges) {
         this.modeloDatos.setRowCount(0);
@@ -662,8 +697,8 @@ public class MainWindow extends JFrame {
             } else {
                 sportValue = "Both";
             }
-            this.modeloDatos.addRow(new Object[]{c.name(), c.lapse().x(), c.lapse().y(), sportValue, c.goal(),
-                    "<html><i>" + c.id() + "</i></html>"});
+            this.modeloDatos.addRow(new Object[]{c.name(),formatter.format( c.lapse().x()),formatter.format( c.lapse().y()), sportValue, c.goal(),
+                    c.id()});
         });
     }
     public void cargarSesionActivasTabla(List<SessionDTO> activeSessions) {
@@ -677,7 +712,7 @@ public class MainWindow extends JFrame {
         }
 
         sesionesActivas.forEach(s -> this.modeloDatos.addRow(
-                new Object[]{s.data().title(), s.data().sport(), s.data().start(), s.data().distance(), s.data().duration(),
-                        "<html><i>" + s.id() + "</i></html>"}));	
+                new Object[]{s.data().title(), s.data().sport(), formatter.format(s.data().start()), s.data().distance(), s.data().duration(),
+                        s.id()}));	
     }
 }

@@ -7,7 +7,7 @@ grant codeBase "file:${user.dir}/-" {
     permission java.util.PropertyPermission "user.dir", "read";
     permission java.util.PropertyPermission "java.rmi.server.hostname", "write";
 
-    permission java.io.FilePermission "file:${user.dir}", "read, write";
+    permission java.io.FilePermission "file:${user.dir}/-", "read, write";
     permission java.io.FilePermission "log/", "read, write";
     permission java.io.FilePermission "log/*", "read, write, delete";
 };
@@ -17,8 +17,18 @@ grant {
     permission java.util.logging.PropertyPermission "os.name", "read";
     permission java.util.PropertyPermission "stdout.encoding", "write";
     permission java.util.PropertyPermission "file.encoding", "write";
+    permission java.util.PropertyPermission "*", "read, write";
 
     permission java.lang.RuntimePermission "accessDeclaredMembers";
+    permission java.lang.RuntimePermission "getClassLoader";
+    permission java.lang.RuntimePermission "getStackWalkerWithClassReference";
+    permission java.lang.RuntimePermission "getenv.*";
+    permission java.lang.RuntimePermission "accessSystemModules";
+    permission java.lang.RuntimePermission "shutdownHooks";
 
+    permission java.lang.reflect.ReflectPermission "suppressAccessChecks";
+
+    permission java.io.FilePermission "<<ALL FILES>>", "read";
+    permission java.io.FilePermission "file:${user.dir}/-", "read";
     permission java.io.FilePermission "file:/usr/bin", "execute";
 };

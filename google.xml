@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project xmlns:ivy="antlib:org.apache.ivy.ant" xmlns:spring-boot="antlib:org.springframework.boot.ant" basedir="." default="5.server"
+<project xmlns:ivy="antlib:org.apache.ivy.ant" xmlns:spring-boot="antlib:org.springframework.boot.ant" basedir="."
+         default="5.server"
          name="Google server">
     <property name="export.file" value="google.jar"/>
     <property name="spring-boot.version" value="3.2.0"/>
@@ -23,9 +24,10 @@
                 fork="true"
                 includeAntRuntime="no"
         >
-            <classpath refid="classpath"/>
-
             <compilerarg value="-Xlint:-deprecation"/>
+            <compilerarg value="-Xlint:-unchecked"/>
+
+            <classpath refid="classpath"/>
 
             <include name="org/gozantes/strava/internals/hash/**/*.java"/>
             <include name="org/gozantes/strava/internals/logging/**/*.java"/>
@@ -39,17 +41,47 @@
         <mkdir dir="${dist.dir}"/>
         <delete file="${dist.dir}/${export.file}"/>
 
-        <spring-boot:exejar destfile="${dist.dir}/${export.file}" classes="${build.dir}">
-            <lib>
-                <fileset dir="${lib.dir}"/>
-            </lib>
+        <jar destfile="${dist.dir}/${export.file}" basedir="${build.dir}">
+            <manifest>
+                <attribute name="Main-Class" value="org.gozantes.strava.google.Main"/>
+            </manifest>
 
-            <resources>
-                <file name="${build.dir}/{spring.file}"/>
-            </resources>
-        </spring-boot:exejar>
+            <zipfileset src="${build.dir}/spring/spring-jcl-jar-6.1.1.jar" includes="**/*.class">
+                <exclude name="META-INF/license.txt"/>
+                <exclude name="META-INF/notice.txt"/>
+            </zipfileset>
+            <zipfileset src="${build.dir}/spring/spring-expression-jar-6.1.1.jar" includes="**/*.class">
+                <exclude name="META-INF/license.txt"/>
+                <exclude name="META-INF/notice.txt"/>
+            </zipfileset>
+            <zipfileset src="${build.dir}/spring/spring-core-jar-6.1.1.jar" includes="**/*.class">
+                <exclude name="META-INF/license.txt"/>
+                <exclude name="META-INF/notice.txt"/>
+            </zipfileset>
+            <zipfileset src="${build.dir}/spring/spring-context-jar-6.1.1.jar" includes="**/*.class">
+                <exclude name="META-INF/license.txt"/>
+            </zipfileset>
+            <zipfileset src="${build.dir}/spring/spring-boot-jar-3.2.0.jar" includes="**/*.class">
+                <exclude name="META-INF/license.txt"/>
+                <exclude name="META-INF/notice.txt"/>
+            </zipfileset>
+            <zipfileset src="${build.dir}/spring/spring-beans-jar-6.1.1.jar" includes="**/*.class">
+                <exclude name="META-INF/license.txt"/>
+                <exclude name="META-INF/notice.txt"/>
+            </zipfileset>
+            <zipfileset src="${build.dir}/spring/spring-aop-jar-6.1.1.jar" includes="**/*.class">
+                <exclude name="META-INF/license.txt"/>
+            </zipfileset>
+            <zipfileset src="${build.dir}/spring/micrometer-observation-jar-1.12.0.jar" includes="**/*.class">
+                <exclude name="META-INF/license.txt"/>
+            </zipfileset>
+            <zipfileset src="${build.dir}/spring/micrometer-commons-jar-1.12.0.jar" includes="**/*.class">
+                <exclude name="META-INF/license.txt"/>
+            </zipfileset>
+        </jar>
 
         <delete dir="${build.dir}"/>
+        <delete dir="${dist.dir}/BOOT-INF"/>
         <delete dir="${dist.dir}/dependency"/>
     </target>
 

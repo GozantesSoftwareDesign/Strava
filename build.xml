@@ -21,18 +21,27 @@
     <property name="alias" value="Strava"/>
     <property name="key.password" value="123456"/>
 
-    <path id="classpath">
-        <fileset dir="${build.dir}">
-            <include name="**/*.class"/>
-        </fileset>
+    <condition property="gradle.executable" value="./gradle.bat" else="./gradlew">
+        <os family="windows" />
+    </condition>
 
-        <fileset dir="${lib.dir}">
-            <include name="**/*.jar"/>
-        </fileset>
+    <macrodef name="gradle">
+        <attribute name="task" />
+        <sequential>
+            <exec executable="${gradle.executable}" dir="." failonerror="true">
+                <arg value="@{task}" />
+            </exec>
+        </sequential>
+    </macrodef>
+
+    <path id="classpath">
+        <fileset dir="${build.dir}" includes="**/*.class"/>
+        <fileset dir="${lib.dir}" includes="**/*.jar"/>
     </path>
 
     <target name="all">
         <parallel>
+<!--            <gradle task="build" />-->
             <ant antfile="${google.file}" inheritrefs="true"/>
             <ant antfile="${meta.file}" inheritrefs="true"/>
             <ant antfile="${server.file}" inheritrefs="true"/>
@@ -53,7 +62,7 @@
     </target>
 
     <target name="google">
+<!--        <gradle task="build" />-->
         <ant antfile="${google.file}" inheritrefs="true"/>
     </target>
-
 </project>

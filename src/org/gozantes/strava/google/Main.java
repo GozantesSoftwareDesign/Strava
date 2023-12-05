@@ -5,15 +5,11 @@ import org.gozantes.strava.internals.security.Security;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.loader.net.protocol.jar.JarUrlClassLoader;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.PropertySource;
 
-import java.lang.reflect.InvocationTargetException;
-import java.net.MalformedURLException;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.security.NoSuchAlgorithmException;
 
 @SpringBootApplication
@@ -21,9 +17,8 @@ import java.security.NoSuchAlgorithmException;
 @PropertySource ("classpath:google.properties")
 public class Main {
     public static void main (String[] args)
-            throws URISyntaxException, NoSuchAlgorithmException, MalformedURLException {
+            throws URISyntaxException, NoSuchAlgorithmException, ClassNotFoundException {
         Security.init ();
-
 
         SpringApplication.run (Main.class, args);
     }

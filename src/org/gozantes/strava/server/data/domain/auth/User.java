@@ -93,4 +93,9 @@ public final class User implements Mergeable, Serializable {
         return o instanceof User && this.getType ().equals (((User) o).getType ()) && this.getId ()
                 .equals (((User) o).getId ());
     }
+
+	@Override
+	public String toString() {
+		return "User [creds=" + creds + ", data=" + data + "]";
+	}
 }

@@ -78,4 +78,10 @@ public record UserData(String name, Date birth, BigDecimal weight, Integer heigh
         this (data == null ? null : data.name, data == null ? null : data.birth, data == null ? null : data.weight,
                 data == null ? null : data.height, heartRate);
     }
+
+	@Override
+	public String toString() {
+		return "UserData [name=" + name + ", birth=" + birth + ", weight=" + weight + ", height=" + height
+				+ ", heartRate=" + heartRate + "]";
+	}
 }

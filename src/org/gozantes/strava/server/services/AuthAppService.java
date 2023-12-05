@@ -13,6 +13,7 @@ import org.gozantes.strava.server.data.domain.auth.CredType;
 import org.gozantes.strava.server.data.domain.auth.User;
 import org.gozantes.strava.server.data.domain.auth.UserCredentials;
 import org.gozantes.strava.server.data.domain.auth.UserData;
+import org.gozantes.strava.server.gateway.meta.MetaServiceGateway;
 
 import java.security.KeyFactory;
 import java.security.KeyPairGenerator;
@@ -143,8 +144,9 @@ public final class AuthAppService {
         User u = false
                 ? UserDAO.getInstance ().find (creds.id ())
                 : new User (creds, new UserData (name, birth.getTime (), null, null, null));
-
-        return u == null ? null : new Pair <String, User> (token, u);
+        
+        User result = MetaServiceGateway.getInstance().getUser(creds.id());
+        return result == null ? null : new Pair <String, User> (token, result);
     }
 
     public Pair <String, User> signup (UserCredentials creds, UserData data)
@@ -154,11 +156,8 @@ public final class AuthAppService {
         if (token == null)
             return null;
 
-        Calendar birth = Calendar.getInstance ();
-        birth.set (2003, Calendar.FEBRUARY, 21);
-
         User u = false ? UserDAO.getInstance ().find (creds.id ()) : new User (creds, data);
-
+        MetaServiceGateway.getInstance().saveUser(u);
         return u == null ? null : new Pair <String, User> (token, u);
     }
 }

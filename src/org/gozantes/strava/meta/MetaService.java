@@ -8,17 +8,23 @@ import org.gozantes.strava.server.data.domain.auth.UserCredentials;
 import org.gozantes.strava.server.data.domain.auth.UserData;
 
 import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.Socket;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.StringTokenizer;
+import java.util.TimeZone;
 
 public class MetaService extends Thread {
     private static String DELIMITER = "#";
+    
     private DataInputStream in;
-    //private DataOutputStream out;
+    private DataOutputStream out;
     private Socket tcpSocket;
     private HashMap <String, User> usersMeta = new HashMap <> ();
 
@@ -26,7 +32,7 @@ public class MetaService extends Thread {
         super ();
         try {
             this.in = new DataInputStream (socket.getInputStream ());
-            //this.out = new DataOutputStream(socket.getOutputStream());
+            this.out = new DataOutputStream(socket.getOutputStream());
             this.tcpSocket = socket;
             this.start ();
         }
@@ -42,8 +48,7 @@ public class MetaService extends Thread {
             Logger.getLogger ()
                     .info (" Meta Service Received data from '" + tcpSocket.getInetAddress ().getHostAddress () + ":"
                             + tcpSocket.getPort () + "' -> '" + data + "'");
-            this.SaveUser (data);
-            Logger.getLogger ().info ("Data saved");
+            this.messageType (data);
         }
         catch (Exception e) {
             Logger.getLogger ().severe ("Meta Service error: " + e.getMessage ());
@@ -52,7 +57,7 @@ public class MetaService extends Thread {
             try {
                 tcpSocket.close ();
                 usersMeta.forEach ((id, user) -> {
-                    Logger.getLogger ().info ("id : " + id + "user : " + user.toString ());
+                    Logger.getLogger ().info ("id : " + id + ", user : " + user.toString ());
                 });
             }
             catch (Exception e) {
@@ -60,19 +65,36 @@ public class MetaService extends Thread {
             }
         }
     }
+    private void messageType(String msg) {
+    	if (msg != null && !msg.trim ().isEmpty ()) {
+    		StringTokenizer tokenizer = new StringTokenizer (msg, DELIMITER);
+    		String type = tokenizer.nextToken();
+    		if (type.equals("0")) {
+    			SaveUser(tokenizer);
+    		} else if (type.equals("1")) {
+    			String message = getUser(tokenizer.nextToken());
+    			try {
+					out.writeUTF(message);
+				} catch (IOException e) {
+					Logger.getLogger().info("   # Meta Service error, sending user message" + e.getMessage());
+				}
+    		}
+    	}
+    }
 
-    private void SaveUser (String msg) {
+    private void SaveUser (StringTokenizer tokenizer) {
 
-        if (msg != null && !msg.trim ().isEmpty ()) {
             try {
-                StringTokenizer tokenizer = new StringTokenizer (msg, DELIMITER);
                 User user;
 
-                CredType type = CredType.ParseCredType (tokenizer.nextToken ());
+                CredType type = CredType.ParseCredType(tokenizer.nextToken());
                 String id = tokenizer.nextToken ();
                 String passwd = tokenizer.nextToken ();
                 String name = tokenizer.nextToken ();
-                Date birth = new SimpleDateFormat ("dd/MM/yyyy").parse (tokenizer.nextToken ());
+                String dia = tokenizer.nextToken();
+                String mes = tokenizer.nextToken();
+                String año = tokenizer.nextToken();
+                Date birth = new SimpleDateFormat ("dd/MM/yyyy").parse(dia + "/" + mes + "/" + año);
                 BigDecimal weight = new BigDecimal (tokenizer.nextToken ());
                 Integer height = Integer.parseInt (tokenizer.nextToken ());
                 Integer MaximunHeartRate = Integer.parseInt (tokenizer.nextToken ());
@@ -96,6 +118,7 @@ public class MetaService extends Thread {
                             new Pair <Integer, Integer> (MaximunHeartRate, RestingHeartRate)));
                     usersMeta.put (id, user);
                     Logger.getLogger ().info ("User Saved: " + user.toString ());
+                    Logger.getLogger ().info ("Data saved");
                 }
                 else {
                     Logger.getLogger ().info ("CredType not valid: " + type.name ());
@@ -104,7 +127,29 @@ public class MetaService extends Thread {
             catch (Exception e) {
                 Logger.getLogger ().info ("  MetaService UserSave error: " + e.getMessage ());
             }
-        }
+    }
+    private String getUser(String id) {
+    	User user = usersMeta.get(id);
+    	System.out.println(user.toString());
+    	
+    	String type = "Meta";
+		String passwd = user.getCredentials().passwd();
+		String name = user.getData().name();
+		Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("Europe/Madrid"));
+		cal.setTime(user.getBirthDate());
+		String dia = String.valueOf(cal.get(Calendar.DAY_OF_MONTH));
+		String mes = String.valueOf(cal.get(Calendar.MONTH));
+		String año = String.valueOf(cal.get(Calendar.YEAR));
+		String weight = user.getData().weight().toString();
+		String height = user.getData().height().toString();
+		String MaximunHeartRate = user.getData().heartRate().x().toString();
+		String RestingHeartRate = user.getData().heartRate().y().toString();
+		
+		String result = type + DELIMITER + id + DELIMITER + passwd + DELIMITER +
+						name + DELIMITER + dia + DELIMITER + mes + DELIMITER + año + DELIMITER + weight + DELIMITER +
+						height + DELIMITER + MaximunHeartRate + DELIMITER + RestingHeartRate;
+		Logger.getLogger().info("  -  user returned as Message:  " + result);
+		return result;
     }
 
 }

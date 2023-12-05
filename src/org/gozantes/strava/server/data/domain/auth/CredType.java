@@ -13,10 +13,10 @@ public enum CredType implements Serializable {
     }
 
     static public CredType ParseCredType (String value) {
-        if (value == CredType.Meta.value) {
+        if (value.equals("Meta")) {
             return CredType.Meta;
         }
-        else if (value == CredType.Google.value) {
+        else if (value.equals("Meta")) {
             return CredType.Google;
         }
         else {

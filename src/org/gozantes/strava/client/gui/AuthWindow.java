@@ -24,6 +24,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Objects;
 
 public class AuthWindow extends JFrame {
@@ -51,7 +52,7 @@ public class AuthWindow extends JFrame {
     private SpinnerNumberModel maximunHeartRateSpinnerM = new SpinnerNumberModel (0, 0, 300, 1);
     private SpinnerNumberModel restingHeartRateSpinnerM = new SpinnerNumberModel (0, 0, 300, 1);
 
-    private DateFormat formatter = new SimpleDateFormat ("dd/MM/yyyy");
+    private DateFormat formatter = new SimpleDateFormat ("dd-MM-yyyy");
 
     private JLabel userLabel = new JLabel ("Email");
     private JTextField userText = new JTextField (20);
@@ -71,7 +72,7 @@ public class AuthWindow extends JFrame {
     private JSpinner restingHeartRateSpinner = new JSpinner (restingHeartRateSpinnerM);
 
     @SuppressWarnings ("unused")
-    private TextPrompt placeholder = new TextPrompt ("dd/MM/yyyy", birthDateText);
+    private TextPrompt placeholder = new TextPrompt ("dd-MM-yyyy", birthDateText);
 
     private JButton login = new JButton ("Login");
     private JButton loginMeta = new JButton ("Login with Meta");
@@ -325,11 +326,9 @@ public class AuthWindow extends JFrame {
         else {
             h = (Integer) heightSpinner.getValue ();
         }
-        System.out.println (birthDateText.getText ());
         try {
             Date birth = formatter.parse (birthDateText.getText ());
-
-            data = new UserData (userText.getText (), birth, w, h, HeartRate);
+            data = new UserData (nameText.getText (), birth, w, h, HeartRate);
         }
         catch (ParseException e) {
             Logger.getLogger ().severe ("Birthdate cant be parse: " + e.getMessage ());

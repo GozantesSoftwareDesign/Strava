@@ -22,14 +22,14 @@
     <property name="key.password" value="123456"/>
 
     <condition property="gradle.executable" value="./gradle.bat" else="./gradlew">
-        <os family="windows" />
+        <os family="windows"/>
     </condition>
 
     <macrodef name="gradle">
-        <attribute name="task" />
+        <attribute name="task"/>
         <sequential>
             <exec executable="${gradle.executable}" dir="." failonerror="true">
-                <arg value="@{task}" />
+                <arg value="@{task}"/>
             </exec>
         </sequential>
     </macrodef>
@@ -41,7 +41,6 @@
 
     <target name="all">
         <parallel>
-<!--            <gradle task="build" />-->
             <ant antfile="${google.file}" inheritrefs="true"/>
             <ant antfile="${meta.file}" inheritrefs="true"/>
             <ant antfile="${server.file}" inheritrefs="true"/>
@@ -62,7 +61,6 @@
     </target>
 
     <target name="google">
-<!--        <gradle task="build" />-->
         <ant antfile="${google.file}" inheritrefs="true"/>
     </target>
 </project>

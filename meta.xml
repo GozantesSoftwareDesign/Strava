@@ -1,62 +1,62 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <project basedir="." default="4.meta" name="Strava client">
-	<property name="export.file" value="meta.jar"/>
-	
-	<property name="server.port" value="8001"/>
-	
-	<target name="1.build" description="Builds and runs the project">
-		<mkdir dir="${build.dir}"/>
-		
-		<copy todir="${build.dir}" file="${policy.file}"/>
-		<javac
-		                encoding="utf-8"
-		                srcdir="${source.dir}"
-		                destdir="${build.dir}"
-		                deprecation="false"
-		                fork="true"
-		                includeAntRuntime="no"
-		>
-		    <classpath refid="classpath"/>
+    <property name="export.file" value="meta.jar"/>
 
-		    <compilerarg value="-Xlint:-deprecation"/>
+    <property name="server.port" value="8001"/>
 
-			<include name="org/gozantes/strava/internals/hash/**/*.java"/>
-			<include name="org/gozantes/strava/internals/logging/**/*.java"/>
-			<include name="org/gozantes/strava/internals/types/**/*.java"/>
+    <target name="1.build" description="Builds and runs the project">
+        <mkdir dir="${build.dir}"/>
 
-			<include name="org/gozantes/strava/meta/**/*.java"/>
-		</javac>
-	</target>
-	<target name="2.export" depends="1.build" description="Export the project into a .jar file">
-		<mkdir dir="${dist.dir}"/>
-		<delete file="${dist.dir}/${export.file}"/>
+        <copy todir="${build.dir}" file="${policy.file}"/>
+        <javac
+                encoding="utf-8"
+                srcdir="${source.dir}"
+                destdir="${build.dir}"
+                deprecation="false"
+                fork="true"
+                includeAntRuntime="no"
+        >
+            <classpath refid="classpath"/>
 
-		<manifestclasspath property="jar.classpath" jarfile="${dist.dir}/${export.file}">
-			<classpath>
-				<path refid="classpath"/>
-				<path location="${dist.dir}/${export.file}"/>
-			</classpath>
-		</manifestclasspath>
+            <compilerarg value="-Xlint:-deprecation"/>
 
-		<jar destfile="${dist.dir}/${export.file}" basedir="${build.dir}">
-			<manifest>
-				<attribute name="Main-Class" value="org.gozantes.strava.meta.Main"/>
-				<attribute name="Class-Path" value="${jar.classpath}"/>
-			</manifest>
-		</jar>
-	</target>
-	<target name="3.sign" depends="2.export">
-		<signjar
-			jar="${dist.dir}/${export.file}"
-			alias="${alias}"
-			keystore="${keystore.location}"
-			storepass="${keystore.password}"
-			keypass="${key.password}"
-		/>
-	</target>
-	<target name="4.meta" depends="3.sign" description="Runs the server">
-		<java jar="${dist.dir}/${export.file}" fork="true">
-			<arg value="${server.port}"/>
-		</java>
-	</target>
+            <include name="org/gozantes/strava/internals/hash/**/*.java"/>
+            <include name="org/gozantes/strava/internals/logging/**/*.java"/>
+            <include name="org/gozantes/strava/internals/types/**/*.java"/>
+
+            <include name="org/gozantes/strava/meta/**/*.java"/>
+        </javac>
+    </target>
+    <target name="2.export" depends="1.build" description="Export the project into a .jar file">
+        <mkdir dir="${dist.dir}"/>
+        <delete file="${dist.dir}/${export.file}"/>
+
+        <manifestclasspath property="jar.classpath" jarfile="${dist.dir}/${export.file}">
+            <classpath>
+                <path refid="classpath"/>
+                <path location="${dist.dir}/${export.file}"/>
+            </classpath>
+        </manifestclasspath>
+
+        <jar destfile="${dist.dir}/${export.file}" basedir="${build.dir}">
+            <manifest>
+                <attribute name="Main-Class" value="org.gozantes.strava.meta.Main"/>
+                <attribute name="Class-Path" value="${jar.classpath}"/>
+            </manifest>
+        </jar>
+    </target>
+    <target name="3.sign" depends="2.export">
+        <signjar
+                jar="${dist.dir}/${export.file}"
+                alias="${alias}"
+                keystore="${keystore.location}"
+                storepass="${keystore.password}"
+                keypass="${key.password}"
+        />
+    </target>
+    <target name="4.meta" depends="3.sign" description="Runs the server">
+        <java jar="${dist.dir}/${export.file}" fork="true">
+            <arg value="${server.port}"/>
+        </java>
+    </target>
 </project>

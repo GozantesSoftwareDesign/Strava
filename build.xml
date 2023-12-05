@@ -31,13 +31,6 @@
         </fileset>
     </path>
 
-    <path id="springboot.classpath">
-        <fileset dir="${lib.dir}">
-            <include name="ivy-2.5.2.jar"/>
-            <include name="spring-boot-antlib-3.2.0.jar"/>
-        </fileset>
-    </path>
-
     <target name="all">
         <parallel>
             <ant antfile="${google.file}" inheritrefs="true"/>
@@ -54,6 +47,7 @@
     <target name="server">
         <ant antfile="${server.file}" inheritrefs="true"/>
     </target>
+
     <target name="meta">
         <ant antfile="${meta.file}" inheritrefs="true"/>
     </target>

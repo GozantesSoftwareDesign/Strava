@@ -1,7 +1,5 @@
 package org.gozantes.strava.internals.security;
 
-import org.gozantes.strava.server.Main;
-
 import java.net.URISyntaxException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Objects;

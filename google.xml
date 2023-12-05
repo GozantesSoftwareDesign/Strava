@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project basedir="." default="5.server" name="Google server" xmlns:ivy="antlib:org.apache.ivy.ant"
-         xmlns:spring-boot="antlib:org.springframework.boot.ant">
+<project xmlns:ivy="antlib:org.apache.ivy.ant" xmlns:spring-boot="antlib:org.springframework.boot.ant" basedir="." default="5.server"
+         name="Google server">
     <property name="export.file" value="google.jar"/>
     <property name="spring-boot.version" value="3.2.0"/>
     <property name="spring.file" location="spring/google.properties"/>
@@ -8,7 +8,7 @@
     <target name="1.resolve" description="Retrieve dependencies with Ivy">
         <mkdir dir="${build.dir}"/>
 
-        <ivy:retrieve pattern="${build.dir}/spring/[conf]/[artifact]-[type]-[revision].[ext]" />
+        <ivy:retrieve pattern="${build.dir}/spring/[artifact]-[type]-[revision].[ext]"/>
     </target>
 
     <target name="2.build" depends="1.resolve" description="Builds and runs the project">
@@ -39,24 +39,18 @@
         <mkdir dir="${dist.dir}"/>
         <delete file="${dist.dir}/${export.file}"/>
 
-        <manifestclasspath property="jar.classpath" jarfile="${dist.dir}/${export.file}">
-            <classpath>
-                <path refid="classpath"/>
-                <path location="${build.dir}/spring/runtime"/>
-                <path location="${build.dir}/spring/compile"/>
-                <path location="${dist.dir}/${export.file}"/>
-            </classpath>
-        </manifestclasspath>
-
-        <spring-boot:exejar destfile="${dist.dir}/${export.file}" classes="${jar.classpath}"
-                            start-class="org.gozantes.strava.google.Main">
-            <spring-boot:lib>
+        <spring-boot:exejar destfile="${dist.dir}/${export.file}" classes="${build.dir}">
+            <lib>
                 <fileset dir="${lib.dir}"/>
-                <fileset dir="${build.dir}/spring/runtime"/>
-                <fileset dir="${build.dir}/spring/runtime"/>
-                <fileset dir="${build.dir}/spring/compile"/>
-            </spring-boot:lib>
+            </lib>
+
+            <resources>
+                <file name="${build.dir}/{spring.file}"/>
+            </resources>
         </spring-boot:exejar>
+
+        <delete dir="${build.dir}"/>
+        <delete dir="${dist.dir}/dependency"/>
     </target>
 
     <target name="4.sign" depends="3.export">
@@ -70,7 +64,6 @@
     </target>
 
     <target name="5.server" depends="4.sign" description="Runs the server">
-        <java jar="${dist.dir}/${export.file}" fork="true">
-        </java>
+        <java jar="${dist.dir}/${export.file}" fork="true"/>
     </target>
 </project>

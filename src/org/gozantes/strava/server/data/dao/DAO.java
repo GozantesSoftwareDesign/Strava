@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Objects;
 
 public abstract class DAO <T> implements IDAO <T> {
-    protected static EntityManagerFactory emf = Persistence.createEntityManagerFactory ("Strava");
+    protected final static EntityManagerFactory emf = Persistence.createEntityManagerFactory ("Strava");
 
     private Class objClass;
     private Method pkGetter;

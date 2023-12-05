@@ -52,7 +52,9 @@ public final class Logger {
             try {
                 jar = "_" + Paths.get (
                                 Logger.class.getProtectionDomain ().getCodeSource ().getLocation ().toURI ().getPath ())
-                        .getFileName ().toString ();
+                        .getFileName ().toString ().replace (".jar", "");
+
+                jar = jar.substring (0, 1).toUpperCase () + jar.substring (1);
             }
             catch (Exception e) {
                 jar = "";

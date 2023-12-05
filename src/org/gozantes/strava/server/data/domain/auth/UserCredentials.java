@@ -11,8 +11,7 @@ public record UserCredentials(@Id CredType type, @Id String id, String passwd) i
     @Serial
     private static final long serialVersionUID = 1L;
 
-
-	public UserCredentials (CredType type, String id) {
+    public UserCredentials (CredType type, String id) {
         this (type, id, null);
     }
 
@@ -37,8 +36,9 @@ public record UserCredentials(@Id CredType type, @Id String id, String passwd) i
     public String passwd () {
         return this.passwd;
     }
+
     @Override
-	public String toString() {
-		return "UserCredentials [type=" + type + ", id=" + id + ", passwd=" + passwd + "]";
-	}
+    public String toString () {
+        return "UserCredentials [type=" + type + ", id=" + id + ", passwd=" + passwd + "]";
+    }
 }

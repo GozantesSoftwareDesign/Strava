@@ -90,7 +90,9 @@ public final class RemoteFacade extends UnicastRemoteObject implements IRemoteFa
             Logger.getLogger ().severe (String.format ("Could not create the user object: %s", e.getMessage ()), e);
         }
 
-        assert user != null;
+        if (user == null)
+            return null;
+
         state.put (user.x (), user.y ());
 
         return user.x ();

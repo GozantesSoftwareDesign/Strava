@@ -18,14 +18,7 @@ import org.gozantes.strava.server.data.dto.SessionDTO;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.JTableHeader;
-import javax.swing.table.TableModel;
-import javax.swing.table.TableRowSorter;
-import javax.swing.table.TableCellRenderer;
-
-
+import javax.swing.table.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -40,12 +33,8 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
-import java.util.Vector;
+import java.util.*;
 
 public class MainWindow extends JFrame {
 
@@ -60,9 +49,9 @@ public class MainWindow extends JFrame {
     private JPanel pCentro = new JPanel (), pSur = new JPanel ();
     private JPanel pLogout = new JPanel (new FlowLayout (FlowLayout.LEFT));
     private JPanel pScrollPane = new JPanel (new GridLayout (0, 1));
-    private JPanel pSOE= new JPanel(new BorderLayout());
-    private JPanel pTablaChallenge= new JPanel(new FlowLayout (FlowLayout.CENTER));
-    private JPanel ppSOE= new JPanel(new FlowLayout (FlowLayout.CENTER));
+    private JPanel pSOE = new JPanel (new BorderLayout ());
+    private JPanel pTablaChallenge = new JPanel (new FlowLayout (FlowLayout.CENTER));
+    private JPanel ppSOE = new JPanel (new FlowLayout (FlowLayout.CENTER));
 
     private JPanel pTitulo = new JPanel (new FlowLayout (FlowLayout.CENTER));
     private JPanel pDuracion = new JPanel (new FlowLayout (FlowLayout.CENTER));
@@ -111,7 +100,7 @@ public class MainWindow extends JFrame {
 
     private JComboBox <String> usuarioBox = new JComboBox <> ();
     private JScrollPane scrollPane = new JScrollPane ();
-    
+
     private DefaultTableModel modeloDatos;
     private JTable tabla;
 
@@ -121,10 +110,10 @@ public class MainWindow extends JFrame {
     private List <ChallengeDTO> activeChallenges;
     private List <SessionDTO> acceptedSessionThem;
     private List <SessionDTO> acceptedSession;
-    private List<String>list;
-    
-    private TableRowSorter<TableModel> sorter;
-    private Comparator<String> dateComparator;
+    private List <String> list;
+
+    private TableRowSorter <TableModel> sorter;
+    private Comparator <String> dateComparator;
 
     private TextPrompt placeholder1 = new TextPrompt ("dd/MM/yyyy", fInicioText);
     private TextPrompt placeholder2 = new TextPrompt ("dd/MM/yyyy", fFinalText);
@@ -135,21 +124,21 @@ public class MainWindow extends JFrame {
         super ();
         this.mainController = mainController;
         this.serviceLocator = serviceLocator;
-        
-        dateComparator = new Comparator<String>() {
+
+        dateComparator = new Comparator <String> () {
             @Override
-            public int compare(String fechaCadena1, String fechaCadena2) {
+            public int compare (String fechaCadena1, String fechaCadena2) {
                 try {
-                    Date fecha1 = formatter.parse(fechaCadena1);
-                    Date fecha2 = formatter.parse(fechaCadena2);
-                    return fecha1.compareTo(fecha2);
-                } catch (ParseException e) {
-                    e.printStackTrace();
+                    Date fecha1 = formatter.parse (fechaCadena1);
+                    Date fecha2 = formatter.parse (fechaCadena2);
+                    return fecha1.compareTo (fecha2);
+                }
+                catch (ParseException e) {
+                    e.printStackTrace ();
                     return 0;
                 }
             }
-        };       
-        
+        };
 
         frame.setSize (1000, 800);
         frame.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
@@ -158,7 +147,7 @@ public class MainWindow extends JFrame {
 
         inicializarVentana ();
 
-        frame.getContentPane().add (pPrincipal);
+        frame.getContentPane ().add (pPrincipal);
 
         botonChallenge.addActionListener (new ActionListener () {
             @Override
@@ -173,7 +162,7 @@ public class MainWindow extends JFrame {
                 paintVentana (1);
             }
         });
-        botonLogout.setBackground(new Color(240, 240, 240));
+        botonLogout.setBackground (new Color (240, 240, 240));
         botonLogout.addActionListener (new ActionListener () {
             @Override
             public void actionPerformed (ActionEvent e) {
@@ -400,69 +389,69 @@ public class MainWindow extends JFrame {
 
     public void ventanaGetChallenges () {
         pCentro.removeAll ();
-        ppSOE.removeAll();
-        pSOE.removeAll();
-        pTablaChallenge.removeAll();
-        this.activeChallenges = mainController.searchChallenges (null);        
-        list=new ArrayList<String>();
-        list.add("Nombre");
-        list.add("Fecha Inicio");
-        list.add("Fecha final");
-        list.add("Deporte");
-        list.add("Objetivo");
-        list.add("ID");
-        initTabla(list);
-        cargarChallengesTabla(activeChallenges);
-        tabla.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-			
-			@Override
-			public void valueChanged(ListSelectionEvent e) {
-				if(!e.getValueIsAdjusting()){
-					int filaSeleccionada = tabla.getSelectedRow();
-					if (filaSeleccionada != -1) {                        
-                        cselected=(long) modeloDatos.getValueAt(filaSeleccionada, 5);                        
+        ppSOE.removeAll ();
+        pSOE.removeAll ();
+        pTablaChallenge.removeAll ();
+        this.activeChallenges = mainController.searchChallenges (null);
+        list = new ArrayList <String> ();
+        list.add ("Nombre");
+        list.add ("Fecha Inicio");
+        list.add ("Fecha final");
+        list.add ("Deporte");
+        list.add ("Objetivo");
+        list.add ("ID");
+        initTabla (list);
+        cargarChallengesTabla (activeChallenges);
+        tabla.getSelectionModel ().addListSelectionListener (new ListSelectionListener () {
+
+            @Override
+            public void valueChanged (ListSelectionEvent e) {
+                if (!e.getValueIsAdjusting ()) {
+                    int filaSeleccionada = tabla.getSelectedRow ();
+                    if (filaSeleccionada != -1) {
+                        cselected = (long) modeloDatos.getValueAt (filaSeleccionada, 5);
                     }
-				}
-				
-			}
-		});
-        sorter = new TableRowSorter<>(this.modeloDatos);
-        this.tabla.setRowSorter(sorter);
-        sorter.setComparator(2, dateComparator);
-        sorter.setComparator(1, dateComparator);
-        ppSOE.add(botonAceptarReto);
-        ppSOE.setBounds(pSOE.getX(),tabla.getY()+tabla.getY(), 200, 50);
-        pTablaChallenge.add(new JScrollPane(tabla));
-        pSOE.add(pTablaChallenge, BorderLayout.CENTER);
-        pSOE.add(ppSOE, BorderLayout.SOUTH);        
+                }
+
+            }
+        });
+        sorter = new TableRowSorter <> (this.modeloDatos);
+        this.tabla.setRowSorter (sorter);
+        sorter.setComparator (2, dateComparator);
+        sorter.setComparator (1, dateComparator);
+        ppSOE.add (botonAceptarReto);
+        ppSOE.setBounds (pSOE.getX (), tabla.getY () + tabla.getY (), 200, 50);
+        pTablaChallenge.add (new JScrollPane (tabla));
+        pSOE.add (pTablaChallenge, BorderLayout.CENTER);
+        pSOE.add (ppSOE, BorderLayout.SOUTH);
         pCentro.add (pSOE);
-        pTablaChallenge.revalidate();
-        pTablaChallenge.repaint();
-        ppSOE.revalidate();
-        ppSOE.repaint();
-        pSOE.revalidate();
-        pSOE.repaint();
+        pTablaChallenge.revalidate ();
+        pTablaChallenge.repaint ();
+        ppSOE.revalidate ();
+        ppSOE.repaint ();
+        pSOE.revalidate ();
+        pSOE.repaint ();
         pCentro.revalidate ();
         pCentro.repaint ();
     }
 
     public void ventanaAcceptedChallenges () {
         pCentro.removeAll ();
-        this.activeChallenges = this.mainController.getActiveChallenges ();              
-        list=new ArrayList<String>();
-        list.add("Nombre");
-        list.add("Fecha Inicio");
-        list.add("Fecha final");
-        list.add("Deporte");
-        list.add("Objetivo");
-        list.add("ID");
-        initTabla(list);
-        cargarChallengesTabla(activeChallenges);
-        
-        sorter = new TableRowSorter<>(this.modeloDatos);
-        this.tabla.setRowSorter(sorter);
-        sorter.setComparator(2, dateComparator);
-        sorter.setComparator(1, dateComparator);
+        this.activeChallenges = this.mainController.getActiveChallenges ();
+        list = new ArrayList <String> ();
+        list.add ("Nombre");
+        list.add ("Fecha Inicio");
+        list.add ("Fecha final");
+        list.add ("Deporte");
+        list.add ("Objetivo");
+        list.add ("ID");
+        initTabla (list);
+        cargarChallengesTabla (activeChallenges);
+
+        sorter = new TableRowSorter <> (this.modeloDatos);
+        this.tabla.setRowSorter (sorter);
+        sorter.setComparator (2, dateComparator);
+        sorter.setComparator (1, dateComparator);
         scrollPane = new JScrollPane (tabla);
 
         pCentro.add (scrollPane);
@@ -472,27 +461,27 @@ public class MainWindow extends JFrame {
 
     public void consultarSession () {
         pCentro.removeAll ();
-        ppSOE.removeAll();
-        pSOE.removeAll();
-        pTablaChallenge.removeAll();
+        ppSOE.removeAll ();
+        pSOE.removeAll ();
+        pTablaChallenge.removeAll ();
         this.acceptedSession = this.mainController.getSessions ();
-        list=new ArrayList<String>();
-        list.add("Título");        
-        list.add("Deporte");
-        list.add("Fecha Inicio");
-        list.add("Distancia");        
-        list.add("Duración");     
-        list.add("Id");      
-        initTabla(list);
-        cargarSesionActivasTabla(acceptedSession);
-        
-        sorter = new TableRowSorter<>(this.modeloDatos);
-        this.tabla.setRowSorter(sorter);
-        sorter.setComparator(2, dateComparator);       
-        
-        scrollPane=new JScrollPane(tabla);
-        ppSOE.add(usuarioBox);
-        pTablaChallenge.add(scrollPane);
+        list = new ArrayList <String> ();
+        list.add ("Título");
+        list.add ("Deporte");
+        list.add ("Fecha Inicio");
+        list.add ("Distancia");
+        list.add ("Duración");
+        list.add ("Id");
+        initTabla (list);
+        cargarSesionActivasTabla (acceptedSession);
+
+        sorter = new TableRowSorter <> (this.modeloDatos);
+        this.tabla.setRowSorter (sorter);
+        sorter.setComparator (2, dateComparator);
+
+        scrollPane = new JScrollPane (tabla);
+        ppSOE.add (usuarioBox);
+        pTablaChallenge.add (scrollPane);
 
         usuarioBox.addItemListener (new ItemListener () {
 
@@ -508,68 +497,67 @@ public class MainWindow extends JFrame {
                 }
             }
         });
-        
-        ppSOE.setBounds(pSOE.getX(),tabla.getY()+tabla.getY(), 200, 50);
-        pSOE.add(pTablaChallenge, BorderLayout.CENTER);
-        pSOE.add(ppSOE, BorderLayout.NORTH);
-        pCentro.add(pSOE);
-        ppSOE.revalidate();
-        ppSOE.repaint();
-        pSOE.revalidate();
-        pSOE.repaint();
-        pTablaChallenge.revalidate();
-        pTablaChallenge.repaint();
+
+        ppSOE.setBounds (pSOE.getX (), tabla.getY () + tabla.getY (), 200, 50);
+        pSOE.add (pTablaChallenge, BorderLayout.CENTER);
+        pSOE.add (ppSOE, BorderLayout.NORTH);
+        pCentro.add (pSOE);
+        ppSOE.revalidate ();
+        ppSOE.repaint ();
+        pSOE.revalidate ();
+        pSOE.repaint ();
+        pTablaChallenge.revalidate ();
+        pTablaChallenge.repaint ();
         pCentro.revalidate ();
         pCentro.repaint ();
     }
 
     public void theirSession () {
-        pCentro.removeAll ();     
-        ppSOE.removeAll();
-        pSOE.removeAll();
-        pTablaChallenge.removeAll();
+        pCentro.removeAll ();
+        ppSOE.removeAll ();
+        pSOE.removeAll ();
+        pTablaChallenge.removeAll ();
         this.acceptedSessionThem = this.mainController.searchSessions (new SessionFilters (null));
-        list=new ArrayList<String>();
-        list.add("Título");        
-        list.add("Deporte");
-        list.add("Fecha Inicio");
-        list.add("Distancia");        
-        list.add("Duración");     
-        list.add("Id");
-        initTabla(list);
-        cargarSesionActivasTabla(acceptedSessionThem);
-        sorter = new TableRowSorter<>(this.modeloDatos);
-        this.tabla.setRowSorter(sorter);
-        sorter.setComparator(2, dateComparator);        
+        list = new ArrayList <String> ();
+        list.add ("Título");
+        list.add ("Deporte");
+        list.add ("Fecha Inicio");
+        list.add ("Distancia");
+        list.add ("Duración");
+        list.add ("Id");
+        initTabla (list);
+        cargarSesionActivasTabla (acceptedSessionThem);
+        sorter = new TableRowSorter <> (this.modeloDatos);
+        this.tabla.setRowSorter (sorter);
+        sorter.setComparator (2, dateComparator);
         scrollPane = new JScrollPane (tabla);
-        ppSOE.add(usuarioBox);
-        pTablaChallenge.add(scrollPane);
-        ppSOE.setBounds(pSOE.getX(),tabla.getY()+tabla.getY(), 200, 50);
-        pSOE.add(pTablaChallenge, BorderLayout.CENTER);
-        pSOE.add(ppSOE, BorderLayout.NORTH);
-        pCentro.add(pSOE);
-        ppSOE.revalidate();
-        ppSOE.repaint();
-        pSOE.revalidate();
-        pSOE.repaint();
-        pTablaChallenge.revalidate();
-        pTablaChallenge.repaint();
+        ppSOE.add (usuarioBox);
+        pTablaChallenge.add (scrollPane);
+        ppSOE.setBounds (pSOE.getX (), tabla.getY () + tabla.getY (), 200, 50);
+        pSOE.add (pTablaChallenge, BorderLayout.CENTER);
+        pSOE.add (ppSOE, BorderLayout.NORTH);
+        pCentro.add (pSOE);
+        ppSOE.revalidate ();
+        ppSOE.repaint ();
+        pSOE.revalidate ();
+        pSOE.repaint ();
+        pTablaChallenge.revalidate ();
+        pTablaChallenge.repaint ();
         pCentro.revalidate ();
         pCentro.repaint ();
     }
 
-
     private void inicializarVentana () {
-        pNorte.setBackground (new Color(255, 255, 255));
-        pCentro.setBackground (new Color(255, 255, 255));
-        pSur.setBackground (new Color(255, 255, 255));
-        pLogout.setBackground (new Color(255, 255, 255));
+        pNorte.setBackground (new Color (255, 255, 255));
+        pCentro.setBackground (new Color (255, 255, 255));
+        pSur.setBackground (new Color (255, 255, 255));
+        pLogout.setBackground (new Color (255, 255, 255));
         pSOE.setBackground (new Color (255, 255, 255));
         ppSOE.setBackground (new Color (255, 255, 255));
 
         botonSession.setFont (new Font ("Tahoma", Font.BOLD, 10));
         botonChallenge.setFont (new Font ("Tahoma", Font.BOLD, 10));
-        
+
         botonLogout.setPreferredSize (new Dimension (100, 20));
         botonChallenge.setPreferredSize (new Dimension (150, 25));
         botonSession.setPreferredSize (new Dimension (150, 25));
@@ -641,78 +629,86 @@ public class MainWindow extends JFrame {
 
         return scroll;
     }
-    public void initTabla(List<String> list) {
-        Vector<String> cabecera = new Vector<>(list);
-        Vector<Vector<Object>> datos = new Vector<>();
-        this.modeloDatos = new DefaultTableModel(datos, cabecera);
-        this.tabla = new JTable(this.modeloDatos) {
+
+    public void initTabla (List <String> list) {
+        Vector <String> cabecera = new Vector <> (list);
+        Vector <Vector <Object>> datos = new Vector <> ();
+        this.modeloDatos = new DefaultTableModel (datos, cabecera);
+        this.tabla = new JTable (this.modeloDatos) {
             private static final long serialVersionUID = 1L;
+
             @Override
-            public boolean isCellEditable(int row, int col) {
+            public boolean isCellEditable (int row, int col) {
                 return false;
             }
+
             @Override
-            protected JTableHeader createDefaultTableHeader() {
-                return new JTableHeader(columnModel) {
+            protected JTableHeader createDefaultTableHeader () {
+                return new JTableHeader (columnModel) {
                     @Override
-                    public java.awt.Font getFont() {
-                        return new Font("Arial", Font.BOLD, 12);
+                    public java.awt.Font getFont () {
+                        return new Font ("Arial", Font.BOLD, 12);
                     }
                 };
             }
         };
-        
-        TableCellRenderer renderer = new DefaultTableCellRenderer();
-        ((JComponent) renderer).setBackground(Color.LIGHT_GRAY);
-        this.tabla.getColumnModel().getColumn(0).setCellRenderer(renderer);
 
-        this.tabla.getTableHeader().setBackground(Color.DARK_GRAY);
-        this.tabla.getTableHeader().setForeground(Color.WHITE);
-        this.tabla.setRowHeight(40);
-        this.tabla.setRowSelectionAllowed(true);
-        this.tabla.getTableHeader().setReorderingAllowed(false);
-        this.tabla.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
-        centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+        TableCellRenderer renderer = new DefaultTableCellRenderer ();
+        ((JComponent) renderer).setBackground (Color.LIGHT_GRAY);
+        this.tabla.getColumnModel ().getColumn (0).setCellRenderer (renderer);
 
-        int numColumnas = this.tabla.getColumnCount();
+        this.tabla.getTableHeader ().setBackground (Color.DARK_GRAY);
+        this.tabla.getTableHeader ().setForeground (Color.WHITE);
+        this.tabla.setRowHeight (40);
+        this.tabla.setRowSelectionAllowed (true);
+        this.tabla.getTableHeader ().setReorderingAllowed (false);
+        this.tabla.setAutoResizeMode (JTable.AUTO_RESIZE_OFF);
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer ();
+        centerRenderer.setHorizontalAlignment (JLabel.CENTER);
+
+        int numColumnas = this.tabla.getColumnCount ();
         for (int i = 0; i < numColumnas; i++) {
-            this.tabla.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
-            this.tabla.getColumnModel().getColumn(i).setPreferredWidth(223);
-            this.tabla.getColumnModel().getColumn(3).setPreferredWidth(80);
-            this.tabla.getColumnModel().getColumn(4).setPreferredWidth(100);
-            this.tabla.getColumnModel().getColumn(5).setPreferredWidth(50);
+            this.tabla.getColumnModel ().getColumn (i).setCellRenderer (centerRenderer);
+            this.tabla.getColumnModel ().getColumn (i).setPreferredWidth (223);
+            this.tabla.getColumnModel ().getColumn (3).setPreferredWidth (80);
+            this.tabla.getColumnModel ().getColumn (4).setPreferredWidth (100);
+            this.tabla.getColumnModel ().getColumn (5).setPreferredWidth (50);
         }
-        this.tabla.setPreferredScrollableViewportSize(new Dimension(900, 400));
-        
-        
+        this.tabla.setPreferredScrollableViewportSize (new Dimension (900, 400));
+
     }
-    public void cargarChallengesTabla(List<ChallengeDTO> activeChallenges) {
-        this.modeloDatos.setRowCount(0);
-        
-        activeChallenges.forEach(c -> {
+
+    public void cargarChallengesTabla (List <ChallengeDTO> activeChallenges) {
+        this.modeloDatos.setRowCount (0);
+
+        activeChallenges.forEach (c -> {
             Object sportValue;
-            if (c.sport() != null) {
-                sportValue = c.sport();
-            } else {
+            if (c.sport () != null) {
+                sportValue = c.sport ();
+            }
+            else {
                 sportValue = "Both";
             }
-            this.modeloDatos.addRow(new Object[]{c.name(),formatter.format( c.lapse().x()),formatter.format( c.lapse().y()), sportValue, c.goal(),
-                    c.id()});
+            this.modeloDatos.addRow (
+                    new Object[] { c.name (), formatter.format (c.lapse ().x ()), formatter.format (c.lapse ().y ()),
+                            sportValue, c.goal (),
+                            c.id () });
         });
     }
-    public void cargarSesionActivasTabla(List<SessionDTO> activeSessions) {
-        this.modeloDatos.setRowCount(0);
-        List<SessionDTO> sesionesActivas = new ArrayList<SessionDTO>();
+
+    public void cargarSesionActivasTabla (List <SessionDTO> activeSessions) {
+        this.modeloDatos.setRowCount (0);
+        List <SessionDTO> sesionesActivas = new ArrayList <SessionDTO> ();
 
         for (SessionDTO s : activeSessions) {
-            if (s.state() == SessionState.IN_PROGRESS) {
-                sesionesActivas.add(s);
+            if (s.state () == SessionState.IN_PROGRESS) {
+                sesionesActivas.add (s);
             }
         }
 
-        sesionesActivas.forEach(s -> this.modeloDatos.addRow(
-                new Object[]{s.data().title(), s.data().sport(), formatter.format(s.data().start()), s.data().distance(), s.data().duration(),
-                        s.id()}));	
+        sesionesActivas.forEach (s -> this.modeloDatos.addRow (
+                new Object[] { s.data ().title (), s.data ().sport (), formatter.format (s.data ().start ()),
+                        s.data ().distance (), s.data ().duration (),
+                        s.id () }));
     }
 }

@@ -1,7 +1,6 @@
 package org.gozantes.strava.server.gateway;
 
 import org.gozantes.strava.server.data.domain.auth.CredType;
-import org.gozantes.strava.server.gateway.meta.MetaServiceGateway;
 
 import java.util.stream.IntStream;
 

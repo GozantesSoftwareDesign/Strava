@@ -79,9 +79,9 @@ public record UserData(String name, Date birth, BigDecimal weight, Integer heigh
                 data == null ? null : data.height, heartRate);
     }
 
-	@Override
-	public String toString() {
-		return "UserData [name=" + name + ", birth=" + birth + ", weight=" + weight + ", height=" + height
-				+ ", heartRate=" + heartRate + "]";
-	}
+    @Override
+    public String toString () {
+        return "UserData [name=" + name + ", birth=" + birth + ", weight=" + weight + ", height=" + height
+                + ", heartRate=" + heartRate + "]";
+    }
 }

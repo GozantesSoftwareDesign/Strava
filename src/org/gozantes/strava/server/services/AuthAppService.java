@@ -12,8 +12,8 @@ import org.gozantes.strava.server.data.dao.UserDAO;
 import org.gozantes.strava.server.data.domain.auth.User;
 import org.gozantes.strava.server.data.domain.auth.UserCredentials;
 import org.gozantes.strava.server.data.domain.auth.UserData;
+import org.gozantes.strava.server.gateway.AuthGateway;
 import org.gozantes.strava.server.gateway.AuthGatewayFactory;
-import org.gozantes.strava.server.gateway.meta.MetaServiceGateway;
 
 import java.security.KeyFactory;
 import java.security.KeyPairGenerator;
@@ -159,14 +159,14 @@ public final class AuthAppService {
     }
 
     public Pair <String, User> signup (UserCredentials creds, UserData data)
-            throws NoSuchAlgorithmException, InvalidKeySpecException {
-        String token = AuthAppService.getInstance ().validate (creds);
+            throws Exception {
+        AuthGateway g = AuthGatewayFactory.createAuthGateway (creds.type ());
 
-        if (token == null)
+        if (g.exists (creds.id ()))
             return null;
 
         User u = false ? UserDAO.getInstance ().find (creds.id ()) : new User (creds, data);
-        MetaServiceGateway.getInstance ().saveUser (u);
-        return u == null ? null : new Pair <String, User> (token, u);
+        g.signup (creds);
+        return u == null ? null : new Pair <String, User> (this.validate (creds), u);
     }
 }

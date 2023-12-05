@@ -94,8 +94,8 @@ public final class User implements Mergeable, Serializable {
                 .equals (((User) o).getId ());
     }
 
-	@Override
-	public String toString() {
-		return "User [creds=" + creds + ", data=" + data + "]";
-	}
+    @Override
+    public String toString () {
+        return "User [creds=" + creds + ", data=" + data + "]";
+    }
 }

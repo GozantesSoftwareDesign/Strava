@@ -11,10 +11,13 @@
     <property name="build.dir" location="bin"/>
     <property name="dist.dir" location="dist"/>
     <property name="lib.dir" location="lib"/>
+
     <property name="registry.ip" value="127.0.0.1"/>
     <property name="registry.port" value="1099"/>
     <property name="service.name" value="Strava"/>
     <property name="policy.file" location="security/java.policy"/>
+
+    <property name="persistence.dir" location="persistence"/>
 
     <property name="keystore.location" value="security/keystore.jks"/>
     <property name="keystore.password" value="123456"/>
@@ -37,6 +40,7 @@
     <path id="classpath">
         <fileset dir="${build.dir}" includes="**/*.class"/>
         <fileset dir="${lib.dir}" includes="**/*.jar"/>
+        <fileset dir="${persistence.dir}" includes="**/META-INF/persistence.xml"/>
     </path>
 
     <target name="all">

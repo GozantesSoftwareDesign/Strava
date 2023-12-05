@@ -7,9 +7,8 @@ import org.springframework.http.HttpMethod;
 import org.springframework.web.client.RestTemplate;
 
 final class GoogleServiceGateway implements AuthGateway {
-    private static GoogleServiceGateway instance;
-
     private static final String BASE_URL = "http://127.0.0.1:10000/";
+    private static GoogleServiceGateway instance;
     private final RestTemplate restTemplate;
 
     private GoogleServiceGateway () {

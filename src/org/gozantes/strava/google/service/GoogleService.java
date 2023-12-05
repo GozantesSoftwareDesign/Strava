@@ -17,9 +17,8 @@ public final class GoogleService {
     public static GoogleService instance;
 
     private static String DATABASE_FILE = "db/google.sql";
-
-    private EntityManagerFactory emf;
     private final Map <String, String> users = new HashMap <String, String> ();
+    private EntityManagerFactory emf;
 
     private GoogleService () {
         super ();

@@ -5,7 +5,6 @@
     <property name="export.file" value="google.jar"/>
     <property name="spring-boot.version" value="3.2.0"/>
     <property name="spring.file" location="spring/google.properties"/>
-    <property name="persistence.dir" location="persistence"/>
 
     <target name="1.resolve" description="Retrieve dependencies with Ivy">
         <mkdir dir="${build.dir}"/>
@@ -35,20 +34,23 @@
             <include name="org/gozantes/strava/internals/logging/**/*.java"/>
             <include name="org/gozantes/strava/internals/types/**/*.java"/>
 
+            <include name="org/gozantes/strava/server/data/domain/auth/UserCredentials.java"/>
             <include name="org/gozantes/strava/google/**/*.java"/>
         </javac>
 
         <taskdef name="enhancer" classpathref="classpath" classname="org.datanucleus.enhancer.EnhancerTask"/>
-        <enhancer classpathref="classpath" persistenceUnit="Google" api="JPA" failonerror="true">
+        <enhancer classpathref="classpath" persistenceUnit="Google" api="JPA" failonerror="false">
             <fileset dir="${build.dir}">
                 <include name="**/*.class"/>
+                <include name="META-INF/persistence.xml"/>
             </fileset>
         </enhancer>
 
         <taskdef name="schematool" classpathref="classpath" classname="org.datanucleus.store.schema.SchemaToolTask"/>
-        <schematool classpathref="classpath" persistenceUnit="Google" mode="create" api="JPA" failonerror="true">
+        <schematool classpathref="classpath" persistenceUnit="Google" mode="create" api="JPA" failonerror="false">
             <fileset dir="${build.dir}">
                 <include name="**/*.class"/>
+                <include name="META-INF/persistence.xml"/>
             </fileset>
         </schematool>
     </target>
@@ -111,9 +113,7 @@
         />
     </target>
 
-</target>
-
-<target name="5.server" depends="4.sign" description="Runs the server">
-<java jar="${dist.dir}/${export.file}" fork="true"/>
-</target>
-        </project>
+    <target name="5.server" depends="4.sign" description="Runs the server">
+        <java jar="${dist.dir}/${export.file}" fork="true"/>
+    </target>
+</project>

@@ -23,7 +23,7 @@ public class MetaServiceGateway {
 	private static String DELIMITER = "#";
 	private static final String SERVER_IP = "127.0.0.1";
 	private static final int SERVER_PORT = 8001;
-
+	
 	private static MetaServiceGateway instance = new MetaServiceGateway();
 
 	private MetaServiceGateway() {
@@ -32,7 +32,7 @@ public class MetaServiceGateway {
 	public static MetaServiceGateway getInstance() {
 		return instance;
 	}
-
+	
 	public void saveUser(User user) {
 		try (Socket tcpSocket = new Socket(SERVER_IP, SERVER_PORT);
 			DataOutputStream out = new DataOutputStream(tcpSocket.getOutputStream())) {

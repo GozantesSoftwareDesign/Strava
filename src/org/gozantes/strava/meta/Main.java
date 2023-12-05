@@ -19,13 +19,8 @@ public class Main {
         try (ServerSocket tcpMetaServerSocket = new ServerSocket (serverPort);) {
             Logger.getLogger ().info ("Meta Server, waiting for connecntions, " + tcpMetaServerSocket.getInetAddress ()
                     .getHostAddress () + ":" + tcpMetaServerSocket.getLocalPort () + "' ...");
-
-            //The main thread is always waiting for connections
-            while (true) {
-                //When a connection from a client is received, a new EchoService is created. The "accept()" method
-                // returns the socket to
-                //communicate with the client.
-                new MetaService (tcpMetaServerSocket.accept ());
+            while(true) {
+            	MetaService metaService = new MetaService (tcpMetaServerSocket.accept ());
             }
         }
         catch (Exception e) {

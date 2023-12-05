@@ -43,6 +43,11 @@ public class MetaService extends Thread {
 
     public void run () {
         //Echo server
+    	try {
+			this.tcpSocket.wait();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
         try {
             String data = this.in.readUTF ();
             Logger.getLogger ()
@@ -55,15 +60,15 @@ public class MetaService extends Thread {
         }
         finally {
             try {
-                tcpSocket.close ();
+            	this.tcpSocket.close();
                 usersMeta.forEach ((id, user) -> {
                     Logger.getLogger ().info ("id : " + id + ", user : " + user.toString ());
                 });
             }
             catch (Exception e) {
                 Logger.getLogger ().severe ("Meta Service cant close: " + e.getMessage ());
-            }
         }
+    	}
     }
     private void messageType(String msg) {
     	if (msg != null && !msg.trim ().isEmpty ()) {

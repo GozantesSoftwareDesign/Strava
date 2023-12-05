@@ -82,6 +82,8 @@ public class AuthWindow extends JFrame {
 
     private ImageDisplayer iconoGoogle;
     private ImageDisplayer iconoMeta;
+	private JLabel titleLabel;
+   
 
     public AuthWindow (AuthController authController, ServiceLocator serviceLocator) {
         super ();
@@ -91,7 +93,7 @@ public class AuthWindow extends JFrame {
         frame.setDefaultCloseOperation (JFrame.DISPOSE_ON_CLOSE);
         frame.setVisible (true);
         frame.setLocationRelativeTo (null);
-        frame.setLayout (null);
+        frame.getContentPane().setLayout (null);
 
         try {
             iconoGoogle = new ImageDisplayer (ImageIO.read (
@@ -107,6 +109,18 @@ public class AuthWindow extends JFrame {
         catch (IOException e) {
             e.printStackTrace ();
         }
+        
+        try {
+            ImageIcon titleImage = new ImageIcon(
+                    Objects.requireNonNull(this.getClass().getClassLoader().getResource("Strava.png")));
+            titleImage = new ImageIcon(titleImage.getImage().getScaledInstance(420, 200, Image.SCALE_SMOOTH));
+            titleLabel = new JLabel(titleImage);
+            titleLabel.setLayout(new FlowLayout(FlowLayout.CENTER));
+            titleLabel.setBounds(60, 0, 475, 100);              
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+        
 
         inicializarVentana ();
 
@@ -201,6 +215,7 @@ public class AuthWindow extends JFrame {
                 panelBotonesSignUp.setBounds (panelPrincipal.getX (),
                         panelBotonesLogin.getY () + panelBotonesLogin.getHeight (), panelPrincipal.getWidth (), 50);
 
+                panelPrincipal.add(titleLabel);
                 panelPrincipal.add (panelUser);
                 panelPrincipal.add (panelPassword);
                 panelPrincipal.add (panelBotonesLogin);
@@ -211,7 +226,7 @@ public class AuthWindow extends JFrame {
                 scrollPane.getViewport ().revalidate ();
                 scrollPane.getViewport ().repaint ();
 
-                frame.add (panelPrincipal);
+                frame.getContentPane().add (panelPrincipal);
                 break;
             case 1:
 
@@ -241,7 +256,7 @@ public class AuthWindow extends JFrame {
                 panelPrincipal.revalidate ();
                 panelPrincipal.repaint ();
 
-                frame.add (panelPrincipal);
+                frame.getContentPane().add (panelPrincipal);
                 break;
         }
     }
@@ -271,6 +286,7 @@ public class AuthWindow extends JFrame {
         signUp.setPreferredSize (new Dimension (150, 25));
         signUpMeta.setPreferredSize (new Dimension (170, 25));
         signUpGoogle.setPreferredSize (new Dimension (150, 25));
+        panelUser.setBackground(new Color(240, 240, 240));
 
         panelUser.add (userLabel);
         panelUser.add (userText);

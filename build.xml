@@ -21,25 +21,27 @@
     <property name="alias" value="Strava"/>
     <property name="key.password" value="123456"/>
 
+    <condition property="gradle.executable" value="./gradle.bat" else="./gradlew">
+        <os family="windows" />
+    </condition>
+
+    <macrodef name="gradle">
+        <attribute name="task" />
+        <sequential>
+            <exec executable="${gradle.executable}" dir="." failonerror="true">
+                <arg value="@{task}" />
+            </exec>
+        </sequential>
+    </macrodef>
+
     <path id="classpath">
-        <fileset dir="${build.dir}">
-            <include name="**/*.class"/>
-        </fileset>
-
-        <fileset dir="${lib.dir}">
-            <include name="**/*.jar"/>
-        </fileset>
-    </path>
-
-    <path id="springboot.classpath">
-        <fileset dir="${lib.dir}">
-            <include name="ivy-2.5.2.jar"/>
-            <include name="spring-boot-antlib-3.2.0.jar"/>
-        </fileset>
+        <fileset dir="${build.dir}" includes="**/*.class"/>
+        <fileset dir="${lib.dir}" includes="**/*.jar"/>
     </path>
 
     <target name="all">
         <parallel>
+<!--            <gradle task="build" />-->
             <ant antfile="${google.file}" inheritrefs="true"/>
             <ant antfile="${meta.file}" inheritrefs="true"/>
             <ant antfile="${server.file}" inheritrefs="true"/>
@@ -54,12 +56,13 @@
     <target name="server">
         <ant antfile="${server.file}" inheritrefs="true"/>
     </target>
+
     <target name="meta">
         <ant antfile="${meta.file}" inheritrefs="true"/>
     </target>
 
     <target name="google">
+<!--        <gradle task="build" />-->
         <ant antfile="${google.file}" inheritrefs="true"/>
     </target>
-
 </project>

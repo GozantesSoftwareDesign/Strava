@@ -16,16 +16,17 @@ import java.security.NoSuchAlgorithmException;
 @ComponentScan (basePackages = "org.gozantes.strava.server")
 @PropertySource ("classpath:google.properties")
 public class Main {
-    public static void main(String[] args) throws URISyntaxException, NoSuchAlgorithmException {
+    public static void main (String[] args)
+            throws URISyntaxException, NoSuchAlgorithmException, ClassNotFoundException {
         Security.init ();
 
-        SpringApplication.run(Main.class, args);
+        SpringApplication.run (Main.class, args);
     }
 
     @Bean
-    CommandLineRunner runConsole() {
+    CommandLineRunner runConsole () {
         return (args) -> {
-            Logger.getLogger ().info("Google Server started.");
+            Logger.getLogger ().info ("Google Server started.");
         };
     }
 }

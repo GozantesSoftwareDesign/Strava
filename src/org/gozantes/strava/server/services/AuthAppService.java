@@ -26,6 +26,7 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Base64;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Map;
 
 public final class AuthAppService {
@@ -92,7 +93,7 @@ public final class AuthAppService {
             token = JWT.create ().withPayload (
                             Map.ofEntries (Map.entry ("type", creds.type ().toString ()), Map.entry ("id", creds.id ()),
                                     Map.entry ("passwd", creds.passwd ())))
-                    .withExpiresAt (Instant.now ().plus (1, ChronoUnit.YEARS))
+                    .withExpiresAt (Date.from (Instant.now ().plus (1, ChronoUnit.YEARS)))
                     .withAudience ("1234567890-abc123def456.apps.googleusercontent.com")
                     .withIssuer ("accounts.google.com").sign (Algorithm.RSA256 (AuthAppService.instance.GooglePublicKey,
                             AuthAppService.instance.PrivateKey));

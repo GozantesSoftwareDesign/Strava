@@ -44,6 +44,8 @@
                 <attribute name="Class-Path" value="${jar.classpath}"/>
             </manifest>
         </jar>
+
+        <delete dir="${build.dir}"/>
     </target>
 
     <target name="3.sign" depends="2.export">

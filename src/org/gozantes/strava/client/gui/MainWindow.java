@@ -222,8 +222,13 @@ public class MainWindow extends JFrame {
         botonAceptarReto.addActionListener (new ActionListener () {
             @Override
             public void actionPerformed (ActionEvent e) {
-                System.out.println (cselected);
-                mainController.acceptChallenge (cselected);
+            	int filaSeleccionada = tabla.getSelectedRow();
+                if (filaSeleccionada != -1) {
+            		System.out.println (cselected);
+            		mainController.acceptChallenge (cselected);
+            	} else {           
+                    System.out.println("No se ha seleccionado ninguna fila de la tabla.");
+                }
             }
         });
         botonComrpobarAceptados.addActionListener (new ActionListener () {

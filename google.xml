@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project xmlns:ivy="antlib:org.apache.ivy.ant" xmlns:spring-boot="antlib:org.springframework.boot.ant" basedir="."
+<project xmlns:ivy="antlib:org.apache.ivy.ant" basedir="."
          default="5.server"
          name="Google server">
     <property name="export.file" value="google.jar"/>
     <property name="spring-boot.version" value="3.2.0"/>
     <property name="spring.file" location="spring/google.properties"/>
+    <property name="persistence.dir" location="persistence"/>
 
     <target name="1.resolve" description="Retrieve dependencies with Ivy">
         <mkdir dir="${build.dir}"/>
@@ -15,6 +16,7 @@
     <target name="2.build" depends="1.resolve" description="Builds and runs the project">
         <copy todir="${build.dir}" file="${policy.file}"/>
         <copy todir="${build.dir}" file="${spring.file}"/>
+        <copydir dest="${build.dir}" src="${persistence.dir}"/>
 
         <javac
                 encoding="utf-8"
@@ -35,6 +37,20 @@
 
             <include name="org/gozantes/strava/google/**/*.java"/>
         </javac>
+
+        <taskdef name="enhancer" classpathref="classpath" classname="org.datanucleus.enhancer.EnhancerTask"/>
+        <enhancer classpathref="classpath" persistenceUnit="Google" api="JPA" failonerror="true">
+            <fileset dir="${build.dir}">
+                <include name="**/*.class"/>
+            </fileset>
+        </enhancer>
+
+        <taskdef name="schematool" classpathref="classpath" classname="org.datanucleus.store.schema.SchemaToolTask"/>
+        <schematool classpathref="classpath" persistenceUnit="Google" mode="create" api="JPA" failonerror="true">
+            <fileset dir="${build.dir}">
+                <include name="**/*.class"/>
+            </fileset>
+        </schematool>
     </target>
 
     <target name="3.export" depends="2.build" description="Export the project into a .jar file">
@@ -95,7 +111,9 @@
         />
     </target>
 
-    <target name="5.server" depends="4.sign" description="Runs the server">
-        <java jar="${dist.dir}/${export.file}" fork="true"/>
-    </target>
-</project>
+</target>
+
+<target name="5.server" depends="4.sign" description="Runs the server">
+<java jar="${dist.dir}/${export.file}" fork="true"/>
+</target>
+        </project>

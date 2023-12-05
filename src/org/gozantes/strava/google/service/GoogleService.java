@@ -16,6 +16,8 @@ import java.util.Map;
 public final class GoogleService {
     public static GoogleService instance;
 
+    private static String DATABASE_FILE = "db/google.sql";
+
     private EntityManagerFactory emf;
     private final Map <String, String> users = new HashMap <String, String> ();
 
@@ -33,6 +35,7 @@ public final class GoogleService {
 
     private void initUsers () {
         Logger.getLogger ().info ("Getting Google users...");
+
     }
 
     public boolean validate (UserCredentials user) {

@@ -9,10 +9,10 @@ import org.gozantes.strava.internals.hash.SHA1Hasher;
 import org.gozantes.strava.internals.logging.Logger;
 import org.gozantes.strava.internals.types.Pair;
 import org.gozantes.strava.server.data.dao.UserDAO;
-import org.gozantes.strava.server.data.domain.auth.CredType;
 import org.gozantes.strava.server.data.domain.auth.User;
 import org.gozantes.strava.server.data.domain.auth.UserCredentials;
 import org.gozantes.strava.server.data.domain.auth.UserData;
+import org.gozantes.strava.server.gateway.AuthGatewayFactory;
 import org.gozantes.strava.server.gateway.meta.MetaServiceGateway;
 
 import java.security.KeyFactory;
@@ -118,7 +118,17 @@ public final class AuthAppService {
         if (creds.passwd () == null)
             Logger.getLogger ().severe (new NullPointerException ("Credentials must have a password."));
 
-        return creds.type () == CredType.Google ? googleValidate (creds) : metaValidate (creds);
+        try {
+            if (AuthGatewayFactory.createAuthGateway (creds.type ()).validate (creds))
+                return SHA1Hasher.hash (creds, System.currentTimeMillis ());
+        }
+        catch (Exception e) {
+            Logger.getLogger ().severe ("Could not validate user.");
+
+            return null;
+        }
+
+        return null;
     }
 
     public Pair <String, User> login (UserCredentials creds) throws NoSuchAlgorithmException, InvalidKeySpecException {
@@ -144,9 +154,8 @@ public final class AuthAppService {
         User u = false
                 ? UserDAO.getInstance ().find (creds.id ())
                 : new User (creds, new UserData (name, birth.getTime (), null, null, null));
-        
-        User result = MetaServiceGateway.getInstance().getUser(creds.id());
-        return result == null ? null : new Pair <String, User> (token, result);
+
+        return new Pair <> (token, u);
     }
 
     public Pair <String, User> signup (UserCredentials creds, UserData data)
@@ -157,7 +166,7 @@ public final class AuthAppService {
             return null;
 
         User u = false ? UserDAO.getInstance ().find (creds.id ()) : new User (creds, data);
-        MetaServiceGateway.getInstance().saveUser(u);
+        MetaServiceGateway.getInstance ().saveUser (u);
         return u == null ? null : new Pair <String, User> (token, u);
     }
 }
